@@ -8,5 +8,3 @@ app = FastAPI(
     description="Uma API REST que mapeia pontos turísticos do estado da Paraíba",
     version=version
 )
-
-app.include_router
