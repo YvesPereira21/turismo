@@ -47,7 +47,7 @@ class TourGuide(SQLModel, table=True):
     )
     number_phone: int
     user_id: uuid.UUID = Field(foreign_key="users_tb.user_id")
-    user: User = Field(foreign_key="users_tb.user_id", ondelete="CASCADE")
+    user: User = Relationship(back_populates="tour_guide")
     tourist_spot: List["TouristSpot"] = Relationship(back_populates="tour_guide")
 
 
