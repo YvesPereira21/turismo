@@ -97,6 +97,7 @@ class TouristSpot(SQLModel, table=True):
         sa_relationship_kwargs={"lazy": "selectin"}
     )
     events: List["Event"] = Relationship(back_populates="tourist_spot", sa_relationship_kwargs={"lazy": "selectin"})
+    activities: List["Activity"] = Relationship(back_populates="tourist_spot", sa_relationship_kwargs={"lazy": "selectin"})
 
     model_config = {"arbitrary_types_allowed": True} # type: ignore
 
@@ -163,5 +164,27 @@ class Event(SQLModel, table=True):
     tourist_spot_id: uuid.UUID = Field(foreign_key="tourist_spot_tb.spot_id", ondelete="CASCADE")
     tourist_spot: TouristSpot = Relationship(
         back_populates="events",
+        sa_relationship_kwargs={"lazy": "joined"}
+    )
+
+
+class Activity(SQLModel, table=True):
+    __tablename__ = "activity_tb" # type: ignore
+
+    activity_id: uuid.UUID = Field(
+        default_factory=uuid.uuid4,
+        sa_column=Column(
+            pg.UUID(as_uuid=True),
+            primary_key=True,
+            unique=True,
+            nullable=True,
+            info={"description": "Unique identifier for the activity"}
+        )
+    )
+    name: str
+    description: str
+    tourist_spot_id: uuid.UUID = Field(foreign_key="tourist_spot_tb.spot_id", ondelete="CASCADE")
+    tourist_spot: TouristSpot = Relationship(
+        back_populates="activities",
         sa_relationship_kwargs={"lazy": "joined"}
     )
