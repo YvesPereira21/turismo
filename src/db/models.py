@@ -24,6 +24,9 @@ class User(SQLModel, table=True):
     email: str
     password: str = Field(exclude=True)
     localization: Any = Field(sa_column=Column(Geography("POINT", srid=4326)))
+    role: str = Field(
+        sa_column=Column(pg.VARCHAR, nullable=False, server_default="user")
+    )
     tour_guide: Optional["TourGuide"] = Relationship(
         sa_relationship_kwargs={"uselist": False},
         back_populates="user"
@@ -177,7 +180,7 @@ class Activity(SQLModel, table=True):
             pg.UUID(as_uuid=True),
             primary_key=True,
             unique=True,
-            nullable=True,
+            nullable=False,
             info={"description": "Unique identifier for the activity"}
         )
     )
