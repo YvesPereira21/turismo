@@ -9,35 +9,51 @@ from geoalchemy2 import Geography
 class User(SQLModel, table=True):
     __tablename__ = "users_tb" # type: ignore
 
-    user_id: uuid.UUID = Field(            
+    user_id: uuid.UUID = Field(
         default_factory=uuid.uuid4,
         sa_column=Column(
             pg.UUID(as_uuid=True),
             primary_key=True,
             unique=True,
             nullable=False,
-            info={"description": "Unique identifier for the user account"},
+            info={"description": "Unique identifier for the user"}
         )
     )
-    username: str = Field(exclude=True)
+    email: str = Field(unique=True, index=True)
+    password: str
+    is_active: bool = Field(default=True)
+    tourist_profile: Optional["Tourist"] = Relationship(
+        sa_relationship_kwargs={"uselist": False},back_populates="user"
+    )
+    guide_profile: Optional["TourGuide"] = Relationship(
+        sa_relationship_kwargs={"uselist": False}, back_populates="user"
+    )
+
+
+class Tourist(SQLModel, table=True):
+    __tablename__ = "tourists_tb" # type: ignore
+    
+    tourist_id: uuid.UUID = Field(
+        default_factory=uuid.uuid4,
+        sa_column=Column(
+            pg.UUID(as_uuid=True),
+            primary_key=True,
+            unique=True,
+            nullable=False,
+            info={"description": "Unique identifier for the tourist"}
+        )
+    )
     name: str
-    email: str
-    password: str = Field(exclude=True)
     localization: Any = Field(sa_column=Column(Geography("POINT", srid=4326)))
-    role: str = Field(
-        sa_column=Column(pg.VARCHAR, nullable=False, server_default="user")
-    )
-    tour_guide: Optional["TourGuide"] = Relationship(
-        sa_relationship_kwargs={"uselist": False},
-        back_populates="user"
-    )
+    user_id: uuid.UUID = Field(foreign_key="users_tb.user_id")
+    user: User = Relationship(back_populates="tourist_profile")
 
     model_config = {"arbitrary_types_allowed": True} # type: ignore
 
 
 class TourGuide(SQLModel, table=True):
-    __tablename__="tourist_guide_tb" # type: ignore
-
+    __tablename__ = "tourist_guide_tb" # type: ignore
+    
     guide_id: uuid.UUID = Field(
         default_factory=uuid.uuid4,
         sa_column=Column(
@@ -45,13 +61,13 @@ class TourGuide(SQLModel, table=True):
             primary_key=True,
             unique=True,
             nullable=False,
-            info={"description": "Unique identifier for the Tour Guide"}
+            info={"description": "Unique identifier for the guide"}
         )
     )
-    number_phone: int
+    phone: str
+    cadastur: str
     user_id: uuid.UUID = Field(foreign_key="users_tb.user_id")
-    user: User = Relationship(back_populates="tour_guide")
-    tourist_spot: List["TouristSpot"] = Relationship(back_populates="tour_guide")
+    user: User = Relationship(back_populates="guide_profile")
 
 
 class SpotTags(SQLModel, table=True):

@@ -1,6 +1,5 @@
 from fastapi import status
 from src.db.models import TourGuide, TouristSpot, User
-from src.usuario.schemas import UserCreateModel
 from .schemas import TourGuideCreateModel
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -16,10 +15,8 @@ class TourGuideService:
         new_user_tourguide.user = new_user
 
         session.add(new_user_tourguide)
+
         await session.commit()
+        await session.refresh(new_user_tourguide)
 
         return new_user_tourguide
-
-
-    # async def oi(self):
-    #     pass
