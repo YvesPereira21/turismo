@@ -1,7 +1,6 @@
 import uuid
 from typing import List
 from pydantic import BaseModel, Field
-from src.db.models import TouristSpot
 
 
 class TagModel(BaseModel):
@@ -9,5 +8,5 @@ class TagModel(BaseModel):
     name: str
 
 
-class TagCreateUpdateModel(BaseModel):
+class TagCreateUpdateListModel(BaseModel):
     name: str

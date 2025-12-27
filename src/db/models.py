@@ -79,7 +79,7 @@ class TouristSpot(SQLModel, table=True):
     time_open: time = Field(sa_column=Column(pg.TIME))
     time_close: time = Field(sa_column=Column(pg.TIME))
     description: str
-    tour_guide_id: uuid.UUID = Field(
+    tour_guide_id: Optional[uuid.UUID] = Field(
         default=None, 
         foreign_key="tourist_guide_tb.guide_id", 
         ondelete="SET NULL", 

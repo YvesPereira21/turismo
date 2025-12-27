@@ -1,6 +1,7 @@
 import uuid
 from geoalchemy2 import WKBElement
 from geoalchemy2.shape import to_shape
+from shapely.geometry import mapping
 from pydantic import BaseModel, Field, field_serializer
 from typing import Any
 
@@ -17,7 +18,9 @@ class UserModel(BaseModel):
     def serialize_localization(self, value: Any, _info):
         if isinstance(value, WKBElement):
 
-            return to_shape(value).wkt
+            shape = to_shape(value)
+
+            return mapping(shape)
         
         return value
 

@@ -30,8 +30,7 @@ class UserService:
         new_user = User(**user_data_dict)
         new_user.role = "user"
 
-        point_wkt = f"POINT({longitude} {latitude})"
-        new_user.localization = WKTElement(point_wkt, srid=4326)
+        new_user.localization = create_wkt_element(longitude, latitude)
 
         session.add(new_user)
         await session.commit()
@@ -39,3 +38,7 @@ class UserService:
         await session.refresh(new_user)
 
         return new_user
+
+
+def create_wkt_element(latitude: float, longitude: float) -> WKTElement:
+    return WKTElement(f"POINT({longitude} {latitude})", srid=4326)
