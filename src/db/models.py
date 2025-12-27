@@ -68,6 +68,10 @@ class TourGuide(SQLModel, table=True):
     cadastur: str
     user_id: uuid.UUID = Field(foreign_key="users_tb.user_id")
     user: User = Relationship(back_populates="guide_profile")
+    tourist_spot: Optional["TouristSpot"] = Relationship(
+        back_populates="tour_guide", 
+        sa_relationship_kwargs={"lazy": "selectin"}
+    )
 
 
 class SpotTags(SQLModel, table=True):

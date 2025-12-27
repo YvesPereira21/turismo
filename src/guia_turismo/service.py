@@ -1,6 +1,6 @@
 from fastapi import status
 from src.db.models import TourGuide, TouristSpot, User
-from .schemas import TourGuideCreateModel
+from .schemas import TourGuideCreateModel, TourGuideUpdateModel
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -20,3 +20,29 @@ class TourGuideService:
         await session.refresh(new_user_tourguide)
 
         return new_user_tourguide
+
+
+    async def get_tour_guide(self, tour_guide_id: str, session: AsyncSession):
+        statement = select(TourGuide).where(TourGuide.guide_id == tour_guide_id)
+
+        result = await session.exec(statement)
+        tour_guide = result.first()
+
+        return tour_guide
+
+
+    async def update_tourguide_data(
+            self,
+            tour_guide_id: str,
+            tour_guide_updated: TourGuideUpdateModel, 
+            session: AsyncSession
+    ):
+        get_tour_guide = await self.get_tour_guide(tour_guide_id, session)
+
+        tour_guide_dict = tour_guide_updated.model_dump()
+        for k, v in tour_guide_dict.items():
+            setattr(get_tour_guide, k, v)
+
+        await session.commit()
+
+        return get_tour_guide
