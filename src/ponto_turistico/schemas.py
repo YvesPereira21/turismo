@@ -6,7 +6,7 @@ from shapely.geometry import mapping
 from pydantic import BaseModel, Field, field_serializer
 from typing import Any, List
 from src.db.models import TourGuide, Activity
-from src.cidades.schemas import CityGetModel
+from src.cidades.schemas_support import CityGetModel
 from src.tags.schemas import TagCreateUpdateListModel
 
 
@@ -38,7 +38,7 @@ class TouristSpotCreateModel(BaseModel):
     description: str
     tourguide_id: uuid.UUID
     city_name: str
-    tag_name: str
+    tags_name: List[str]
 
 
 class TouristSpotUpdateModel(BaseModel):
@@ -52,17 +52,6 @@ class TouristSpotUpdateModel(BaseModel):
 
 class TouristSpotCreateActivities(BaseModel):
     activities: List[Activity]
-
-
-class TouristSpotListModel(BaseModel):
-    spot_id: uuid.UUID
-    name: str
-    time_open: time
-    time_close: time
-    description: str
-    tour_guide: TourGuide
-    tags: List[TagCreateUpdateListModel]
-
 
 # class TourGuideTouristsSpotsListModel(BaseModel):
 #     spot_id: uuid.UUID

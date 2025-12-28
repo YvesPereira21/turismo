@@ -1,5 +1,4 @@
 import uuid
-from typing import List
 from pydantic import BaseModel, Field
 
 
@@ -9,4 +8,4 @@ class TagModel(BaseModel):
 
 
 class TagCreateUpdateListModel(BaseModel):
-    name: str
+    name: str = Field(min_length=3, max_length=40)

@@ -1,6 +1,7 @@
+from typing import List
 from fastapi import status
 from fastapi.exceptions import HTTPException
-from sqlmodel import select
+from sqlmodel import col, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from geoalchemy2 import WKTElement
 from src.db.models import TouristSpot, TourGuide, City, Tag, SpotTags
@@ -16,18 +17,18 @@ class TouristSpotService:
 
         tourguide_id = touristspot_data_dict.pop("tourguide_id")
         city_name = touristspot_data_dict.pop("city_name")
-        tag_name = touristspot_data_dict.pop("tag_name")
+        tags_name = touristspot_data_dict.pop("tags_name")
 
         localization = create_wktelement(longitude, latitude)
         tour_guide = await self.get_tourguide(tourguide_id, session)
         city = await self.get_city(city_name, session)
-        tag = await self.get_tag(tag_name, session)
+        tags = await self.get_tag(tags_name, session)
 
         new_touristspot = TouristSpot(**touristspot_data_dict)
         new_touristspot.localization = localization
         new_touristspot.tour_guide = tour_guide
         new_touristspot.city = city
-        new_touristspot.tags.append(tag)
+        new_touristspot.tags = tags
 
         session.add(new_touristspot)
         await session.commit()
@@ -96,20 +97,20 @@ class TouristSpotService:
         return city
 
 
-    async def get_tag(self, name: str, session: AsyncSession):
+    async def get_tag(self, tags: List[str], session: AsyncSession) -> list:
         # statement = select(Tag).join(SpotTags).where(Tag.name == name)
-        statement = select(Tag).join(SpotTags).where(Tag.name == name)
+        statement = select(Tag).where(col(Tag.name).in_(tags))
 
         result = await session.exec(statement)
-        tag = result.first()
+        tag = result.all()
 
         if tag is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Tag {name} not found"
+                detail=f"Tags not found"
             )
 
-        return tag
+        return list(tag)
 
 
 def create_wktelement(longitude: float, latitude: float) -> WKTElement:

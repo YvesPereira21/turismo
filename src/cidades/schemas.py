@@ -1,7 +1,7 @@
 import uuid
 from pydantic import BaseModel
 from typing import List
-from src.ponto_turistico.schemas import TouristSpotListModel
+from src.ponto_turistico.schemas_support import TouristSpotListModel
 
 
 class CityModel(BaseModel):
@@ -19,9 +19,3 @@ class CityCreateUpdateModel(BaseModel):
 class CityListTouristsSpots(BaseModel):
     name: str
     tourists_spots: List[TouristSpotListModel]
-
-
-class CityGetModel(BaseModel):
-    name: str
-    zip_code: str
-    state: str
