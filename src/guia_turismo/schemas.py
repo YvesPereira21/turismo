@@ -13,13 +13,13 @@ class TourGuideModel(BaseModel):
 
 class TourGuideCreateModel(BaseModel):
     name: str = Field(min_length=3, max_length=80)
-    phone: int = Field(gt=0, max_digits=13)
+    phone: str = Field(max_length=18)
     cadastur: str
     user: AccountCreateModel
 
 
 class TourGuideUpdateModel(BaseModel):
-    phone: int
+    phone: str
     cadastur: str
 
 

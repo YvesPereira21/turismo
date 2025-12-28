@@ -46,8 +46,6 @@ class TouristSpotUpdateModel(BaseModel):
     time_open: time
     time_close: time
     description: str
-    tour_guide_id: uuid.UUID
-    city_name: str
 
 
 class TouristSpotCreateActivities(BaseModel):
