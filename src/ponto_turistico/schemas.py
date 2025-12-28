@@ -5,7 +5,7 @@ from geoalchemy2.shape import to_shape
 from shapely.geometry import mapping
 from pydantic import BaseModel, Field, field_serializer
 from typing import Any, List
-from src.db.models import TourGuide, City, Tag, Activity
+from src.db.models import TourGuide, Activity
 from src.cidades.schemas import CityGetModel
 from src.tags.schemas import TagCreateUpdateListModel
 
@@ -17,11 +17,10 @@ class TouristSpotModel(BaseModel):
     time_open: time
     time_close: time
     description: str
-    tour_guide_id: uuid.UUID = Field(exclude=True)
     tour_guide: TourGuide
     city: CityGetModel
     tags: List[TagCreateUpdateListModel]
-    activities: List[Activity]
+    activities: List[Activity] | None
 
     @field_serializer("localization")
     def serialize_location(self, value: Any, _info):
@@ -37,9 +36,9 @@ class TouristSpotCreateModel(BaseModel):
     time_open: time
     time_close: time
     description: str
-    tour_guide_id: uuid.UUID
-    city_id: uuid.UUID
-    tag_id: uuid.UUID
+    tourguide_id: uuid.UUID
+    city_name: str
+    tag_name: str
 
 
 class TouristSpotUpdateModel(BaseModel):
@@ -48,8 +47,7 @@ class TouristSpotUpdateModel(BaseModel):
     time_close: time
     description: str
     tour_guide_id: uuid.UUID
-    city_id: uuid.UUID
-    tags: List[TagCreateUpdateListModel]
+    city_name: str
 
 
 class TouristSpotCreateActivities(BaseModel):
@@ -66,11 +64,11 @@ class TouristSpotListModel(BaseModel):
     tags: List[TagCreateUpdateListModel]
 
 
-class TourGuideTouristsSpotsListModel(BaseModel):
-    spot_id: uuid.UUID
-    name: str
-    time_open: time
-    time_close: time
-    description: str
-    tour_guide: TourGuide
-    tags: List[TagCreateUpdateListModel]
+# class TourGuideTouristsSpotsListModel(BaseModel):
+#     spot_id: uuid.UUID
+#     name: str
+#     time_open: time
+#     time_close: time
+#     description: str
+#     tour_guide: TourGuide
+#     tags: List[TagCreateUpdateListModel]

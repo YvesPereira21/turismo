@@ -1,6 +1,6 @@
 import uuid
 from pydantic import BaseModel
-from typing import List, Any
+from typing import List
 from src.ponto_turistico.schemas import TouristSpotListModel
 
 

@@ -25,3 +25,9 @@ class TourGuideUpdateModel(BaseModel):
 
 class TourGuideAddTouristSpotModel(BaseModel):
     spot_id: uuid.UUID = Field(exclude=True)
+
+
+class TourguideModel(BaseModel):
+    tourist_id: uuid.UUID
+    name: str
+    email: str
