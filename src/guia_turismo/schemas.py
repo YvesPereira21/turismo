@@ -6,28 +6,23 @@ from src.usuario.schemas import AccountCreateModel
 
 class TourGuideModel(BaseModel):
     guide_id: uuid.UUID
+    name: str
     phone: str
     cadastur: str
-    user_id: uuid.UUID
-    user: AccountCreateModel
+    email: str
 
 
 class TourGuideCreateModel(BaseModel):
-    number_phone: int
+    name: str = Field(min_length=3, max_length=80)
+    phone: int = Field(gt=0, max_digits=13)
+    cadastur: str
     user: AccountCreateModel
-    spot_id: uuid.UUID = Field(exclude=True)
 
 
 class TourGuideUpdateModel(BaseModel):
-    number_phone: int
+    phone: int
     cadastur: str
 
 
 class TourGuideAddTouristSpotModel(BaseModel):
-    spot_id: uuid.UUID = Field(exclude=True)
-
-
-class TourguideModel(BaseModel):
-    tourist_id: uuid.UUID
-    name: str
-    email: str
+    spot_id: uuid.UUID

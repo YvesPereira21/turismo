@@ -4,7 +4,7 @@ from fastapi.exceptions import HTTPException
 from sqlmodel import col, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from geoalchemy2 import WKTElement
-from src.db.models import TouristSpot, TourGuide, City, Tag, SpotTags
+from src.db.models import TouristSpot, TourGuide, City, Tag
 from .schemas import TouristSpotCreateModel, TouristSpotUpdateModel, TouristSpotCreateActivities
 
 

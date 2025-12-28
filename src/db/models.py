@@ -74,6 +74,7 @@ class TourGuide(SQLModel, table=True):
             info={"description": "Unique identifier for the guide"}
         )
     )
+    name: str
     phone: str
     cadastur: str
     user_id: uuid.UUID = Field(foreign_key="users_tb.user_id")
@@ -82,6 +83,14 @@ class TourGuide(SQLModel, table=True):
         back_populates="tour_guide", 
         sa_relationship_kwargs={"lazy": "selectin"}
     )
+
+    @property
+    def email(self) -> str:
+        return self.user.email if self.user else ""
+
+    @property
+    def password(self) -> str:
+        return self.user.password if self.user else ""
 
 
 class SpotTags(SQLModel, table=True):

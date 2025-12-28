@@ -1,6 +1,6 @@
 from fastapi import status
 from src.db.models import TourGuide, TouristSpot, User
-from .schemas import TourGuideCreateModel, TourGuideUpdateModel
+from .schemas import TourGuideCreateModel, TourGuideUpdateModel, TourGuideAddTouristSpotModel
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
