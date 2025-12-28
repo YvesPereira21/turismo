@@ -11,7 +11,7 @@ from .service import UserService
 auth_router = APIRouter()
 user_service = UserService()
 
-@auth_router.post("/signup", response_model=UserModel, status_code=status.HTTP_201_CREATED)
+@auth_router.post("/create", response_model=UserModel, status_code=status.HTTP_201_CREATED)
 async def create_user_account(
     user_data: UserCreateModel, session: AsyncSession = Depends(get_session)
 ):

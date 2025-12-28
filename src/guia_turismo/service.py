@@ -46,3 +46,12 @@ class TourGuideService:
         await session.commit()
 
         return get_tour_guide
+
+
+    async def delete_guide(self, tourguide_id: str, session: AsyncSession):
+        tour_guide = await self.get_tour_guide(tourguide_id, session)
+
+        await session.delete(tour_guide)
+        await session.commit()
+
+        return {}

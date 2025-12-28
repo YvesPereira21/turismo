@@ -1,24 +1,27 @@
 import uuid
 from typing import List
 from pydantic import BaseModel, Field
-from src.usuario.schemas import UserCreateModel
-from src.ponto_turistico.schemas import TourGuideTouristsSpotsListModel
+from src.usuario.schemas import AccountCreateModel
 
 
 class TourGuideModel(BaseModel):
     guide_id: uuid.UUID
-    number_phone: int
+    phone: str
+    cadastur: str
     user_id: uuid.UUID
-    user: UserCreateModel
-    tourist_spot: List[TourGuideTouristsSpotsListModel]
+    user: AccountCreateModel
 
 
 class TourGuideCreateModel(BaseModel):
     number_phone: int
-    user: UserCreateModel
+    user: AccountCreateModel
     spot_id: uuid.UUID = Field(exclude=True)
 
 
 class TourGuideUpdateModel(BaseModel):
     number_phone: int
+    cadastur: str
+
+
+class TourGuideAddTouristSpotModel(BaseModel):
     spot_id: uuid.UUID = Field(exclude=True)

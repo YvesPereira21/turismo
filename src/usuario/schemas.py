@@ -32,3 +32,8 @@ class UserCreateModel(BaseModel):
     password: str = Field(min_length=8, max_length=16)
     latitude: float
     longitude: float
+
+
+class AccountCreateModel(BaseModel):
+    email: str
+    password: str = Field(min_length=8, max_length=16)

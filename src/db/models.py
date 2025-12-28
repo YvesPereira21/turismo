@@ -21,7 +21,9 @@ class User(SQLModel, table=True):
     )
     email: str = Field(unique=True, index=True)
     password: str
-    is_active: bool = Field(default=True)
+    role: str = Field(
+        sa_column=Column(pg.VARCHAR, nullable=False, server_default="tourist")
+    )
     tourist_profile: Optional["Tourist"] = Relationship(
         sa_relationship_kwargs={"uselist": False},back_populates="user"
     )
@@ -44,9 +46,17 @@ class Tourist(SQLModel, table=True):
         )
     )
     name: str
-    localization: Any = Field(sa_column=Column(Geography("POINT", srid=4326)))
+    localization: Optional[Any] = Field(sa_column=Column(Geography("POINT", srid=4326)))
     user_id: uuid.UUID = Field(foreign_key="users_tb.user_id")
-    user: User = Relationship(back_populates="tourist_profile")
+    user: User = Relationship(back_populates="tourist_profile", sa_relationship_kwargs={"lazy": "selectin"})
+
+    @property
+    def email(self) -> str:
+        return self.user.email if self.user else ""
+
+    @property
+    def password(self) -> str:
+        return self.user.password if self.user else ""
 
     model_config = {"arbitrary_types_allowed": True} # type: ignore
 
@@ -67,7 +77,7 @@ class TourGuide(SQLModel, table=True):
     phone: str
     cadastur: str
     user_id: uuid.UUID = Field(foreign_key="users_tb.user_id")
-    user: User = Relationship(back_populates="guide_profile")
+    user: User = Relationship(back_populates="guide_profile", sa_relationship_kwargs={"lazy": "selectin"})
     tourist_spot: Optional["TouristSpot"] = Relationship(
         back_populates="tour_guide", 
         sa_relationship_kwargs={"lazy": "selectin"}
