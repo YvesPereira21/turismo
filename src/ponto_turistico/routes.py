@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, Depends
 from fastapi.exceptions import HTTPException
 from src.db.main import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
-from .schemas import TouristSpotModel, TouristSpotCreateModel, TouristSpotUpdateModel, TouristSpotCreateActivities
+from .schemas import TouristSpotModel, TouristSpotCreateModel, TouristSpotUpdateModel
 from .service import TouristSpotService
 
 

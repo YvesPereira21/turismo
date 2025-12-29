@@ -5,7 +5,7 @@ from geoalchemy2.shape import to_shape
 from shapely.geometry import mapping
 from pydantic import BaseModel, Field, field_serializer
 from typing import Any, List
-from src.db.models import TourGuide, Activity
+from src.db.models import TourGuide
 from src.cidades.schemas_support import CityGetModel
 from src.tags.schemas import TagCreateUpdateListModel
 
@@ -20,7 +20,7 @@ class TouristSpotModel(BaseModel):
     tour_guide: TourGuide
     city: CityGetModel
     tags: List[TagCreateUpdateListModel]
-    activities: List[Activity] | None
+    activities: List | None
 
     @field_serializer("localization")
     def serialize_location(self, value: Any, _info):
@@ -46,7 +46,3 @@ class TouristSpotUpdateModel(BaseModel):
     time_open: time
     time_close: time
     description: str
-
-
-class TouristSpotCreateActivities(BaseModel):
-    activities: List[Activity]
