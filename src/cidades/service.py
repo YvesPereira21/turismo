@@ -1,7 +1,7 @@
 from fastapi import status
 from fastapi.exceptions import HTTPException
-from src.db.models import City, TouristSpot
-from .schemas import CityCreateUpdateModel, CityListTouristsSpots
+from src.db.models import City
+from .schemas import CityCreateUpdateModel
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
