@@ -1,8 +1,8 @@
 from fastapi import status
 from fastapi.exceptions import HTTPException
 from src.db.models import City, TouristSpot
-from .schemas import CityCreateUpdateModel
-from sqlmodel import select, asc
+from .schemas import CityCreateUpdateModel, CityListTouristsSpots
+from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 
@@ -54,9 +54,8 @@ class CityService:
         return {}
 
 
-    async def list_all_tourists_spots(self, city_id: str, session: AsyncSession):
-        statement = select(TouristSpot).where(TouristSpot.city_id == city_id).order_by(asc(TouristSpot.name))
-
-        results = await session.exec(statement)
-
-        return results.all()
+    async def list_all_tourists_spots(self, city_name: str, session: AsyncSession):
+        statement = select(City).where(City.name == city_name)
+        result = await session.exec(statement)
+        
+        return result.first()

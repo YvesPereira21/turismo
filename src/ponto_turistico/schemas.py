@@ -50,12 +50,3 @@ class TouristSpotUpdateModel(BaseModel):
 
 class TouristSpotCreateActivities(BaseModel):
     activities: List[Activity]
-
-# class TourGuideTouristsSpotsListModel(BaseModel):
-#     spot_id: uuid.UUID
-#     name: str
-#     time_open: time
-#     time_close: time
-#     description: str
-#     tour_guide: TourGuide
-#     tags: List[TagCreateUpdateListModel]

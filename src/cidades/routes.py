@@ -57,15 +57,20 @@ async def delete_city(city_name: str, session: AsyncSession = Depends(get_sessio
     return {}
 
 @city_router.get(
-    path="/{city_name}/tourists_spots", response_model=CityListTouristsSpots, status_code=status.HTTP_200_OK
+    path="/{city_name}/tourists_spots", 
+    response_model=CityListTouristsSpots, 
+    status_code=status.HTTP_200_OK
 )
-async def get_all_tourists_spots_from_city(city_id: str, session: AsyncSession = Depends(get_session)):
-    all_tourists_spots = await city_service.list_all_tourists_spots(city_id, session)
+async def get_all_tourists_spots_from_city(
+    city_name: str,
+    session: AsyncSession = Depends(get_session)
+):
+    city = await city_service.list_all_tourists_spots(city_name, session)
 
-    if all_tourists_spots is None:
+    if city is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="City not found"
+            detail=f"City '{city_name}' not found"
         )
 
-    return all_tourists_spots
+    return city
