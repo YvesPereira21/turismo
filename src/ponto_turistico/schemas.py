@@ -4,10 +4,11 @@ from geoalchemy2 import WKBElement
 from geoalchemy2.shape import to_shape
 from shapely.geometry import mapping
 from pydantic import BaseModel, Field, field_serializer
-from typing import Any, List
-from src.db.models import TourGuide
+from typing import Any, List, Optional
+from src.guia_turismo.schemas_support import TourGuideReturnModel
 from src.cidades.schemas_support import CityGetModel
 from src.tags.schemas import TagCreateUpdateListModel
+from src.atividades.schemas import ActivityModel
 
 
 class TouristSpotModel(BaseModel):
@@ -17,10 +18,10 @@ class TouristSpotModel(BaseModel):
     time_open: time
     time_close: time
     description: str
-    tour_guide: TourGuide
+    tour_guide: Optional[TourGuideReturnModel]
     city: CityGetModel
     tags: List[TagCreateUpdateListModel]
-    activities: List | None
+    activities: List[ActivityModel] | None
 
     @field_serializer("localization")
     def serialize_location(self, value: Any, _info):

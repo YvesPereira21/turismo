@@ -19,6 +19,7 @@ class TourGuideCreateModel(BaseModel):
 
 
 class TourGuideUpdateModel(BaseModel):
+    name: str
     phone: str
     cadastur: str
 
