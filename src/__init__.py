@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from src.usuario.routes import auth_router
 from src.tags.routes import tag_router
 from src.cidades.routes import city_router
 from src.guia_turismo.routes import tour_router
@@ -17,7 +16,6 @@ app = FastAPI(
     version=version
 )
 
-app.include_router(auth_router, prefix=f"/api/{version}/user", tags=["user"])
 app.include_router(tag_router, prefix=f"/api/{version}/tags", tags=["tags"])
 app.include_router(city_router, prefix=f"/api/{version}/cities", tags=["cities"])
 app.include_router(tour_router, prefix=f"/api/{version}/tourguides", tags=["tourguides"])

@@ -25,7 +25,7 @@ class User(SQLModel, table=True):
         sa_column=Column(pg.VARCHAR, nullable=False, server_default="tourist")
     )
     tourist_profile: Optional["Tourist"] = Relationship(
-        sa_relationship_kwargs={"uselist": False},back_populates="user"
+        sa_relationship_kwargs={"uselist": False}, back_populates="user"
     )
     guide_profile: Optional["TourGuide"] = Relationship(
         sa_relationship_kwargs={"uselist": False}, back_populates="user"
