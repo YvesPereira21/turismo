@@ -47,3 +47,14 @@ class TouristSpotUpdateModel(BaseModel):
     time_open: time
     time_close: time
     description: str
+
+
+class TouristSpotListNearbyModel(BaseModel):
+    name: str
+    time_open: time
+    time_close: time
+    description: str
+    distance: str
+
+    class Config:
+        from_attributes = True

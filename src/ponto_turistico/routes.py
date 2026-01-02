@@ -2,12 +2,24 @@ from fastapi import APIRouter, status, Depends
 from fastapi.exceptions import HTTPException
 from src.db.main import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
-from .schemas import TouristSpotModel, TouristSpotCreateModel, TouristSpotUpdateModel
+from .schemas import TouristSpotModel, TouristSpotCreateModel, TouristSpotUpdateModel, TouristSpotListNearbyModel
 from .service import TouristSpotService
 
 
 touristspot_router = APIRouter()
 touristspot_service = TouristSpotService()
+
+@touristspot_router.get("/nearbyspots", response_model=list[TouristSpotListNearbyModel], status_code=status.HTTP_200_OK)
+async def calculate_distance_between_user_and_touristspot(
+    radius: int,
+    longitude: float,
+    latitude: float,
+    session: AsyncSession = Depends(get_session)
+):
+    distance = await touristspot_service.calculate_distance(radius, longitude, latitude, session)
+
+    return distance
+
 
 @touristspot_router.post("", response_model=TouristSpotModel, status_code=status.HTTP_201_CREATED)
 async def create_touristspot(
@@ -62,4 +74,4 @@ async def delete_touristspot(
 ):
     touristspot_deleted = await touristspot_service.delete_touristspot(touristspot_id, session)
 
-    return {}
+    return touristspot_deleted
