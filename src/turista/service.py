@@ -5,18 +5,21 @@ from .schemas import TouristCreateModel, TouristUpdateModel, TouristCurrentLocal
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from geoalchemy2 import WKTElement
+from src.autenticacao.utils import generate_password_hash
 
 
 class TouristService:
     async def create_tourist_account(
         self, tourist_data: TouristCreateModel, session: AsyncSession
     ):
-        tourist_account_data = tourist_data.model_dump()
-        user_data = tourist_account_data.pop('user')
+        tourist_data_dict = tourist_data.model_dump()
+        user_data = tourist_data_dict.pop('user')
 
         new_user = User(**user_data)
-        new_user.role = "tourist"
-        new_tourist = Tourist(**tourist_account_data)
+        new_user.password = generate_password_hash(tourist_data_dict['password'])
+        new_user.role = "tourguide"
+
+        new_tourist = Tourist(**tourist_data_dict)
         new_tourist.user = new_user
 
         session.add(new_tourist)
