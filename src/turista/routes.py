@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
 from src.db.main import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
-from .schemas import TouristModel, TouristCreateModel, TouristUpdateModel, TouristCurrentLocalizationModel
+from .schemas import TouristModel, TouristCreateModel, TouristUpdateModel
 from .service import TouristService
 
 
@@ -52,20 +52,4 @@ async def delete_tourist_account(
 ):
     tourist_deleted = await tourist_service.delete_tourist(tourist_id, session)
 
-    return {}
-
-
-@tourist_router.patch("/{tourist_id}", response_model=TouristModel, status_code=status.HTTP_200_OK)
-async def set_current_location(
-    tourist_id: str,
-    location_data: TouristCurrentLocalizationModel,
-    session: AsyncSession = Depends(get_session)
-):
-    tourist_location = await tourist_service.update_tourist_location(tourist_id, location_data, session)
-    if tourist_location is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Tourist not found"
-        )
-
-    return tourist_location
+    return tourist_deleted

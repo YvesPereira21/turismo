@@ -34,7 +34,7 @@ class User(SQLModel, table=True):
 
 class Tourist(SQLModel, table=True):
     __tablename__ = "tourists_tb" # type: ignore
-    
+
     tourist_id: uuid.UUID = Field(
         default_factory=uuid.uuid4,
         sa_column=Column(
@@ -46,7 +46,6 @@ class Tourist(SQLModel, table=True):
         )
     )
     name: str
-    localization: Optional[Any] = Field(sa_column=Column(Geography("POINT", srid=4326)))
     user_id: uuid.UUID = Field(foreign_key="users_tb.user_id")
     user: User = Relationship(back_populates="tourist_profile", sa_relationship_kwargs={"lazy": "selectin"})
 

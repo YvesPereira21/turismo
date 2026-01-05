@@ -4,7 +4,7 @@ from geoalchemy2.shape import to_shape
 from shapely.geometry import mapping
 from pydantic import BaseModel, field_serializer
 from typing import Any, Optional
-from src.usuario.schemas import AccountCreateModel
+from src.autenticacao.schemas import AccountCreateModel
 
 
 class TouristModel(BaseModel):
@@ -32,8 +32,3 @@ class TouristCreateModel(BaseModel):
 
 class TouristUpdateModel(BaseModel):
     name: str
-
-
-class TouristCurrentLocalizationModel(BaseModel):
-    longitude: float
-    latitude: float

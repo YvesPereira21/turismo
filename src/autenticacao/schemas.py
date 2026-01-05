@@ -1,5 +1,5 @@
 import uuid
-from typing import Any, Optional
+from typing import Optional
 from pydantic import BaseModel, Field
 
 
@@ -12,6 +12,11 @@ class UserModel(BaseModel):
 class UserLoginModel(BaseModel):
     email: str
     password: str = Field(exclude=True)
+
+
+class AccountCreateModel(BaseModel):
+    email: str
+    password: str
 
 
 class ProfileResponse(BaseModel):

@@ -1,10 +1,9 @@
 from fastapi import status
 from fastapi.exceptions import HTTPException
 from src.db.models import Tourist, User
-from .schemas import TouristCreateModel, TouristUpdateModel, TouristCurrentLocalizationModel
+from .schemas import TouristCreateModel, TouristUpdateModel
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
-from geoalchemy2 import WKTElement
 from src.autenticacao.utils import generate_password_hash
 
 
@@ -63,20 +62,3 @@ class TouristService:
         await session.commit()
 
         return {}
-
-
-    async def update_tourist_location(
-        self, tourist_id: str, current_local: TouristCurrentLocalizationModel, session: AsyncSession
-    ):
-        tourist = await self.get_tourist(tourist_id, session)
-
-        longitude = current_local.longitude
-        latitude = current_local.latitude
-
-        localization = WKTElement(f"POINT({longitude} {latitude})", srid=4326)
-        tourist.localization = localization
-
-        await session.commit()
-        await session.refresh(tourist)
-
-        return tourist
