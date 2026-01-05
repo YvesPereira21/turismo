@@ -46,7 +46,7 @@ class Tourist(SQLModel, table=True):
         )
     )
     name: str
-    user_id: uuid.UUID = Field(foreign_key="users_tb.user_id")
+    user_id: uuid.UUID = Field(foreign_key="users_tb.user_id", ondelete='CASCADE')
     user: User = Relationship(back_populates="tourist_profile", sa_relationship_kwargs={"lazy": "selectin"})
 
     @property
@@ -76,7 +76,7 @@ class TourGuide(SQLModel, table=True):
     name: str
     phone: str
     cadastur: str
-    user_id: uuid.UUID = Field(foreign_key="users_tb.user_id")
+    user_id: uuid.UUID = Field(foreign_key="users_tb.user_id", ondelete='CASCADE')
     user: User = Relationship(back_populates="guide_profile", sa_relationship_kwargs={"lazy": "selectin"})
     tourist_spot: Optional["TouristSpot"] = Relationship(
         back_populates="tour_guide", 
