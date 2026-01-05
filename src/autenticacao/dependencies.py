@@ -1,5 +1,4 @@
 from typing import Any, List, Optional
-from typing_extensions import Unpack
 from fastapi import Request, Depends, status
 from fastapi.exceptions import HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -70,7 +69,7 @@ class RefreshTokenBearer(TokenBearer):
 
 
 async def get_current_user(
-        token_data: dict,
+        token_data: dict = Depends(AccessTokenBearer),
         session: AsyncSession = Depends(get_session)
 ):
     user_email = token_data['user']['email']

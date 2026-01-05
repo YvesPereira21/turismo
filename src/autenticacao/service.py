@@ -1,11 +1,15 @@
 from src.db.models import User
 from sqlmodel import select
+from sqlalchemy.orm import selectinload
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 
 class UserService:
     async def get_user_by_email(self, email: str, session: AsyncSession):
-        statement = select(User).where(User.email == email)
+        statement = select(User).where(User.email == email).options(
+            selectinload(User.tourist_profile),
+            selectinload(User.guide_profile)
+        )
 
         result = await session.exec(statement)
         user = result.first()
