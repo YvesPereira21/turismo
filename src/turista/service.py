@@ -15,8 +15,8 @@ class TouristService:
         user_data = tourist_data_dict.pop('user')
 
         new_user = User(**user_data)
-        new_user.password = generate_password_hash(tourist_data_dict['password'])
-        new_user.role = "tourguide"
+        new_user.password = generate_password_hash(user_data['password'])
+        new_user.role = "tourist"
 
         new_tourist = Tourist(**tourist_data_dict)
         new_tourist.user = new_user

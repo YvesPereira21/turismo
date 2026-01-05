@@ -18,7 +18,7 @@ tourist_role = RoleChecker(['tourist'])
 
 REFRESH_TIME = 7
 
-auth_router.post('/login', status_code=status.HTTP_200_OK)
+@auth_router.post('/login', status_code=status.HTTP_200_OK)
 async def login_user(login_data: UserLoginModel, session: AsyncSession = Depends(get_session)):
     email = login_data.email
     password = login_data.password
@@ -83,7 +83,7 @@ async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer(
 
 
 @auth_router.get("/me", response_model=ProfileResponse)
-async def get_current_user(current_user=Depends(get_current_user), _ : bool = Depends(admin_role)):
+async def get_current_user(current_user=Depends(get_current_user)):
     response = ProfileResponse(
         id=current_user.user_id,
         email=current_user.email,

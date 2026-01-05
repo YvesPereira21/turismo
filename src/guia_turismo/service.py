@@ -12,7 +12,7 @@ class TourGuideService:
         user = tourguide_data_dict.pop("user")
 
         new_user = User(**user)
-        new_user.password = generate_password_hash(tourguide_data_dict['password'])
+        new_user.password = generate_password_hash(user['password'])
         new_user.role = "tourguide"
 
         new_user_tourguide = TourGuide(**tourguide_data_dict)
