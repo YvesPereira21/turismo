@@ -1,16 +1,17 @@
 from fastapi import APIRouter, Depends, status
-from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.db.main import get_session
 from src.tags.schemas import TagCreateUpdateListModel, TagModel
 from src.tags.service import TagService
+from src.autenticacao.dependencies import RoleChecker
 
 
 tag_router = APIRouter()
 tag_service = TagService()
+admin_role = Depends(RoleChecker(['admin']))
 
-@tag_router.post("", response_model=TagModel)
+@tag_router.post("", response_model=TagModel, dependencies=[admin_role])
 async def create_tag(
     tag_data: TagCreateUpdateListModel, session: AsyncSession = Depends(get_session)
 ):

@@ -4,10 +4,13 @@ from src.db.main import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .schemas import TouristModel, TouristCreateModel, TouristUpdateModel
 from .service import TouristService
+from src.autenticacao.dependencies import RoleChecker
 
 
 tourist_router = APIRouter()
 tourist_service = TouristService()
+tourist_role = Depends(RoleChecker(['tourist']))
+admin_tourist_role = Depends(RoleChecker(['tourist', 'admin']))
 
 @tourist_router.post("/signup", response_model=TouristModel, status_code=status.HTTP_201_CREATED)
 async def create_account(
@@ -19,7 +22,7 @@ async def create_account(
     return tourist_account
 
 
-@tourist_router.get("/{tourist_id}", response_model=TouristModel, status_code=status.HTTP_200_OK)
+@tourist_router.get("/{tourist_id}", response_model=TouristModel, status_code=status.HTTP_200_OK, dependencies=[tourist_role])
 async def get_tourist_detail(
     tourist_id: str,
     session: AsyncSession = Depends(get_session)
@@ -34,7 +37,7 @@ async def get_tourist_detail(
     return tourist
 
 
-@tourist_router.put("/{tourist_id}", response_model=TouristModel, status_code=status.HTTP_200_OK)
+@tourist_router.put("/{tourist_id}", response_model=TouristModel, status_code=status.HTTP_200_OK, dependencies=[tourist_role])
 async def update_tourist_data(
     tourist_id: str,
     tourist_data: TouristUpdateModel,
@@ -45,7 +48,7 @@ async def update_tourist_data(
     return tourist_updated
 
 
-@tourist_router.delete("/{tourist_id}", status_code=status.HTTP_204_NO_CONTENT)
+@tourist_router.delete("/{tourist_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[admin_tourist_role])
 async def delete_tourist_account(
     tourist_id: str,
     session: AsyncSession = Depends(get_session)

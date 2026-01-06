@@ -4,12 +4,17 @@ from src.db.main import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .schemas import TouristSpotModel, TouristSpotCreateModel, TouristSpotUpdateModel, TouristSpotListNearbyModel
 from .service import TouristSpotService
+from src.autenticacao.dependencies import RoleChecker, AccessTokenBearer
 
 
 touristspot_router = APIRouter()
 touristspot_service = TouristSpotService()
+access_token = Depends(AccessTokenBearer())
+admin_tourguide_role = Depends(RoleChecker(['tourguide', 'admin']))
+tourguide_role = Depends(RoleChecker(['tourguide']))
+tourist_role = Depends(RoleChecker(['tourist']))
 
-@touristspot_router.get("/nearbyspots", response_model=list[TouristSpotListNearbyModel], status_code=status.HTTP_200_OK)
+@touristspot_router.get("/nearbyspots", response_model=list[TouristSpotListNearbyModel], status_code=status.HTTP_200_OK, dependencies=[tourist_role])
 async def calculate_distance_between_user_and_touristspot(
     radius: int,
     longitude: float,
@@ -21,7 +26,7 @@ async def calculate_distance_between_user_and_touristspot(
     return distance
 
 
-@touristspot_router.post("", response_model=TouristSpotModel, status_code=status.HTTP_201_CREATED)
+@touristspot_router.post("", response_model=TouristSpotModel, status_code=status.HTTP_201_CREATED, dependencies=[admin_tourguide_role])
 async def create_touristspot(
     touristspot_data: TouristSpotCreateModel,
     session: AsyncSession = Depends(get_session)
@@ -36,7 +41,7 @@ async def create_touristspot(
     return new_touristspot
 
 
-@touristspot_router.get("/{touristspot_id}", response_model=TouristSpotModel, status_code=status.HTTP_200_OK)
+@touristspot_router.get("/{touristspot_id}", response_model=TouristSpotModel, status_code=status.HTTP_200_OK, dependencies=[access_token])
 async def get_touristspot(
     touristspot_id: str,
     session: AsyncSession = Depends(get_session)
@@ -51,7 +56,7 @@ async def get_touristspot(
     return tourist_spot
 
 
-@touristspot_router.put("/{touristspot_id}", response_model=TouristSpotModel, status_code=status.HTTP_200_OK)
+@touristspot_router.put("/{touristspot_id}", response_model=TouristSpotModel, status_code=status.HTTP_200_OK, dependencies=[admin_tourguide_role])
 async def update_touristspot(
     touristspot_id: str,
     touristspot_updated_data: TouristSpotUpdateModel,
@@ -67,7 +72,7 @@ async def update_touristspot(
     return touristspot_updated
 
 
-@touristspot_router.delete("/{touristspot_id}", status_code=status.HTTP_204_NO_CONTENT)
+@touristspot_router.delete("/{touristspot_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[admin_tourguide_role])
 async def delete_touristspot(
     touristspot_id: str,
     session: AsyncSession = Depends(get_session)

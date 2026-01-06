@@ -4,13 +4,16 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from src.db.main import get_session
 from .service import CityService
 from .schemas import CityCreateUpdateModel, CityListTouristsSpots, CityModel
+from src.autenticacao.dependencies import RoleChecker, AccessTokenBearer
 
 
 #lembrar de lançar as exceções aqui
 city_router = APIRouter()
 city_service = CityService()
+access_token = Depends(AccessTokenBearer())
+admin_role = Depends(RoleChecker(['admin']))
 
-@city_router.post(path="", response_model=CityModel, status_code=status.HTTP_201_CREATED)
+@city_router.post(path="", response_model=CityModel, status_code=status.HTTP_201_CREATED, dependencies=[admin_role])
 async def create_city(
     city_data: CityCreateUpdateModel,
     session: AsyncSession = Depends(get_session)
@@ -20,12 +23,12 @@ async def create_city(
     return new_city
 
 
-@city_router.get(path="/{city_name}", response_model=CityModel, status_code=status.HTTP_200_OK)
+@city_router.get(path="/{city_name}", response_model=CityModel, status_code=status.HTTP_200_OK, dependencies=[access_token])
 async def get_city(city_name: str, session: AsyncSession = Depends(get_session)):
     return await city_service.return_city(city_name, session)
 
 
-@city_router.put(path="/{city_name}", response_model=CityModel, status_code=status.HTTP_200_OK)
+@city_router.put(path="/{city_name}", response_model=CityModel, status_code=status.HTTP_200_OK, dependencies=[admin_role])
 async def update_city_data(
     city_name: str,
     city_data: CityCreateUpdateModel,
@@ -44,7 +47,7 @@ async def update_city_data(
     return city_updated
 
 
-@city_router.delete(path="/{city_name}", status_code=status.HTTP_204_NO_CONTENT)
+@city_router.delete(path="/{city_name}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[admin_role])
 async def delete_city(city_name: str, session: AsyncSession = Depends(get_session)):
     deleted_city = await city_service.delete_city(city_name, session)
 
@@ -59,7 +62,8 @@ async def delete_city(city_name: str, session: AsyncSession = Depends(get_sessio
 @city_router.get(
     path="/{city_name}/tourists_spots", 
     response_model=CityListTouristsSpots, 
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    dependencies=[access_token]
 )
 async def get_all_tourists_spots_from_city(
     city_name: str,

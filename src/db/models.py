@@ -6,6 +6,7 @@ from datetime import datetime, time, date
 from geoalchemy2 import Geography
 
 
+#guia de turismo são obrigatórios e necessários em pontos ecoturisticos e pode haver mais de 1 em um ponto
 class User(SQLModel, table=True):
     __tablename__ = "users_tb" # type: ignore
 
