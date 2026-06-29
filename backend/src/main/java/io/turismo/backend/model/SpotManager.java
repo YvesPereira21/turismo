@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import io.turismo.backend.model.enums.ManagerType;
-import io.turismo.backend.model.enums.SocialMediaType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,7 +37,6 @@ public class SpotManager {
     @OneToMany(mappedBy = "spotManager", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TouristSpot> touristSpots;
 
-    @Builder.Default
     @OneToMany(mappedBy = "spotManager", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<SocialMedia> socialsMedia = new HashSet<>();
 }
