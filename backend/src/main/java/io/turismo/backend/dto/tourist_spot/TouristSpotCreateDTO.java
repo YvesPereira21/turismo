@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalTime;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public record TouristSpotCreateDTO(
@@ -15,7 +15,6 @@ public record TouristSpotCreateDTO(
     @NotBlank LocalTime closesAt,
     @NotBlank String shortDescription,
     @NotBlank String description,
-    @NotNull UUID spotManagerId,
-    @NotBlank String cityName,
-    @Size(min = 1, max = 7) List<String> tags
+    @NotBlank UUID cityId,
+    @Size(min = 1, max = 7) Set<String> tags
 ) {}

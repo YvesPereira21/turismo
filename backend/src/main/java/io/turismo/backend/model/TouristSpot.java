@@ -25,7 +25,7 @@ public class TouristSpot {
     @Column(nullable = false)
     private String name;
 
-    @Column(columnDefinition = "geometry(Point, 4326)")
+    @Column(columnDefinition = "geography(Point, 4326)")
     private Point location;
 
     @Column(name = "opens_at")
@@ -64,7 +64,7 @@ public class TouristSpot {
         joinColumns = @JoinColumn(name = "tourist_spot_id"),
         inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private List<Tag> tags;
+    private Set<Tag> tags;
 
     @ManyToMany
     @JoinTable(

@@ -1,7 +1,8 @@
 package io.turismo.backend.dto.state;
 
-import jakarta.validation.constraints.NotBlank;
+import io.turismo.backend.model.enums.StateName;
+import jakarta.validation.constraints.NotNull;
 
 public record StateCreateDTO(
-        @NotBlank String name
+        @NotNull StateName name
 ) {}

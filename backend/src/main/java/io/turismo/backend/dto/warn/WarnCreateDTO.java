@@ -1,6 +1,8 @@
 package io.turismo.backend.dto.warn;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record WarnCreateDTO(
-        String name,
-        String description
+        @NotBlank String name,
+        @NotBlank String description
 ) {}

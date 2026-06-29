@@ -1,9 +1,6 @@
 package io.turismo.backend.mapper;
 
-import io.turismo.backend.dto.tourist_spot.TouristSpotCreateDTO;
-import io.turismo.backend.dto.tourist_spot.TouristSpotDTO;
-import io.turismo.backend.dto.tourist_spot.TouristSpotNearbyDTO;
-import io.turismo.backend.dto.tourist_spot.TouristSpotUpdateDTO;
+import io.turismo.backend.dto.tourist_spot.*;
 import io.turismo.backend.model.*;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -29,7 +26,10 @@ public interface TouristSpotMapper {
     @Mapping(target = "tourGuides", ignore = true)
     TouristSpot toEntity(TouristSpotCreateDTO dto);
 
-    TouristSpotDTO toDto(TouristSpot entity);
+    TouristSpotDTO toDTO(TouristSpot entity);
+
+    @Mapping(target = "distance", ignore = true)
+    TouristSpotListDTO toListDTO(TouristSpot entity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "touristSpotId", ignore = true)
@@ -41,9 +41,9 @@ public interface TouristSpotMapper {
     @Mapping(target = "warns", ignore = true)
     @Mapping(target = "tags", ignore = true)
     @Mapping(target = "tourGuides", ignore = true)
-    void updateEntityFromDto(TouristSpotUpdateDTO dto, @MappingTarget TouristSpot entity);
+    void updateEntityFromDTO(TouristSpotUpdateDTO dto, @MappingTarget TouristSpot entity);
 
-    TouristSpotNearbyDTO toNearbyDto(TouristSpot entity, Double distance);
+    TouristSpotListDTO toListWithDistanceDTO(TouristSpot entity, Double distance);
 
     default Point mapLatLngToPoint(Double latitude, Double longitude) {
         if (latitude == null || longitude == null) {

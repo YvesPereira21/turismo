@@ -7,7 +7,6 @@ import java.util.UUID;
 public record TourGuideDTO(
     UUID tourGuideId,
     String cadastur,
-    Boolean professional,
     TourGuideType type,
     UUID userId,
     String name,

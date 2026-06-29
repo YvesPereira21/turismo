@@ -14,7 +14,6 @@ public interface SpotManagerMapper {
 
     @Mapping(target = "spotManagerId", ignore = true)
     @Mapping(target = "touristSpots", ignore = true)
-    @Mapping(target = "socialsMedia", ignore = true)
     SpotManager toEntity(SpotManagerCreateDTO dto);
 
     @Mapping(target = "userId", source = "user.id")

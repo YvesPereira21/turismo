@@ -3,7 +3,6 @@ package io.turismo.backend.model;
 import io.turismo.backend.model.enums.TourGuideType;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -23,9 +22,6 @@ public class TourGuide {
 
     @Column(name = "cadastur" , nullable = false, unique = true)
     private String cadastur;
-
-    @Column(name = "professional")
-    private Boolean professional;
 
     @Column(name = "type", nullable = false)
     private TourGuideType type;

@@ -26,7 +26,6 @@ public interface TourGuideMapper {
     TourGuideSimpleDTO toSimpleDTO(TourGuide entity);
 
     @Mapping(target = "cadastur", ignore = true)
-    @Mapping(target = "professional", ignore = true)
     @Mapping(target = "type", ignore = true)
     @Mapping(target = "tourGuideId", ignore = true)
     @Mapping(target = "touristSpots", ignore = true)

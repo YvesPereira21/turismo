@@ -17,6 +17,7 @@ public interface SocialMediaMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "socialMediaId", ignore = true)
+    @Mapping(target = "socialMediaType", ignore = true)
     @Mapping(target = "spotManager", ignore = true)
     void updateEntityFromDto(SocialMediaUpdateDTO dto, @MappingTarget SocialMedia entity);
 }
