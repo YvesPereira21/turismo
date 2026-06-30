@@ -13,6 +13,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@EqualsAndHashCode
 public class Tourist {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -24,5 +26,7 @@ public class Tourist {
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private User user;
 }

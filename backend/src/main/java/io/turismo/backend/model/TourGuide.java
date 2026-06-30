@@ -14,6 +14,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@EqualsAndHashCode
 public class TourGuide {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -29,10 +31,14 @@ public class TourGuide {
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private User user;
 
     @Builder.Default
     @ManyToMany(mappedBy = "tourGuides", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<TouristSpot> touristSpots = new HashSet<>();
 
 }

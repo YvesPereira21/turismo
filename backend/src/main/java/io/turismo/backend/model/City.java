@@ -12,6 +12,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@EqualsAndHashCode
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -23,8 +25,12 @@ public class City {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "state_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private State state;
 
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<TouristSpot> touristSpots;
 }

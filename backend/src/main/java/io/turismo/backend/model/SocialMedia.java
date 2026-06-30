@@ -22,6 +22,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@EqualsAndHashCode
 public class SocialMedia {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -37,5 +39,7 @@ public class SocialMedia {
 
     @ManyToOne
     @JoinColumn(name="spot_manager_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private SpotManager spotManager;
 }

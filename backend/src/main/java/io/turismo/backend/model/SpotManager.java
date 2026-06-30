@@ -7,11 +7,7 @@ import java.util.UUID;
 
 import io.turismo.backend.model.enums.ManagerType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "spot_managers")
@@ -20,6 +16,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@EqualsAndHashCode
 public class SpotManager {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -32,11 +30,17 @@ public class SpotManager {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private User user;
 
     @OneToMany(mappedBy = "spotManager", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<TouristSpot> touristSpots;
 
     @OneToMany(mappedBy = "spotManager", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<SocialMedia> socialsMedia = new HashSet<>();
 }

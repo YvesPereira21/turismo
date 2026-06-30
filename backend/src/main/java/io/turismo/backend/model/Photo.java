@@ -11,6 +11,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@EqualsAndHashCode
 public class Photo {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -22,8 +24,12 @@ public class Photo {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tourist_spot_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private TouristSpot touristSpot;
 
     @OneToOne(mappedBy = "photo")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Activity activity;
 }

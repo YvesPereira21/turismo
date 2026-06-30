@@ -21,7 +21,7 @@ public interface TouristSpotRepository extends JpaRepository<TouristSpot, UUID> 
     Page<TouristSpot> findAllByStateName(StateName stateName, Pageable pageable);
     @Query(
             "SELECT t, distance(:userLocation, t.location) AS distance FROM TouristSpot t " +
-            "WHERE dwithin(:userLocation, t.location, :radius) = true"
+            "WHERE distance(:userLocation, t.location) <= :radius"
     )
     Page<TouristSpotNearbyProjection> findAllPointsNearUserWithinCertainRadius(
             Point userLocation, double radius, Pageable pageable

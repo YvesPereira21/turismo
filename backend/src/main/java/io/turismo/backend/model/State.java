@@ -13,6 +13,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@EqualsAndHashCode
 public class State {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -23,5 +25,7 @@ public class State {
     private StateName name;
 
     @OneToMany(mappedBy = "state", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<City> cities;
 }

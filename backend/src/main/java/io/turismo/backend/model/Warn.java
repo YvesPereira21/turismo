@@ -12,6 +12,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@EqualsAndHashCode
 public class Warn {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,5 +30,7 @@ public class Warn {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tourist_spot_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private TouristSpot touristSpot;
 }

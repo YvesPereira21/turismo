@@ -16,6 +16,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@EqualsAndHashCode
 public class TouristSpot {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -42,20 +44,30 @@ public class TouristSpot {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "spot_manager_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private SpotManager spotManager;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private City city;
 
     @OneToMany(mappedBy = "touristSpot", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Photo> photos;
 
     @Builder.Default
     @OneToMany(mappedBy = "touristSpot", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Activity> activities = new HashSet<>();
 
     @OneToMany(mappedBy = "touristSpot", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Warn> warns;
 
     @ManyToMany
@@ -64,6 +76,8 @@ public class TouristSpot {
         joinColumns = @JoinColumn(name = "tourist_spot_id"),
         inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Tag> tags;
 
     @ManyToMany
@@ -72,5 +86,7 @@ public class TouristSpot {
         joinColumns = @JoinColumn(name = "tourist_spot_id"),
         inverseJoinColumns = @JoinColumn(name = "tour_guide_id")
     )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<TourGuide> tourGuides;
 }

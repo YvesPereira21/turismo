@@ -12,6 +12,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@EqualsAndHashCode
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -21,5 +23,7 @@ public class Tag {
     private String name;
 
     @ManyToMany(mappedBy = "tags")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<TouristSpot> touristSpots;
 }
