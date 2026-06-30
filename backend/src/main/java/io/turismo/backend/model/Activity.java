@@ -24,7 +24,7 @@ public class Activity {
     @JoinColumn(name = "tourist_spot_id", nullable = false)
     private TouristSpot touristSpot;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "photo_id", nullable = false)
     private Photo photo;
 }

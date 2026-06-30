@@ -23,6 +23,7 @@ public class TourGuide {
     @Column(name = "cadastur" , nullable = false, unique = true)
     private String cadastur;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     private TourGuideType type;
 

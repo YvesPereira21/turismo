@@ -24,6 +24,6 @@ public class Photo {
     @JoinColumn(name = "tourist_spot_id", nullable = false)
     private TouristSpot touristSpot;
 
-    @OneToOne
+    @OneToOne(mappedBy = "photo")
     private Activity activity;
 }

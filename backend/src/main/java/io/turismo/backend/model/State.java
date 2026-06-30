@@ -19,6 +19,7 @@ public class State {
     @Column(name = "state_id")
     private UUID stateId;
 
+    @Enumerated(EnumType.STRING)
     private StateName name;
 
     @OneToMany(mappedBy = "state", cascade = CascadeType.ALL, orphanRemoval = true)
