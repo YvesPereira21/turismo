@@ -4,9 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.turismo.backend.dto.geojson.GeoFeatureCollectionDTO;
 import io.turismo.backend.dto.tourist_spot.TouristSpotCreateDTO;
 import io.turismo.backend.dto.tourist_spot.TouristSpotDTO;
 import io.turismo.backend.dto.tourist_spot.TouristSpotListDTO;
+import io.turismo.backend.dto.tourist_spot.TouristSpotToMapDTO;
 import io.turismo.backend.model.enums.StateName;
 import io.turismo.backend.service.TouristSpotService;
 import jakarta.validation.Valid;
@@ -56,6 +58,16 @@ public class TouristSpotController {
     public ResponseEntity<TouristSpotDTO> getTouristSpot(@PathVariable UUID touristSpotId) {
         TouristSpotDTO spot = touristSpotService.getTouristSpot(touristSpotId);
         return ResponseEntity.ok(spot);
+    }
+
+    @GetMapping("/spots-to-map/")
+    @Operation(summary = "Buscar todos pontos turísticos para implementar no mapa", description = "Retorna os pontos turísticos para o mapa")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ponto turístico encontrado"),
+            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado")
+    })
+    public ResponseEntity<GeoFeatureCollectionDTO<TouristSpotToMapDTO>> getTouristSpotsToMap() {
+        return ResponseEntity.ok(touristSpotService.getTouristSpotsToMap());
     }
 
     @GetMapping("/tourist-spots")

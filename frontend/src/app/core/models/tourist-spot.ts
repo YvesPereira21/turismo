@@ -53,6 +53,11 @@ export interface TouristSpotOnMap {
   location: Point;
 }
 
+export interface TouristSpotToMap {
+  touristSpotId: string;
+  name: string;
+}
+
 export interface TouristSpotUpdate {
   name?: string;
   latitude?: number;

@@ -1,8 +1,11 @@
 package io.turismo.backend.service;
 
+import io.turismo.backend.dto.geojson.GeoFeatureCollectionDTO;
+import io.turismo.backend.dto.geojson.GeoFeatureDTO;
 import io.turismo.backend.dto.tourist_spot.TouristSpotCreateDTO;
 import io.turismo.backend.dto.tourist_spot.TouristSpotDTO;
 import io.turismo.backend.dto.tourist_spot.TouristSpotListDTO;
+import io.turismo.backend.dto.tourist_spot.TouristSpotToMapDTO;
 import io.turismo.backend.mapper.TouristSpotMapper;
 import io.turismo.backend.model.City;
 import io.turismo.backend.model.SpotManager;
@@ -18,6 +21,7 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -56,6 +60,19 @@ public class TouristSpotService{
                         .findById(touristSpotId)
                         .orElseThrow(() -> new RuntimeException("Ponto turístico não encontrado"))
         );
+    }
+
+    public GeoFeatureCollectionDTO<TouristSpotToMapDTO> getTouristSpotsToMap(){
+        List<GeoFeatureDTO<TouristSpotToMapDTO>> features = touristSpotRepository.findAll()
+                .stream()
+                .map(spot -> {
+                    var properties = new TouristSpotToMapDTO(spot.getTouristSpotId(), spot.getName());
+
+                    return new GeoFeatureDTO<>(properties, spot.getLocation());
+                })
+                .toList();
+
+        return new GeoFeatureCollectionDTO<>(features);
     }
 
     public Page<TouristSpotListDTO> getTouristSpots(Pageable pageable){

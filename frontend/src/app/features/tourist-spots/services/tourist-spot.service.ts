@@ -2,7 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { TouristSpot, TouristSpotCreate, TouristSpotList, TouristSpotUpdate } from '../../../core/models/tourist-spot';
+import { TouristSpot, TouristSpotCreate, TouristSpotList, TouristSpotUpdate, TouristSpotToMap } from '../../../core/models/tourist-spot';
+import { GeoFeatureCollection } from '../../../core/models/geojson';
 import { Page } from '../../../core/models/page';
 
 @Injectable({
@@ -18,6 +19,10 @@ export class TouristSpotService {
 
   getTouristSpot(id: string): Observable<TouristSpot> {
     return this.http.get<TouristSpot>(`${this.apiUrl}/${id}`);
+  }
+
+  getTouristSpotsToMap(): Observable<GeoFeatureCollection<TouristSpotToMap>> {
+    return this.http.get<GeoFeatureCollection<TouristSpotToMap>>(`${environment.apiUrl}/api/v1/spots-to-map/`);
   }
 
   getTouristSpots(page = 0, size = 10): Observable<Page<TouristSpotList>> {
