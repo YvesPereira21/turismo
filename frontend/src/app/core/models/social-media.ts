@@ -6,7 +6,7 @@ export enum SocialMediaType {
 
 export interface SocialMediaCreate {
   socialMediaLink: string;
-  socialMediaType: SocialMediaType;
+  socialMediaType: string;
 }
 
 export interface SocialMedia {

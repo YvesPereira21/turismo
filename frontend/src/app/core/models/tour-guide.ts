@@ -8,7 +8,7 @@ export enum TourGuideType {
 
 export interface TourGuideCreate {
   cadastur: string;
-  type: TourGuideType;
+  type: string;
   user: UserCreate;
 }
 

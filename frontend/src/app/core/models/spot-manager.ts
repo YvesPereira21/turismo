@@ -9,7 +9,7 @@ export enum ManagerType {
 }
 
 export interface SpotManagerCreate {
-  managerType: ManagerType;
+  managerType: string;
   user: UserCreate;
   socialsMedia: SocialMediaCreate[];
 }
