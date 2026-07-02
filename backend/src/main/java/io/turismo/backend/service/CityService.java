@@ -5,7 +5,6 @@ import io.turismo.backend.dto.city.CityDTO;
 import io.turismo.backend.mapper.CityMapper;
 import io.turismo.backend.model.City;
 import io.turismo.backend.model.State;
-import io.turismo.backend.model.enums.StateName;
 import io.turismo.backend.repository.CityRepository;
 import io.turismo.backend.repository.StateRepository;
 import org.springframework.data.domain.Page;
@@ -40,14 +39,14 @@ public class CityService{
         return cityMapper.toDto(cityRepository.save(newCity));
     }
 
-    public CityDTO getCity(String cityName, StateName stateName) {
+    public CityDTO getCity(String cityName, String stateName) {
         return cityMapper.toDto(
                 cityRepository.findByNameAndState_Name(cityName, stateName)
                         .orElseThrow(() -> new RuntimeException("Essa cidade não existe"))
         );
     }
 
-    public Page<CityDTO> getCitiesFromState(StateName stateName, Pageable pageable) {
+    public Page<CityDTO> getCitiesFromState(String stateName, Pageable pageable) {
         return cityRepository.findAllByState_Name(stateName, pageable).map(cityMapper::toDto);
     }
 

@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.turismo.backend.dto.city.CityCreateDTO;
 import io.turismo.backend.dto.city.CityDTO;
-import io.turismo.backend.model.enums.StateName;
 import io.turismo.backend.service.CityService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -49,7 +48,7 @@ public class CityController {
             @ApiResponse(responseCode = "200", description = "Cidade encontrada"),
             @ApiResponse(responseCode = "404", description = "Cidade não encontrada")
     })
-    public ResponseEntity<CityDTO> getCity(@PathVariable String cityName, @PathVariable StateName stateName) {
+    public ResponseEntity<CityDTO> getCity(@PathVariable String cityName, @PathVariable String stateName) {
         CityDTO city = cityService.getCity(cityName, stateName);
         return ResponseEntity.ok(city);
     }
@@ -60,7 +59,7 @@ public class CityController {
             @ApiResponse(responseCode = "200", description = "Lista recuperada com sucesso")
     })
     public ResponseEntity<Page<CityDTO>> getCitiesFromState(
-            @PathVariable StateName stateName,
+            @PathVariable String stateName,
             @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<CityDTO> cities = cityService.getCitiesFromState(stateName, pageable);
         return ResponseEntity.ok(cities);

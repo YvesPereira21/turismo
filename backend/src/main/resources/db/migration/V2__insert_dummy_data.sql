@@ -1,8 +1,8 @@
 -- Insert States
 INSERT INTO states (state_id, name) VALUES
-('3a4f6d89-9a2c-473d-9865-c7cf1e95fa66', 'SAOPAULO'),
-('7b5e8c12-3b4a-4e5c-bd8d-1234567890ab', 'RIODEJANEIRO'),
-('5c6d7e8f-9a0b-1c2d-3e4f-5a6b7c8d9e0f', 'PARAIBA');
+('3a4f6d89-9a2c-473d-9865-c7cf1e95fa66', 'São Paulo'),
+('7b5e8c12-3b4a-4e5c-bd8d-1234567890ab', 'Rio de Janeiro'),
+('5c6d7e8f-9a0b-1c2d-3e4f-5a6b7c8d9e0f', 'Paraíba');
 
 -- Insert Cities
 INSERT INTO cities (city_id, name, state_id) VALUES

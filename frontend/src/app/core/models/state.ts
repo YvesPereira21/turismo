@@ -1,17 +1,8 @@
-export enum StateName {
-  PARAIBA = 'PARAIBA',
-  PERNAMBUCO = 'PERNAMBUCO',
-  SERGIPE = 'SERGIPE',
-  RIOGRANDEDOSUL = 'RIOGRANDEDOSUL',
-  RIODEJANEIRO = 'RIODEJANEIRO',
-  SAOPAULO = 'SAOPAULO'
-}
-
 export interface StateCreate {
-  name: StateName;
+  name: string;
 }
 
 export interface State {
   stateId: string;
-  name: StateName;
+  name: string;
 }

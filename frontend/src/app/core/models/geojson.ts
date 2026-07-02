@@ -1,13 +1,13 @@
 export interface GeoFeatureCollection<T> {
-  type: string;
+  type: 'FeatureCollection';
   features: GeoFeature<T>[];
 }
 
 export interface GeoFeature<T> {
-  type: string;
+  type: 'Feature';
   properties: T;
   geometry: {
-    type: string;
+    type: 'Point';
     coordinates: number[];
   };
 }

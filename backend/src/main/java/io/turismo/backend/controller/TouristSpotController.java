@@ -9,7 +9,6 @@ import io.turismo.backend.dto.tourist_spot.TouristSpotCreateDTO;
 import io.turismo.backend.dto.tourist_spot.TouristSpotDTO;
 import io.turismo.backend.dto.tourist_spot.TouristSpotListDTO;
 import io.turismo.backend.dto.tourist_spot.TouristSpotToMapDTO;
-import io.turismo.backend.model.enums.StateName;
 import io.turismo.backend.service.TouristSpotService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -87,7 +86,7 @@ public class TouristSpotController {
             @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
     })
     public ResponseEntity<Page<TouristSpotListDTO>> getTouristSpotsFromState(
-            @PathVariable StateName stateName,
+            @PathVariable String stateName,
             @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Page<TouristSpotListDTO> spots = touristSpotService.getTouristSpotsFromState(stateName, pageable);

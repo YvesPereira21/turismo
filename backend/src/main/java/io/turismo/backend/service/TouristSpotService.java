@@ -10,7 +10,6 @@ import io.turismo.backend.mapper.TouristSpotMapper;
 import io.turismo.backend.model.City;
 import io.turismo.backend.model.SpotManager;
 import io.turismo.backend.model.TouristSpot;
-import io.turismo.backend.model.enums.StateName;
 import io.turismo.backend.repository.CityRepository;
 import io.turismo.backend.repository.SpotManagerRepository;
 import io.turismo.backend.repository.TouristSpotRepository;
@@ -79,7 +78,7 @@ public class TouristSpotService{
         return touristSpotRepository.findAll(pageable).map(touristSpotMapper::toListDTO);
     }
 
-    public Page<TouristSpotListDTO> getTouristSpotsFromState(StateName stateName, Pageable pageable){
+    public Page<TouristSpotListDTO> getTouristSpotsFromState(String stateName, Pageable pageable){
         return touristSpotRepository.findAllByStateName(stateName, pageable).map(touristSpotMapper::toListDTO);
     }
 

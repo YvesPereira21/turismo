@@ -1,12 +1,10 @@
-import { StateName } from './state';
-
 export interface CityCreate {
   name: string;
-  stateName: StateName;
+  stateName: string;
 }
 
 export interface City {
   cityId: string;
   name: string;
-  stateName: StateName;
+  stateName: string;
 }

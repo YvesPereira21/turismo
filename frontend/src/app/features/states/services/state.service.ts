@@ -16,11 +16,8 @@ export class StateService {
     return this.http.post<State>(this.apiUrl, state);
   }
 
-  getAllStates(page = 0, size = 10): Observable<Page<State>> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-    return this.http.get<Page<State>>(this.apiUrl, { params });
+  getAllStates(): Observable<State[]> {
+    return this.http.get<State[]>(this.apiUrl);
   }
 
   deleteState(id: string): Observable<void> {
