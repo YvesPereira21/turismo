@@ -4,5 +4,6 @@ import java.util.UUID;
 
 public record PhotoDTO(
     UUID photoId,
-    String url
+    String url,
+    String altText
 ) {}

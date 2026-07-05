@@ -9,6 +9,7 @@ import io.turismo.backend.dto.tourist_spot.TouristSpotCreateDTO;
 import io.turismo.backend.dto.tourist_spot.TouristSpotDTO;
 import io.turismo.backend.dto.tourist_spot.TouristSpotListDTO;
 import io.turismo.backend.dto.tourist_spot.TouristSpotToMapDTO;
+import io.turismo.backend.dto.tourist_spot.TouristSpotUpdateDTO;
 import io.turismo.backend.service.TouristSpotService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -119,5 +120,30 @@ public class TouristSpotController {
     ) {
         Page<TouristSpotListDTO> spots = touristSpotService.getNearTouristSpots(longitude, latitude, radius, pageable);
         return ResponseEntity.ok(spots);
+    }
+
+    @PutMapping("/tourist-spots/{touristSpotId}")
+    @Operation(summary = "Atualizar ponto turístico", description = "Atualiza as informações de um ponto turístico específico")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ponto turístico atualizado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Ponto turístico, cidade ou gerente não encontrado")
+    })
+    public ResponseEntity<Void> updateTouristSpot(
+            @PathVariable UUID touristSpotId,
+            @Valid @RequestBody TouristSpotUpdateDTO dto
+    ) {
+        touristSpotService.updateTouristSpot(touristSpotId, dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/tourist-spots/{touristSpotId}")
+    @Operation(summary = "Deletar ponto turístico", description = "Remove um ponto turístico do sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Ponto turístico removido com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado")
+    })
+    public ResponseEntity<Void> deleteTouristSpot(@PathVariable UUID touristSpotId) {
+        touristSpotService.deleteTouristSpot(touristSpotId);
+        return ResponseEntity.noContent().build();
     }
 }

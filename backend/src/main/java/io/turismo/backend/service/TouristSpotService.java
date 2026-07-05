@@ -2,10 +2,7 @@ package io.turismo.backend.service;
 
 import io.turismo.backend.dto.geojson.GeoFeatureCollectionDTO;
 import io.turismo.backend.dto.geojson.GeoFeatureDTO;
-import io.turismo.backend.dto.tourist_spot.TouristSpotCreateDTO;
-import io.turismo.backend.dto.tourist_spot.TouristSpotDTO;
-import io.turismo.backend.dto.tourist_spot.TouristSpotListDTO;
-import io.turismo.backend.dto.tourist_spot.TouristSpotToMapDTO;
+import io.turismo.backend.dto.tourist_spot.*;
 import io.turismo.backend.mapper.TouristSpotMapper;
 import io.turismo.backend.model.City;
 import io.turismo.backend.model.SpotManager;
@@ -102,5 +99,29 @@ public class TouristSpotService{
                 .map(proj ->
                         touristSpotMapper.toListWithDistanceDTO(proj.getTouristSpot(), proj.getDistance())
                 );
+    }
+
+    public void updateTouristSpot(UUID touristSpotId, TouristSpotUpdateDTO touristSpotUpdate){
+        TouristSpot touristSpot = touristSpotRepository.findById(touristSpotId)
+                .orElseThrow(() -> new RuntimeException("Ponto turístico não encontrado"));
+
+        if(touristSpotUpdate.cityId() != null){
+            City city = cityRepository.findById(touristSpotUpdate.cityId())
+                    .orElseThrow(() -> new RuntimeException("Cidade não encontrada"));
+
+            touristSpot.setCity(city);
+        }
+
+        touristSpotMapper.updateEntityFromDTO(touristSpotUpdate, touristSpot);
+        touristSpot.setTags(tagService.convertNamesToTags(touristSpotUpdate.tags()));
+
+        touristSpotRepository.save(touristSpot);
+    }
+
+    public void deleteTouristSpot(UUID touristSpotId){
+        TouristSpot touristSpot = touristSpotRepository.findById(touristSpotId)
+                .orElseThrow(() -> new RuntimeException("Ponto turístico não encontrado"));
+
+        touristSpotRepository.delete(touristSpot);
     }
 }

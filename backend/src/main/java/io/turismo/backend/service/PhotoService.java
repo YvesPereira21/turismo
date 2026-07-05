@@ -5,6 +5,7 @@ import io.turismo.backend.model.Photo;
 import io.turismo.backend.model.TouristSpot;
 import io.turismo.backend.repository.ActivityRepository;
 import io.turismo.backend.repository.TouristSpotRepository;
+import io.turismo.backend.dto.photo.PhotoUploadDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 @Service
 public class PhotoService {
+
     private final TouristSpotRepository touristSpotRepository;
     private final ActivityRepository activityRepository;
     @Value("${file.upload-dir.tourist-spot-dir}")
@@ -31,7 +33,7 @@ public class PhotoService {
     }
 
     @Transactional(rollbackFor = IOException.class)
-    public void uploadTouristSpotsPhotos(UUID touristSpotId, List<MultipartFile> photos) throws IOException {
+    public void uploadTouristSpotsPhotos(UUID touristSpotId, PhotoUploadDTO dto) throws IOException {
         TouristSpot touristSpot = touristSpotRepository.findById(touristSpotId)
                 .orElseThrow(() -> new RuntimeException("Ponto turístico não encontrado"));
 
@@ -41,24 +43,25 @@ public class PhotoService {
                 Files.createDirectories(path);
             }
 
-            for (MultipartFile photo : photos) {
-                if (photo == null || photo.getContentType() == null || !photo.getContentType().startsWith("image/")) {
-                    throw new RuntimeException("Por favor, insira uma imagem válida.");
-                }
-
-                String fileName = UUID.randomUUID().toString() + "-" + photo.getOriginalFilename();
-                Path filePath = path.resolve(fileName);
-                Files.copy(photo.getInputStream(), filePath);
-
-                String fileUrl = touristSpotUploadDir.endsWith("/") ? touristSpotUploadDir + fileName
-                                : touristSpotUploadDir + "/" + fileName;
-
-                Photo newPhoto = new Photo();
-                newPhoto.setUrl(fileUrl);
-                newPhoto.setTouristSpot(touristSpot);
-                touristSpot.getPhotos().add(newPhoto);
+            MultipartFile file = dto.photo();
+            if (file == null || file.getContentType() == null || !file.getContentType().startsWith("image/")) {
+                throw new RuntimeException("Por favor, insira uma imagem válida.");
             }
-        } catch (IOException ex){
+
+            String fileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
+            Path filePath = path.resolve(fileName);
+            Files.copy(file.getInputStream(), filePath);
+
+            String fileUrl = touristSpotUploadDir.endsWith("/") ? touristSpotUploadDir + fileName
+                    : touristSpotUploadDir + "/" + fileName;
+
+            Photo newPhoto = new Photo();
+            newPhoto.setUrl(fileUrl);
+            newPhoto.setAltText(dto.altText());
+            newPhoto.setTouristSpot(touristSpot);
+            touristSpot.getPhotos().add(newPhoto);
+
+        } catch (IOException ex) {
             throw new IOException("Erro ao salvar foto do ponto turístico");
         }
         touristSpotRepository.save(touristSpot);
@@ -84,7 +87,7 @@ public class PhotoService {
             Files.copy(photo.getInputStream(), filePath);
 
             String fileUrl = activityUploadDir.endsWith("/") ? activityUploadDir + fileName
-                            : activityUploadDir + "/" + fileName;
+                    : activityUploadDir + "/" + fileName;
 
             Photo newPhoto = new Photo();
             newPhoto.setUrl(fileUrl);
@@ -92,7 +95,7 @@ public class PhotoService {
             activity.setPhoto(newPhoto);
 
             activityRepository.save(activity);
-        } catch (IOException ex){
+        } catch (IOException ex) {
             throw new IOException("Erro ao salvar foto do ponto turístico");
         }
     }
@@ -127,7 +130,7 @@ public class PhotoService {
             currentPhoto.setActivity(activity);
             currentPhoto.setUrl(fileUrl);
             activity.setPhoto(currentPhoto);
-        } catch (IOException ex){
+        } catch (IOException ex) {
             throw new IOException("Erro ao salvar foto do ponto turístico");
         }
 

@@ -1,9 +1,9 @@
 package io.turismo.backend.dto.tourist_spot;
 
 import jakarta.validation.constraints.Size;
-
 import java.time.LocalTime;
-import java.util.List;
+
+import java.util.Set;
 import java.util.UUID;
 
 public record TouristSpotUpdateDTO(
@@ -14,7 +14,6 @@ public record TouristSpotUpdateDTO(
     LocalTime closesAt,
     String shortDescription,
     String description,
-    UUID spotManagerId,
-    String cityName,
-    @Size(min = 1, max = 7) List<String> tags
+    UUID cityId,
+    @Size(min = 1, max = 7) Set<String> tags
 ) {}

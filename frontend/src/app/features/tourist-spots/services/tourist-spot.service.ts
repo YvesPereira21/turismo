@@ -11,10 +11,10 @@ import { Page } from '../../../core/models/page';
 })
 export class TouristSpotService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/v1/touristSpots`;
+  private apiUrl = `${environment.apiUrl}/api/v1/tourist-spots`;
 
-  createTouristSpot(touristSpot: TouristSpotCreate): Observable<TouristSpot> {
-    return this.http.post<TouristSpot>(this.apiUrl, touristSpot);
+  createTouristSpot(touristSpot: TouristSpotCreate, spotManagerId: string): Observable<TouristSpot> {
+    return this.http.post<TouristSpot>(`${environment.apiUrl}/api/v1/manager/${spotManagerId}/tourist-spots`, touristSpot);
   }
 
   getTouristSpot(id: string): Observable<TouristSpot> {
@@ -36,14 +36,14 @@ export class TouristSpotService {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-    return this.http.get<Page<TouristSpotList>>(`${this.apiUrl}/state/${stateName}`, { params });
+    return this.http.get<Page<TouristSpotList>>(`${environment.apiUrl}/api/v1/state/${stateName}/tourist-spots`, { params });
   }
 
   getSpotManagerTouristSpots(spotManagerId: string, page = 0, size = 10): Observable<Page<TouristSpotList>> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-    return this.http.get<Page<TouristSpotList>>(`${this.apiUrl}/manager/${spotManagerId}`, { params });
+    return this.http.get<Page<TouristSpotList>>(`${environment.apiUrl}/api/v1/manager/${spotManagerId}/all-tourist-spots`, { params });
   }
 
   getNearTouristSpots(longitude: number, latitude: number, radius: number, page = 0, size = 10): Observable<Page<TouristSpotList>> {
@@ -54,5 +54,13 @@ export class TouristSpotService {
       .set('page', page.toString())
       .set('size', size.toString());
     return this.http.get<Page<TouristSpotList>>(`${this.apiUrl}/near`, { params });
+  }
+
+  updateTouristSpot(id: string, touristSpot: TouristSpotUpdate): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}`, touristSpot);
+  }
+
+  deleteTouristSpot(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

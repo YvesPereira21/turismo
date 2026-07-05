@@ -1,4 +1,5 @@
 import { City } from './city';
+import { Photo } from './photo';
 import { SpotManagerSimple } from './spot-manager';
 import { Tag } from './tag';
 import { TourGuideSimple } from './tour-guide';
@@ -31,6 +32,7 @@ export interface TouristSpot {
   description: string;
   spotManager: SpotManagerSimple;
   city: City;
+  photos: Photo[];
   warns: Warn[];
   tags: Tag[];
   tourGuides: TourGuideSimple[];
@@ -44,6 +46,7 @@ export interface TouristSpotList {
   shortDescription: string;
   city: City;
   tags: Tag[];
+  photos: Photo[];
   distance?: number;
 }
 
@@ -66,7 +69,6 @@ export interface TouristSpotUpdate {
   closesAt?: string;
   shortDescription?: string;
   description?: string;
-  spotManagerId?: string;
   cityName?: string;
   tags?: string[];
 }

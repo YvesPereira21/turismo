@@ -22,6 +22,9 @@ public class Photo {
     @Column(nullable = false)
     private String url;
 
+    @Column(name = "alt_text")
+    private String altText;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tourist_spot_id", nullable = false)
     @ToString.Exclude

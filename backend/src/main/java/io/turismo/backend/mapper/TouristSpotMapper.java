@@ -10,7 +10,7 @@ import org.mapstruct.*;
 
 @Mapper(
         componentModel = "spring",
-        uses = {CityMapper.class, SpotManagerMapper.class, WarnMapper.class, TagMapper.class, TourGuideMapper.class},
+        uses = {CityMapper.class, SpotManagerMapper.class, WarnMapper.class, TagMapper.class, TourGuideMapper.class, PhotoMapper.class},
         unmappedSourcePolicy = ReportingPolicy.IGNORE
 )
 public interface TouristSpotMapper {

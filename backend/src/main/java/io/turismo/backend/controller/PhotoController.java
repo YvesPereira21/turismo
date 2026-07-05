@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.turismo.backend.dto.photo.PhotoUploadDTO;
 import io.turismo.backend.service.PhotoService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,9 +39,9 @@ public class PhotoController {
     })
     public ResponseEntity<Void> uploadTouristSpotsPhotos(
             @PathVariable UUID touristSpotId,
-            @RequestParam("photos") List<MultipartFile> photos
+            @ModelAttribute @Valid PhotoUploadDTO dto
     ) throws IOException {
-        photoService.uploadTouristSpotsPhotos(touristSpotId, photos);
+        photoService.uploadTouristSpotsPhotos(touristSpotId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

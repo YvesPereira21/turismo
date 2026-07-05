@@ -1,6 +1,7 @@
 package io.turismo.backend.dto.tourist_spot;
 
 import io.turismo.backend.dto.city.CityDTO;
+import io.turismo.backend.dto.photo.PhotoDTO;
 import io.turismo.backend.dto.tag.TagDTO;
 import java.time.LocalTime;
 import java.util.List;
@@ -14,5 +15,6 @@ public record TouristSpotListDTO(
         String shortDescription,
         CityDTO city,
         List<TagDTO> tags,
+        List<PhotoDTO> photos,
         Double distance
 ) {}
