@@ -21,8 +21,14 @@ export class MapLeafletComponent implements OnInit {
         attribution: '© OpenStreetMap contributors'
       })
     ],
-    zoom: 10,
-    center: L.latLng(-7.11532, -34.861)
+    zoom: 8,
+    minZoom: 5,
+    center: L.latLng(-7.11532, -34.861),
+    maxBounds: L.latLngBounds(
+      L.latLng(-34.0, -74.0), // Canto Sudoeste do Brasil (RS / AC)
+      L.latLng(5.5, -28.0)    // Canto Nordeste do Brasil (RR / FN)
+    ),
+    maxBoundsViscosity: 1.0
   };
 
   ngOnInit() {
