@@ -95,12 +95,14 @@
 
             <!-- Usando Chips Modernos com Radio Buttons Ocultos -->
             <div class="flex flex-wrap gap-2">
-                @for (distance of ['2km', '5km', '10km', '20km']; track distance) {
+                @for (option of distanceOptions; track option.value) {
                 <label class="cursor-pointer">
-                    <input type="radio" name="distance_radio" class="peer sr-only" />
+                    <input type="radio" name="distance_radio" [value]="option.value"
+                        [checked]="selectedDistance() === option.value"
+                        (click)="onDistanceChange(option.value)" class="peer sr-only" />
                     <div
                         class="px-4 py-2 rounded-xl text-sm font-medium border border-gray-200 text-gray-600 bg-white peer-checked:bg-[#2C5C3E] peer-checked:text-white peer-checked:border-[#2C5C3E] hover:bg-gray-50 transition-all shadow-sm peer-checked:shadow-md">
-                        {{ distance }}
+                        {{ option.label }}
                     </div>
                 </label>
                 }

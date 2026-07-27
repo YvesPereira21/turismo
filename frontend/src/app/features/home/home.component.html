@@ -1,4 +1,5 @@
 <app-welcome-section></app-welcome-section>
-<main class="flex items-baseline container mx-auto">
-    <app-filter-bar class="flex-none"></app-filter-bar>
+<main class="flex items-baseline gap-6 container mx-auto">
+    <app-filter-bar class="flex-none" (distanceSelected)="onDistanceSelected($event)"></app-filter-bar>
+    <app-tourist-spot-list [distance]="selectedDistance()"></app-tourist-spot-list>
 </main>

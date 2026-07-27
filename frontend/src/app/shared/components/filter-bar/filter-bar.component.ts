@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, output, signal } from '@angular/core';
 import { TagService } from '../../../features/tags/services/tag.service';
 import { CityService } from '../../../features/cities/services/city.service';
 import { StateService } from '../../../features/states/services/state.service';
@@ -17,10 +17,21 @@ export class FilterBarComponent implements OnInit {
   private cityService = inject(CityService);
   private stateService = inject(StateService);
 
+  distanceSelected = output<number | null>();
+
   tags = signal<Tag[]>([]);
   cities = signal<City[]>([]);
   states = signal<State[]>([]);
+
   selectedState = signal<string | null>(null);
+  selectedDistance = signal<number | null>(null);
+
+  distanceOptions = [
+    { label: '2km', value: 2 },
+    { label: '5km', value: 5 },
+    { label: '10km', value: 10 },
+    { label: '20km', value: 20 }
+  ];
 
   ngOnInit(): void {
     this.loadTags();
@@ -71,5 +82,15 @@ export class FilterBarComponent implements OnInit {
         console.error("Não foi possível carregar as cidades", error);
       }
     })
+  }
+
+  onDistanceChange(value: number) {
+    if (this.selectedDistance() === value) {
+      this.selectedDistance.set(null);
+      this.distanceSelected.emit(null);
+    } else {
+      this.selectedDistance.set(value);
+      this.distanceSelected.emit(value);
+    }
   }
 }
