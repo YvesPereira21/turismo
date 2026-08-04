@@ -24,7 +24,7 @@ public class Tourist {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

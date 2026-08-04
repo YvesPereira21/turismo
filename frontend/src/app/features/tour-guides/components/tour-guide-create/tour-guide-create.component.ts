@@ -1,7 +1,9 @@
 import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { TourGuideService } from '../../services/tour-guide.service';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { TourGuideCreate } from '../../../../core/models/tour-guide';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-tour-guide-create',
@@ -11,6 +13,8 @@ import { TourGuideCreate } from '../../../../core/models/tour-guide';
 })
 export class TourGuideCreateComponent {
   private tourGuideService = inject(TourGuideService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
   private formBuilder = inject(FormBuilder);
 
   isSubmiting: boolean = false;
@@ -40,11 +44,20 @@ export class TourGuideCreateComponent {
     }
 
     this.tourGuideService.createTourGuide(tourGuide).subscribe({
-      next: (response) => {
-        alert('Conta criada com sucesso!');
-        this.clearForm();
-      }, error: (erro) => {
-        alert('Erro ao criar conta. Por favor, tente novamente');
+      next: () => {
+        this.authService.login({ email: formValues.email, password: formValues.password }).subscribe({
+          next: () => {
+            this.router.navigate(['/']);
+          },
+          error: () => {
+            alert('Conta de Guia criada com sucesso! Por favor, faça login para continuar.');
+            this.router.navigate(['/login']);
+          }
+        });
+      },
+      error: () => {
+        alert('Erro ao criar conta de Guia. Por favor, verifique se o e-mail ou CADASTUR já estão em uso.');
+        this.isSubmiting = false;
       }
     })
   }

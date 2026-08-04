@@ -10,6 +10,7 @@ import io.turismo.backend.service.StateService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,7 @@ public class StateController {
         this.stateService = stateService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/states")
     @Operation(summary = "Criar estado", description = "Cadastra um novo estado")
     @ApiResponses(value = {
@@ -49,6 +51,7 @@ public class StateController {
         return ResponseEntity.ok(states);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/states/{stateId}")
     @Operation(summary = "Deletar estado", description = "Exclui um estado pelo seu ID")
     @ApiResponses(value = {

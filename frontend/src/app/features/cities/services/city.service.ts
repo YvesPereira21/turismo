@@ -24,7 +24,7 @@ export class CityService {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-    return this.http.get<Page<City>>(`${this.apiUrl}/state/${stateName}`, { params });
+    return this.http.get<Page<City>>(`${environment.apiUrl}/api/v1/state/${stateName}/cities`, { params });
   }
 
   deleteCity(id: string): Observable<void> {

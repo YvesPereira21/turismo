@@ -1,7 +1,9 @@
 import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { TouristService } from '../../services/tourist.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TouristCreate } from '../../../../core/models/tourist';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-tourist-create',
@@ -11,6 +13,8 @@ import { TouristCreate } from '../../../../core/models/tourist';
 })
 export class TouristCreateComponent {
   private touristService = inject(TouristService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
   private formBuilder = inject(FormBuilder);
 
   isSubmiting: boolean = false;
@@ -38,11 +42,20 @@ export class TouristCreateComponent {
     }
 
     this.touristService.createTourist(tourist).subscribe({
-      next: (response) => {
-        alert('Conta criada com sucesso!');
-        this.clearForm();
-      }, error: (erro) => {
+      next: () => {
+        this.authService.login({ email: formValues.email, password: formValues.password }).subscribe({
+          next: () => {
+            this.router.navigate(['/']);
+          },
+          error: () => {
+            alert('Conta criada com sucesso! Por favor, faça login para continuar.');
+            this.router.navigate(['/login']);
+          }
+        });
+      },
+      error: () => {
         alert('Erro ao criar conta. Por favor, tente novamente');
+        this.isSubmiting = false;
       }
     })
   }

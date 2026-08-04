@@ -11,6 +11,7 @@ import io.turismo.backend.service.TourGuideService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,6 +51,7 @@ public class TourGuideController {
         return ResponseEntity.ok(guide);
     }
 
+    @PreAuthorize("hasRole('TOURGUIDE')")
     @PutMapping("/tour-guides/{tourGuideId}")
     @Operation(summary = "Atualizar guia de turismo", description = "Atualiza os dados de cadastro de um guia de turismo")
     @ApiResponses(value = {
@@ -64,6 +66,7 @@ public class TourGuideController {
         return ResponseEntity.ok(updated);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TOURGUIDE')")
     @DeleteMapping("/tour-guides/{tourGuideId}")
     @Operation(summary = "Deletar guia de turismo", description = "Exclui o cadastro de um guia de turismo do sistema")
     @ApiResponses(value = {

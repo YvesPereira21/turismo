@@ -5,7 +5,9 @@ import io.turismo.backend.dto.tour_guide.TourGuideDTO;
 import io.turismo.backend.dto.tour_guide.TourGuideUpdateDTO;
 import io.turismo.backend.mapper.TourGuideMapper;
 import io.turismo.backend.model.TourGuide;
+import io.turismo.backend.model.enums.UserRole;
 import io.turismo.backend.repository.TourGuideRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 
@@ -14,11 +16,13 @@ public class TourGuideService {
     private final TourGuideRepository tourGuideRepository;
     private final TourGuideMapper tourGuideMapper;
     private final UserService userService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public TourGuideService(TourGuideRepository tourGuideRepository, TourGuideMapper tourGuideMapper, UserService userService) {
+    public TourGuideService(TourGuideRepository tourGuideRepository, TourGuideMapper tourGuideMapper, UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.tourGuideRepository = tourGuideRepository;
         this.tourGuideMapper = tourGuideMapper;
         this.userService = userService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public TourGuideDTO createTourGuide(TourGuideCreateDTO dto) {
@@ -31,6 +35,9 @@ public class TourGuideService {
 
         TourGuide newTourGuide = tourGuideMapper.toEntity(dto);
         newTourGuide.getUser().setTourGuide(newTourGuide);
+        newTourGuide.getUser().setRole(UserRole.TOURGUIDE);
+        String encodedPassword = bCryptPasswordEncoder.encode(dto.user().password());
+        newTourGuide.getUser().setPassword(encodedPassword);
 
         return tourGuideMapper.toDTO(tourGuideRepository.save(newTourGuide));
     }

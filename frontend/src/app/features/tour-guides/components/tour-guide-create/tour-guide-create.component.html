@@ -114,13 +114,13 @@
               Atuação <span class="text-red-500">*</span>
             </label>
             <select formControlName="type"
-              class="select select-bordered w-full focus:outline-none focus:border-[#6EB57D] focus:ring-1 focus:ring-[#6EB57D] rounded-xl bg-gray-50 font-poppins text-gray-700 transition-all"
+              class="select select-bordered w-full focus:outline-none focus:border-[#6EB57D] focus:ring-1 focus:ring-[#6EB57D] rounded-xl bg-white font-poppins text-gray-800 transition-all"
               [class.border-gray-200]="!(tourGuideForm.controls.type.touched && tourGuideForm.controls.type.invalid)"
               [class.border-red-400]="tourGuideForm.controls.type.touched && tourGuideForm.controls.type.invalid">
-              <option value="" disabled selected>Selecione a abrangência...</option>
-              <option value="REGIONAL">Regional</option>
-              <option value="NATIONAL">Nacional</option>
-              <option value="SPECIALIZED">Especialista</option>
+              <option value="" disabled selected class="text-gray-400 bg-white">Selecione a abrangência...</option>
+              <option value="REGIONAL" class="text-gray-800 bg-white">Regional</option>
+              <option value="NATIONAL" class="text-gray-800 bg-white">Nacional</option>
+              <option value="SPECIALIZED" class="text-gray-800 bg-white">Especialista</option>
             </select>
             @if (tourGuideForm.controls.type.touched && tourGuideForm.controls.type.invalid) {
             <span class="text-xs text-red-500 mt-1 font-poppins">Por favor, selecione uma abrangência.</span>

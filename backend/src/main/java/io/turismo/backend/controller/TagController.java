@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,7 @@ public class TagController {
         this.tagService = tagService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/tags")
     @Operation(summary = "Criar tag", description = "Cadastra uma nova tag no sistema")
     @ApiResponses(value = {
@@ -64,6 +66,7 @@ public class TagController {
         return ResponseEntity.ok(tags);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/tags/{tagId}")
     @Operation(summary = "Atualizar tag", description = "Atualiza os dados de uma tag existente")
     @ApiResponses(value = {
@@ -78,6 +81,7 @@ public class TagController {
         return ResponseEntity.ok(updated);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/tags/{technologyName}")
     @Operation(summary = "Deletar tag por nome", description = "Exclui uma tag pelo nome correspondente")
     @ApiResponses(value = {

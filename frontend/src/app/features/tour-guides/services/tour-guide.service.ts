@@ -9,7 +9,7 @@ import { TourGuide, TourGuideCreate, TourGuideUpdate } from '../../../core/model
 })
 export class TourGuideService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/v1/tourGuides`;
+  private apiUrl = `${environment.apiUrl}/api/v1/tour-guides`;
 
   createTourGuide(tourGuide: TourGuideCreate): Observable<TourGuide> {
     return this.http.post<TourGuide>(this.apiUrl, tourGuide);

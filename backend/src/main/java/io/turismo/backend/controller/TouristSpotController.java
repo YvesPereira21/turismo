@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +36,7 @@ public class TouristSpotController {
         this.touristSpotService = touristSpotService;
     }
 
+    @PreAuthorize("hasRole('SPOTMANAGER')")
     @PostMapping("/manager/{spotManagerId}/tourist-spots")
     @Operation(summary = "Criar ponto turístico", description = "Cria um novo ponto turístico vinculado a um gerente")
     @ApiResponses(value = {
@@ -122,6 +124,7 @@ public class TouristSpotController {
         return ResponseEntity.ok(spots);
     }
 
+    @PreAuthorize("hasRole('SPOTMANAGER')")
     @PutMapping("/tourist-spots/{touristSpotId}")
     @Operation(summary = "Atualizar ponto turístico", description = "Atualiza as informações de um ponto turístico específico")
     @ApiResponses(value = {
@@ -136,6 +139,7 @@ public class TouristSpotController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SPOTMANAGER')")
     @DeleteMapping("/tourist-spots/{touristSpotId}")
     @Operation(summary = "Deletar ponto turístico", description = "Remove um ponto turístico do sistema")
     @ApiResponses(value = {

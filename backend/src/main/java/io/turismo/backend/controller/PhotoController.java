@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +31,7 @@ public class PhotoController {
         this.photoService = photoService;
     }
 
+    @PreAuthorize("hasRole('SPOTMANAGER')")
     @PostMapping(value = "/tourist-spots/{touristSpotId}/photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Fazer upload de fotos do ponto turístico", description = "Faz o upload de uma ou mais fotos para um ponto turístico específico")
     @ApiResponses(value = {
@@ -45,6 +47,7 @@ public class PhotoController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PreAuthorize("hasRole('SPOTMANAGER')")
     @PostMapping(value = "/activities/{activityId}/photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Fazer upload de foto da atividade", description = "Faz o upload de uma foto para uma atividade")
     @ApiResponses(value = {
@@ -60,6 +63,7 @@ public class PhotoController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PreAuthorize("hasRole('SPOTMANAGER')")
     @PutMapping(value = "/activities/{activityId}/photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Atualizar foto da atividade", description = "Atualiza (substitui) a foto de uma atividade")
     @ApiResponses(value = {

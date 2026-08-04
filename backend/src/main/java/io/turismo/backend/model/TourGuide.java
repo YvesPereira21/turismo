@@ -29,7 +29,7 @@ public class TourGuide {
     @Column(name = "type", nullable = false)
     private TourGuideType type;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

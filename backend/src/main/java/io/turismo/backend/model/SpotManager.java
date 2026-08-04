@@ -28,7 +28,7 @@ public class SpotManager {
     @Column(name = "manager_type", nullable = false)
     private ManagerType managerType;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

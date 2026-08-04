@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,7 @@ public class CityController {
         this.cityService = cityService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/cities")
     @Operation(summary = "Criar cidade", description = "Cria uma nova cidade vinculada a um estado")
     @ApiResponses(value = {
@@ -65,6 +67,7 @@ public class CityController {
         return ResponseEntity.ok(cities);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/cities/{cityId}")
     @Operation(summary = "Excluir cidade", description = "Exclui uma cidade pelo seu ID")
     @ApiResponses(value = {

@@ -6,7 +6,9 @@ import io.turismo.backend.dto.spot_manager.SpotManagerSimpleDTO;
 import io.turismo.backend.dto.spot_manager.SpotManagerUpdateDTO;
 import io.turismo.backend.mapper.SpotManagerMapper;
 import io.turismo.backend.model.SpotManager;
+import io.turismo.backend.model.enums.UserRole;
 import io.turismo.backend.repository.SpotManagerRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 
@@ -15,11 +17,13 @@ public class SpotManagerService{
     private final SpotManagerRepository spotManagerRepository;
     private final SpotManagerMapper spotManagerMapper;
     private final UserService userService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public SpotManagerService(SpotManagerRepository spotManagerRepository, SpotManagerMapper spotManagerMapper, UserService userService) {
+    public SpotManagerService(SpotManagerRepository spotManagerRepository, SpotManagerMapper spotManagerMapper, UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.spotManagerRepository = spotManagerRepository;
         this.spotManagerMapper = spotManagerMapper;
         this.userService = userService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public SpotManagerSimpleDTO createSpotManager(SpotManagerCreateDTO dto){
@@ -27,6 +31,9 @@ public class SpotManagerService{
 
         SpotManager newSpotManager = spotManagerMapper.toEntity(dto);
         newSpotManager.getUser().setSpotManager(newSpotManager);
+        newSpotManager.getUser().setRole(UserRole.SPOTMANAGER);
+        String encodedPassword = bCryptPasswordEncoder.encode(dto.user().password());
+        newSpotManager.getUser().setPassword(encodedPassword);
         newSpotManager.getSocialsMedia().forEach(socialMedia -> socialMedia.setSpotManager(newSpotManager));
 
         return spotManagerMapper.toSimpleDTO(spotManagerRepository.save(newSpotManager));

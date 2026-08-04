@@ -34,10 +34,10 @@
                 <span class="label-text font-semibold">Estado</span>
             </label>
             <select id="state" (change)="onStateChange($event)"
-                class="select select-bordered w-full focus:outline-[#4A8C5E]">
-                <option value="" disabled selected>Selecione o estado</option>
+                class="select select-bordered w-full focus:outline-[#4A8C5E] bg-white text-gray-800 font-poppins">
+                <option value="" disabled selected class="text-gray-400 bg-white">Selecione o estado</option>
                 @for (state of states(); track state.stateId) {
-                <option [value]="state.name">{{ state.name }}</option>
+                <option [value]="state.name" class="text-gray-800 bg-white">{{ state.name }}</option>
                 }
             </select>
         </div>
@@ -47,12 +47,12 @@
                 <span class="label-text font-semibold">Cidade</span>
             </label>
             <select id="cityId" formControlName="cityId"
-                class="select select-bordered w-full focus:outline-[#4A8C5E]">
-                <option value="" disabled selected>
+                class="select select-bordered w-full focus:outline-[#4A8C5E] bg-white text-gray-800 font-poppins">
+                <option value="" disabled selected class="text-gray-400 bg-white">
                     {{ cities().length === 0 ? 'Selecione o estado primeiro' : 'Selecione a cidade' }}
                 </option>
                 @for (city of cities(); track city.cityId) {
-                <option [value]="city.cityId">{{ city.name }}</option>
+                <option [value]="city.cityId" class="text-gray-800 bg-white">{{ city.name }}</option>
                 }
             </select>
         </div>

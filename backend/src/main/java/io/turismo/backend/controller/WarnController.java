@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,7 @@ public class WarnController {
         this.warnService = warnService;
     }
 
+    @PreAuthorize("hasRole('SPOTMANAGER')")
     @PostMapping("/warns/spot/{touristSpotId}")
     @Operation(summary = "Criar aviso", description = "Cria um novo aviso para um ponto turístico")
     @ApiResponses(value = {
@@ -68,6 +70,7 @@ public class WarnController {
         return ResponseEntity.ok(warns);
     }
 
+    @PreAuthorize("hasRole('SPOTMANAGER')")
     @DeleteMapping("/warns/{warnId}")
     @Operation(summary = "Deletar aviso", description = "Exclui um aviso")
     @ApiResponses(value = {

@@ -27,11 +27,11 @@
                     <span class="label-text font-medium text-gray-700">Selecione o Estado</span>
                 </div>
                 <select
-                    class="select select-bordered w-full focus:outline-none focus:border-[#6EB57D] focus:ring-1 focus:ring-[#6EB57D] rounded-xl bg-gray-50"
+                    class="select select-bordered w-full focus:outline-none focus:border-[#6EB57D] focus:ring-2 focus:ring-[#6EB57D]/20 rounded-xl bg-white border-gray-300 shadow-sm text-gray-800 font-poppins hover:border-[#6EB57D] transition-all"
                     (change)="onStateChange($event)">
-                    <option value="" disabled selected>Escolha um estado...</option>
+                    <option value="" disabled selected class="text-gray-400 bg-white">Escolha um estado...</option>
                     @for (state of states(); track state.stateId) {
-                    <option [value]="state.name">{{ state.name }}</option>
+                    <option [value]="state.name" class="text-gray-800 bg-white">{{ state.name }}</option>
                     }
                 </select>
             </label>
@@ -47,16 +47,16 @@
             </div>
 
             <div
-                class="space-y-1 max-h-[160px] overflow-y-auto custom-scroll pr-1 rounded-xl border border-gray-100 bg-gray-50/50 p-2">
+                class="space-y-1 max-h-[160px] overflow-y-auto custom-scroll pr-1 rounded-xl border border-gray-200 bg-gray-50/70 p-2 shadow-inner">
                 @if (cities().length === 0) {
                 <p class="text-xs text-gray-500 text-center py-4">Nenhuma cidade encontrada neste estado.</p>
                 }
                 @for (city of cities(); track city.name) {
                 <label
-                    class="flex items-center p-2 hover:bg-gray-100 rounded-lg cursor-pointer group transition-colors">
+                    class="flex items-center p-2 hover:bg-white rounded-lg cursor-pointer group transition-colors shadow-none hover:shadow-sm">
                     <input type="checkbox"
                         class="checkbox checkbox-sm rounded border-gray-300 checked:!bg-[#6EB57D] checked:border-[#6EB57D]" />
-                    <span class="ml-3 text-sm font-poppins text-gray-600 group-hover:text-[#2C5C3E]">
+                    <span class="ml-3 text-sm font-poppins text-gray-700 group-hover:text-[#2C5C3E] font-medium">
                         {{ city.name }}
                     </span>
                 </label>
@@ -72,13 +72,13 @@
             </h3>
             <span class="label-text font-medium text-gray-700 block mb-3">Tipos</span>
             <div
-                class="space-y-1 max-h-[160px] overflow-y-auto custom-scroll pr-1 rounded-xl border border-gray-100 bg-gray-50/50 p-2">
+                class="space-y-1 max-h-[160px] overflow-y-auto custom-scroll pr-1 rounded-xl border border-gray-200 bg-gray-50/70 p-2 shadow-inner">
                 @for (tag of tags(); track tag.name) {
                 <label
-                    class="flex items-center p-2 hover:bg-gray-100 rounded-lg cursor-pointer group transition-colors">
+                    class="flex items-center p-2 hover:bg-white rounded-lg cursor-pointer group transition-colors shadow-none hover:shadow-sm">
                     <input type="checkbox"
                         class="checkbox checkbox-sm rounded border-gray-300 checked:!bg-[#6EB57D] checked:border-[#6EB57D]" />
-                    <span class="ml-3 text-sm font-poppins text-gray-600 group-hover:text-[#2C5C3E]">
+                    <span class="ml-3 text-sm font-poppins text-gray-700 group-hover:text-[#2C5C3E] font-medium">
                         {{ tag.name }}
                     </span>
                 </label>
@@ -101,7 +101,7 @@
                         [checked]="selectedDistance() === option.value"
                         (click)="onDistanceChange(option.value)" class="peer sr-only" />
                     <div
-                        class="px-4 py-2 rounded-xl text-sm font-medium border border-gray-200 text-gray-600 bg-white peer-checked:bg-[#2C5C3E] peer-checked:text-white peer-checked:border-[#2C5C3E] hover:bg-gray-50 transition-all shadow-sm peer-checked:shadow-md">
+                        class="px-4 py-2 rounded-xl text-sm font-medium border border-gray-300 text-gray-700 bg-gray-50 hover:bg-gray-100 hover:border-gray-400 peer-checked:bg-[#2C5C3E] peer-checked:text-white peer-checked:border-[#2C5C3E] peer-checked:hover:bg-[#20442E] transition-all shadow-sm peer-checked:shadow-md">
                         {{ option.label }}
                     </div>
                 </label>

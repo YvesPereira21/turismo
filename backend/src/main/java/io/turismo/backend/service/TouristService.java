@@ -5,7 +5,9 @@ import io.turismo.backend.dto.tourist.TouristDTO;
 import io.turismo.backend.dto.tourist.TouristUpdateDTO;
 import io.turismo.backend.mapper.TouristMapper;
 import io.turismo.backend.model.Tourist;
+import io.turismo.backend.model.enums.UserRole;
 import io.turismo.backend.repository.TouristRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 
@@ -14,11 +16,13 @@ public class TouristService{
     private final TouristRepository touristRepository;
     private final TouristMapper touristMapper;
     private final UserService userService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public TouristService(TouristRepository touristRepository, TouristMapper touristMapper, UserService userService) {
+    public TouristService(TouristRepository touristRepository, TouristMapper touristMapper, UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.touristRepository = touristRepository;
         this.touristMapper = touristMapper;
         this.userService = userService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public TouristDTO createTourist(TouristCreateDTO dto) {
@@ -26,6 +30,9 @@ public class TouristService{
 
         Tourist tourist = touristMapper.toEntity(dto);
         tourist.getUser().setTourist(tourist);
+        tourist.getUser().setRole(UserRole.TOURIST);
+        String encodedPassword = bCryptPasswordEncoder.encode(dto.user().password());
+        tourist.getUser().setPassword(encodedPassword);
 
         return touristMapper.toDTO(touristRepository.save(tourist));
     }

@@ -12,9 +12,9 @@ INSERT INTO cities (city_id, name, state_id) VALUES
 
 -- Insert Users
 INSERT INTO users (id, name, email, password, phone, role) VALUES
-('f47ac10b-58cc-4372-a567-0e02b2c3d479', 'João Manager', 'joao.manager@example.com', '$2a$10$xyz', '11999999999', 'SPOTMANAGER'),
-('e83f2a1b-6c7d-4b5a-9f8e-7d6c5b4a3f2e', 'Maria Guide', 'maria.guide@example.com', '$2a$10$xyz', '21988888888', 'TOURGUIDE'),
-('d1e2f3a4-b5c6-7d8e-9f0a-1b2c3d4e5f6a', 'Pedro Tourist', 'pedro.tourist@example.com', '$2a$10$xyz', '83977777777', 'TOURIST');
+('f47ac10b-58cc-4372-a567-0e02b2c3d479', 'João Manager', 'joao.manager@example.com', '$2b$10$tGQswlH2a93c7GBQpVeByOjM2e1aQLWWA6A/n9spt9FRPRqCOF7SK', '11999999999', 'SPOTMANAGER'),
+('e83f2a1b-6c7d-4b5a-9f8e-7d6c5b4a3f2e', 'Maria Guide', 'maria.guide@example.com', '$2b$10$tGQswlH2a93c7GBQpVeByOjM2e1aQLWWA6A/n9spt9FRPRqCOF7SK', '21988888888', 'TOURGUIDE'),
+('d1e2f3a4-b5c6-7d8e-9f0a-1b2c3d4e5f6a', 'Pedro Tourist', 'pedro.tourist@example.com', '$2b$10$tGQswlH2a93c7GBQpVeByOjM2e1aQLWWA6A/n9spt9FRPRqCOF7SK', '83977777777', 'TOURIST');
 
 -- Insert Tourists
 INSERT INTO tourists (tourist_id, birth_date, user_id) VALUES

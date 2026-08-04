@@ -11,6 +11,7 @@ import io.turismo.backend.service.SocialMediaService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ public class SocialMediaController {
         this.socialMediaService = socialMediaService;
     }
 
+    @PreAuthorize("hasRole('SPOTMANAGER')")
     @PostMapping("/manager/{spotManagerId}/social-medias")
     @Operation(summary = "Criar rede social", description = "Cria uma nova rede social para um gerente de ponto turístico")
     @ApiResponses(value = {
@@ -53,6 +55,7 @@ public class SocialMediaController {
         return ResponseEntity.ok(socials);
     }
 
+    @PreAuthorize("hasRole('SPOTMANAGER')")
     @PutMapping("/social-medias/{socialMediaId}")
     @Operation(summary = "Atualizar rede social", description = "Atualiza os dados de uma rede social existente")
     @ApiResponses(value = {
@@ -67,6 +70,7 @@ public class SocialMediaController {
         return ResponseEntity.ok(updated);
     }
 
+    @PreAuthorize("hasAnyRole('SPOTMANAGER', 'ADMIN')")
     @DeleteMapping("/social-medias/{socialMediaId}")
     @Operation(summary = "Deletar rede social", description = "Exclui uma rede social")
     @ApiResponses(value = {

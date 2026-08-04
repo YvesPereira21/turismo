@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './shared/components/header/header.component';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -13,4 +14,5 @@ import { HeaderComponent } from './shared/components/header/header.component';
 })
 export class AppComponent {
   title = 'frontend';
+  public authService = inject(AuthService);
 }

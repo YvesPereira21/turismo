@@ -19,6 +19,7 @@
     "@angular/router": "^19.2.0",
     "@bluehalo/ngx-leaflet": "^19.0.0",
     "@tailwindcss/postcss": "^4.3.1",
+    "bcryptjs": "^3.0.3",
     "daisyui": "^5.5.23",
     "leaflet": "^1.9.4",
     "postcss": "^8.5.15",

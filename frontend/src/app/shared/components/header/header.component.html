@@ -55,20 +55,48 @@
             </div>
 
             <div class="navbar-end">
+                @if (authService.isAuthenticated()) {
                 <div class="dropdown dropdown-end">
                     <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-                        <div class="w-12 rounded-full">
+                        <div class="w-10 rounded-full border-2 border-[#6EB57D]">
                             <img alt="Avatar do usuário"
                                 src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
                         </div>
                     </div>
                     <ul tabindex="-1"
-                        class="menu dropdown-content bg-emerald-800 rounded-box z-[100] mt-4 w-52 p-2 shadow-sm">
+                        class="menu dropdown-content bg-emerald-800 rounded-box z-[100] mt-4 w-56 p-2 shadow-xl">
+                        @if (authService.currentUser(); as user) {
+                        <li class="px-4 py-2 border-b border-white/10">
+                            <span class="font-bold text-xs text-emerald-100 p-0 hover:bg-transparent">{{ user.name }}</span>
+                        </li>
+                        }
                         <li><a routerLink="">Perfil</a></li>
                         <li><a routerLink="">Configurações</a></li>
-                        <li><a routerLink="" class="text-error">Sair</a></li>
+                        <li><button (click)="logout()" class="text-error font-semibold">Sair</button></li>
                     </ul>
                 </div>
+                } @else {
+                <div class="flex items-center gap-2">
+                    <a routerLink="/login"
+                        class="btn bg-white/10 hover:bg-white/20 text-white border border-white/30 font-poppins text-xs sm:text-sm px-4">
+                        Entrar
+                    </a>
+                    <a href="http://localhost:8080/oauth2/authorization/google"
+                        class="btn bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 font-poppins gap-2 font-medium text-xs sm:text-sm px-3 hidden md:inline-flex">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24">
+                            <path fill="#4285F4"
+                                d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z" />
+                            <path fill="#34A853"
+                                d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.25 21.3 7.31 24 12 24z" />
+                            <path fill="#FBBC05"
+                                d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.99 0 12s.46 3.84 1.26 5.42l4.02-3.15z" />
+                            <path fill="#EA4335"
+                                d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.7 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z" />
+                        </svg>
+                        <span>Google</span>
+                    </a>
+                </div>
+                }
             </div>
         </div>
 

@@ -12,6 +12,7 @@ import io.turismo.backend.service.SpotManagerService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ public class SpotManagerController {
         this.spotManagerService = spotManagerService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/spot-managers")
     @Operation(summary = "Criar gerente", description = "Cadastra um novo gerente de ponto turístico")
     @ApiResponses(value = {
@@ -62,6 +64,7 @@ public class SpotManagerController {
         return ResponseEntity.ok(manager);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SPOTMANAGER')")
     @PutMapping("/spot-managers/{spotManagerId}")
     @Operation(summary = "Atualizar gerente", description = "Atualiza informações cadastrais do gerente")
     @ApiResponses(value = {
@@ -76,6 +79,7 @@ public class SpotManagerController {
         return ResponseEntity.ok(updated);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SPOTMANAGER')")
     @DeleteMapping("/spot-managers/{spotManagerId}")
     @Operation(summary = "Deletar gerente", description = "Remove o cadastro de um gerente do sistema")
     @ApiResponses(value = {

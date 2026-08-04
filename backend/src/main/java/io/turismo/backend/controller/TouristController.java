@@ -11,6 +11,7 @@ import io.turismo.backend.service.TouristService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +40,7 @@ public class TouristController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TOURIST')")
     @GetMapping("/tourists/{touristId}")
     @Operation(summary = "Buscar turista", description = "Busca dados de um turista pelo ID")
     @ApiResponses(value = {
@@ -50,6 +52,7 @@ public class TouristController {
         return ResponseEntity.ok(tourist);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TOURIST')")
     @PutMapping("/tourists/{touristId}")
     @Operation(summary = "Atualizar turista", description = "Atualiza os dados de cadastro de um turista")
     @ApiResponses(value = {
@@ -64,6 +67,7 @@ public class TouristController {
         return ResponseEntity.ok(updated);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TOURIST')")
     @DeleteMapping("/tourists/{touristId}")
     @Operation(summary = "Deletar turista", description = "Exclui o cadastro de um turista do sistema")
     @ApiResponses(value = {
