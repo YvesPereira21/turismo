@@ -21,10 +21,7 @@ export class SpotManagerCreateComponent {
     name: ['', { nonNullable: true, validators: [Validators.required] }],
     email: ['', { nonNullable: true, validators: [Validators.required, Validators.email] }],
     password: ['', { nonNullable: true, validators: [Validators.required] }],
-    phone: [''],
-    instagram: [''],
-    facebook: [''],
-    x: ['']
+    phone: ['']
   });
 
   onSubmit() {
@@ -33,17 +30,6 @@ export class SpotManagerCreateComponent {
 
     const formValues = this.spotManagerForm.value;
 
-    const socialsMedia: SocialMediaCreate[] = [];
-    if (formValues.instagram?.trim()) {
-      socialsMedia.push({ socialMediaLink: formValues.instagram.trim(), socialMediaType: 'INSTAGRAM' });
-    }
-    if (formValues.facebook?.trim()) {
-      socialsMedia.push({ socialMediaLink: formValues.facebook.trim(), socialMediaType: 'FACEBOOK' });
-    }
-    if (formValues.x?.trim()) {
-      socialsMedia.push({ socialMediaLink: formValues.x.trim(), socialMediaType: 'X' });
-    }
-
     const spotManager: SpotManagerCreate = {
       managerType: formValues.managerType!,
       user: {
@@ -51,8 +37,7 @@ export class SpotManagerCreateComponent {
         email: formValues.email!,
         password: formValues.password!,
         phone: formValues.phone!
-      },
-      socialsMedia: socialsMedia
+      }
     };
 
     this.spotManagerService.createSpotManager(spotManager).subscribe({

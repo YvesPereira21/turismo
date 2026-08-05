@@ -4,6 +4,7 @@ import { PhotoUpload } from '../../../../core/models/photo';
 import { PhotoService } from '../../../photos/services/photo.service';
 import { TagSelectorComponent } from '../../../tags/components/tag-selector/tag-selector.component';
 import { TouristSpotCreate } from '../../../../core/models/tourist-spot';
+import { SocialMediaCreate } from '../../../../core/models/social-media';
 import { TouristSpotService } from '../../services/tourist-spot.service';
 import { StateService } from '../../../states/services/state.service';
 import { CityService } from '../../../cities/services/city.service';
@@ -36,7 +37,10 @@ export class TouristSpotCreateComponent implements OnInit {
     description: ['', { nonNullable: true, validators: [Validators.required] }],
     spotManagerId: ['', { nonNullable: true, validators: [Validators.required] }],
     cityId: ['', { nonNullable: true, validators: [Validators.required] }],
-    tags: this.formBuilder.array([])
+    tags: this.formBuilder.array([]),
+    instagram: [''],
+    facebook: [''],
+    x: ['']
   });
 
   get tagsArray(): FormArray {
@@ -88,7 +92,18 @@ export class TouristSpotCreateComponent implements OnInit {
         shortDescription: formValues.shortDescription!,
         description: formValues.description!,
         cityId: formValues.cityId!,
-        tags: formValues.tags as string[]
+        tags: formValues.tags as string[],
+        socialsMedia: []
+      }
+
+      if (formValues.instagram?.trim()) {
+        touristSpot.socialsMedia!.push({ socialMediaLink: formValues.instagram.trim(), socialMediaType: 'INSTAGRAM' });
+      }
+      if (formValues.facebook?.trim()) {
+        touristSpot.socialsMedia!.push({ socialMediaLink: formValues.facebook.trim(), socialMediaType: 'FACEBOOK' });
+      }
+      if (formValues.x?.trim()) {
+        touristSpot.socialsMedia!.push({ socialMediaLink: formValues.x.trim(), socialMediaType: 'X' });
       }
 
       this.touristSpotService.createTouristSpot(touristSpot, formValues.spotManagerId!).subscribe({

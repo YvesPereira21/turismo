@@ -4,6 +4,7 @@ import { SpotManagerSimple } from './spot-manager';
 import { Tag } from './tag';
 import { TourGuideSimple } from './tour-guide';
 import { Warn } from './warn';
+import { SocialMedia, SocialMediaCreate } from './social-media';
 
 export interface Point {
   type: string;
@@ -20,6 +21,7 @@ export interface TouristSpotCreate {
   description: string;
   cityId: string;
   tags?: string[];
+  socialsMedia?: SocialMediaCreate[];
 }
 
 export interface TouristSpot {
@@ -36,6 +38,7 @@ export interface TouristSpot {
   warns: Warn[];
   tags: Tag[];
   tourGuides: TourGuideSimple[];
+  socialsMedia: SocialMedia[];
 }
 
 export interface TouristSpotList {
@@ -71,4 +74,5 @@ export interface TouristSpotUpdate {
   description?: string;
   cityName?: string;
   tags?: string[];
+  socialsMedia?: SocialMediaCreate[];
 }

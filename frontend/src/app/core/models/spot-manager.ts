@@ -1,4 +1,4 @@
-import { SocialMedia, SocialMediaCreate } from './social-media';
+
 import { UserCreate } from './user';
 
 export enum ManagerType {
@@ -11,7 +11,6 @@ export enum ManagerType {
 export interface SpotManagerCreate {
   managerType: string;
   user: UserCreate;
-  socialsMedia: SocialMediaCreate[];
 }
 
 export interface SpotManager {
@@ -20,7 +19,6 @@ export interface SpotManager {
   managerType: ManagerType;
   name: string;
   phone: string;
-  socialsMedia: SocialMedia[];
 }
 
 export interface SpotManagerSimple {
@@ -28,13 +26,10 @@ export interface SpotManagerSimple {
   managerType: ManagerType;
   name: string;
   phone: string;
-  socialsMedia: SocialMedia[];
 }
 
 export interface SpotManagerUpdate {
   name: string;
   phone: string;
   managerType: ManagerType;
-  socialMediaLink: string;
-  socialsMedia: SocialMediaCreate[];
 }
