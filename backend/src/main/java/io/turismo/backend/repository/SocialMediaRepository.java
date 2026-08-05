@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface SocialMediaRepository extends JpaRepository<SocialMedia, UUID> {
-    List<SocialMedia> findAllBySpotManager_SpotManagerId(UUID spotManagerId);
+    List<SocialMedia> findAllByTouristSpot_TouristSpotId(UUID touristSpotId);
 }

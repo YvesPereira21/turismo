@@ -5,6 +5,8 @@ import java.time.LocalTime;
 
 import java.util.Set;
 import java.util.UUID;
+import io.turismo.backend.dto.social_media.SocialMediaCreateDTO;
+import java.util.List;
 
 public record TouristSpotUpdateDTO(
     String name,
@@ -15,5 +17,6 @@ public record TouristSpotUpdateDTO(
     String shortDescription,
     String description,
     UUID cityId,
-    @Size(min = 1, max = 7) Set<String> tags
+    @Size(min = 1, max = 7) Set<String> tags,
+    List<SocialMediaCreateDTO> socialsMedia
 ) {}

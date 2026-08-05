@@ -1,5 +1,5 @@
 package io.turismo.backend.dto.tourist_spot;
-
+import io.turismo.backend.dto.social_media.SocialMediaDTO;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
@@ -29,5 +29,6 @@ public record TouristSpotDTO(
         List<PhotoDTO> photos,
         List<WarnDTO> warns,
         List<TagDTO> tags,
-        List<TourGuideSimpleDTO> tourGuides
+        List<TourGuideSimpleDTO> tourGuides,
+        List<SocialMediaDTO> socialsMedia
 ) {}

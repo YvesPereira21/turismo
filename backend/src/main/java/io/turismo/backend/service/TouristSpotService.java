@@ -47,6 +47,10 @@ public class TouristSpotService{
         touristSpot.setCity(city);
         touristSpot.setSpotManager(spotManager);
 
+        if (touristSpot.getSocialsMedia() != null) {
+            touristSpot.getSocialsMedia().forEach(socialMedia -> socialMedia.setTouristSpot(touristSpot));
+        }
+
         return touristSpotMapper.toDTO(touristSpotRepository.save(touristSpot));
     }
 
@@ -114,6 +118,10 @@ public class TouristSpotService{
 
         touristSpotMapper.updateEntityFromDTO(touristSpotUpdate, touristSpot);
         touristSpot.setTags(tagService.convertNamesToTags(touristSpotUpdate.tags()));
+
+        if (touristSpot.getSocialsMedia() != null) {
+            touristSpot.getSocialsMedia().forEach(socialMedia -> socialMedia.setTouristSpot(touristSpot));
+        }
 
         touristSpotRepository.save(touristSpot);
     }

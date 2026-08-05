@@ -5,9 +5,9 @@ import io.turismo.backend.dto.social_media.SocialMediaDTO;
 import io.turismo.backend.dto.social_media.SocialMediaUpdateDTO;
 import io.turismo.backend.mapper.SocialMediaMapper;
 import io.turismo.backend.model.SocialMedia;
-import io.turismo.backend.model.SpotManager;
+import io.turismo.backend.model.TouristSpot;
 import io.turismo.backend.repository.SocialMediaRepository;
-import io.turismo.backend.repository.SpotManagerRepository;
+import io.turismo.backend.repository.TouristSpotRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
@@ -16,26 +16,26 @@ import java.util.UUID;
 public class SocialMediaService {
     private final SocialMediaRepository socialMediaRepository;
     private final SocialMediaMapper socialMediaMapper;
-    private final SpotManagerRepository spotManagerRepository;
+    private final TouristSpotRepository touristSpotRepository;
 
-    public SocialMediaService(SocialMediaRepository socialMediaRepository, SocialMediaMapper socialMediaMapper, SpotManagerRepository spotManagerRepository) {
+    public SocialMediaService(SocialMediaRepository socialMediaRepository, SocialMediaMapper socialMediaMapper, TouristSpotRepository touristSpotRepository) {
         this.socialMediaRepository = socialMediaRepository;
         this.socialMediaMapper = socialMediaMapper;
-        this.spotManagerRepository = spotManagerRepository;
+        this.touristSpotRepository = touristSpotRepository;
     }
 
-    public SocialMediaDTO createSocialMedia(SocialMediaCreateDTO dto, UUID spotManagerId) {
-        SpotManager spotManager = spotManagerRepository.findById(spotManagerId)
-                .orElseThrow(() -> new RuntimeException("Gerente não encontrado"));
+    public SocialMediaDTO createSocialMedia(SocialMediaCreateDTO dto, UUID touristSpotId) {
+        TouristSpot touristSpot = touristSpotRepository.findById(touristSpotId)
+                .orElseThrow(() -> new RuntimeException("Ponto Turístico não encontrado"));
 
         SocialMedia socialMedia = socialMediaMapper.toEntity(dto);
-        socialMedia.setSpotManager(spotManager);
+        socialMedia.setTouristSpot(touristSpot);
 
         return socialMediaMapper.toDTO(socialMediaRepository.save(socialMedia));
     }
 
-    public List<SocialMediaDTO> getAllSpotManagerSocialsMedia(UUID spotManagerId){
-        return socialMediaRepository.findAllBySpotManager_SpotManagerId(spotManagerId)
+    public List<SocialMediaDTO> getAllTouristSpotSocialsMedia(UUID touristSpotId){
+        return socialMediaRepository.findAllByTouristSpot_TouristSpotId(touristSpotId)
                 .stream()
                 .map(socialMediaMapper::toDTO)
                 .toList();

@@ -31,27 +31,27 @@ public class SocialMediaController {
     }
 
     @PreAuthorize("hasRole('SPOTMANAGER')")
-    @PostMapping("/manager/{spotManagerId}/social-medias")
-    @Operation(summary = "Criar rede social", description = "Cria uma nova rede social para um gerente de ponto turístico")
+    @PostMapping("/tourist-spot/{touristSpotId}/social-medias")
+    @Operation(summary = "Criar rede social", description = "Cria uma nova rede social para um ponto turístico")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Rede social criada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Gerente não encontrado")
+            @ApiResponse(responseCode = "404", description = "Ponto Turístico não encontrado")
     })
     public ResponseEntity<SocialMediaDTO> createSocialMedia(
             @Valid @RequestBody SocialMediaCreateDTO dto,
-            @PathVariable UUID spotManagerId
+            @PathVariable UUID touristSpotId
     ) {
-        SocialMediaDTO created = socialMediaService.createSocialMedia(dto, spotManagerId);
+        SocialMediaDTO created = socialMediaService.createSocialMedia(dto, touristSpotId);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @GetMapping("/manager/{spotManagerId}/social-medias")
-    @Operation(summary = "Listar redes sociais do gerente", description = "Busca todas as redes sociais cadastradas de um gerente")
+    @GetMapping("/tourist-spot/{touristSpotId}/social-medias")
+    @Operation(summary = "Listar redes sociais do ponto turístico", description = "Busca todas as redes sociais cadastradas de um ponto turístico")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
     })
-    public ResponseEntity<List<SocialMediaDTO>> getAllSpotManagerSocialsMedia(@PathVariable UUID spotManagerId) {
-        List<SocialMediaDTO> socials = socialMediaService.getAllSpotManagerSocialsMedia(spotManagerId);
+    public ResponseEntity<List<SocialMediaDTO>> getAllTouristSpotSocialsMedia(@PathVariable UUID touristSpotId) {
+        List<SocialMediaDTO> socials = socialMediaService.getAllTouristSpotSocialsMedia(touristSpotId);
         return ResponseEntity.ok(socials);
     }
 

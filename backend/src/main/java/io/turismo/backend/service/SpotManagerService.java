@@ -34,7 +34,7 @@ public class SpotManagerService{
         newSpotManager.getUser().setRole(UserRole.SPOTMANAGER);
         String encodedPassword = bCryptPasswordEncoder.encode(dto.user().password());
         newSpotManager.getUser().setPassword(encodedPassword);
-        newSpotManager.getSocialsMedia().forEach(socialMedia -> socialMedia.setSpotManager(newSpotManager));
+
 
         return spotManagerMapper.toSimpleDTO(spotManagerRepository.save(newSpotManager));
     }

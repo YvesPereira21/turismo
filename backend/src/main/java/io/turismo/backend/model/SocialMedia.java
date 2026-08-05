@@ -38,8 +38,8 @@ public class SocialMedia {
     private SocialMediaType socialMediaType;
 
     @ManyToOne
-    @JoinColumn(name="spot_manager_id")
+    @JoinColumn(name="tourist_spot_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private SpotManager spotManager;
+    private TouristSpot touristSpot;
 }

@@ -6,6 +6,8 @@ import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import io.turismo.backend.dto.social_media.SocialMediaCreateDTO;
+import java.util.List;
 
 public record TouristSpotCreateDTO(
         @NotBlank String name,
@@ -16,5 +18,6 @@ public record TouristSpotCreateDTO(
         @NotBlank String shortDescription,
         @NotBlank String description,
         @NotBlank UUID cityId,
-        @Size(min = 1, max = 7) Set<String> tags
+        @Size(min = 1, max = 7) Set<String> tags,
+        List<SocialMediaCreateDTO> socialsMedia
 ) {}

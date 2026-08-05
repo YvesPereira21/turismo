@@ -10,7 +10,7 @@ import org.mapstruct.*;
 public interface SocialMediaMapper {
 
     @Mapping(target = "socialMediaId", ignore = true)
-    @Mapping(target = "spotManager", ignore = true)
+    @Mapping(target = "touristSpot", ignore = true)
     SocialMedia toEntity(SocialMediaCreateDTO dto);
 
     SocialMediaDTO toDTO(SocialMedia s);
@@ -18,6 +18,6 @@ public interface SocialMediaMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "socialMediaId", ignore = true)
     @Mapping(target = "socialMediaType", ignore = true)
-    @Mapping(target = "spotManager", ignore = true)
+    @Mapping(target = "touristSpot", ignore = true)
     void updateEntityFromDto(SocialMediaUpdateDTO dto, @MappingTarget SocialMedia entity);
 }

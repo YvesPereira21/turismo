@@ -1,6 +1,6 @@
 package io.turismo.backend.dto.spot_manager;
 
-import io.turismo.backend.dto.social_media.SocialMediaDTO;
+
 import io.turismo.backend.model.enums.ManagerType;
 
 import java.util.List;
@@ -10,6 +10,5 @@ public record SpotManagerSimpleDTO(
         UUID spotManagerId,
         ManagerType managerType,
         String name,
-        String phone,
-        List<SocialMediaDTO> socialsMedia
+        String phone
 ) {}

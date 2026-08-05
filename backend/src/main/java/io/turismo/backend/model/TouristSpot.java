@@ -89,4 +89,10 @@ public class TouristSpot {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<TourGuide> tourGuides;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "touristSpot", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<SocialMedia> socialsMedia = new HashSet<>();
 }

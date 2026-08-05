@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import io.turismo.backend.dto.spot_manager.SpotManagerUpdateDTO;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE, uses = {SocialMediaMapper.class})
+@Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 public interface SpotManagerMapper {
 
     @Mapping(target = "spotManagerId", ignore = true)
@@ -28,7 +28,6 @@ public interface SpotManagerMapper {
     @Mapping(target = "managerType", ignore = true)
     @Mapping(target = "spotManagerId", ignore = true)
     @Mapping(target = "touristSpots", ignore = true)
-    @Mapping(target = "socialsMedia", ignore = true)
     @Mapping(source = "name", target = "user.name")
     @Mapping(source = "phone", target = "user.phone")
     void updateEntityFromDto(SpotManagerUpdateDTO dto, @MappingTarget SpotManager entity);

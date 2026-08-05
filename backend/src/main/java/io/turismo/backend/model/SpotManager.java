@@ -39,8 +39,4 @@ public class SpotManager {
     @EqualsAndHashCode.Exclude
     private List<TouristSpot> touristSpots;
 
-    @OneToMany(mappedBy = "spotManager", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private Set<SocialMedia> socialsMedia = new HashSet<>();
 }
