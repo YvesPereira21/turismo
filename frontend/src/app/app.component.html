@@ -1,4 +1,4 @@
-@if (authService.isAuthenticated()) {
+@if (authService.isAuthenticated() && authService.userRole() !== 'SPOTMANAGER') {
   <app-header></app-header>
 }
 <router-outlet></router-outlet>

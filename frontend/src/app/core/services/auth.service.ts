@@ -10,6 +10,7 @@ export interface UserResponse {
   email: string;
   phone?: string;
   role?: string;
+  spotManagerId?: string;
 }
 
 @Injectable({

@@ -48,7 +48,7 @@ public class AuthController {
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
         ResponseCookie cookie = cookieUtils.createRefreshTokenCookie(refreshToken.getToken(), refreshTokenService.getRefreshTokenDurationSeconds());
 
-        UserDTO userDTO = new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPhone(), user.getRole());
+        UserDTO userDTO = new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPhone(), user.getRole(), user.getSpotManager() != null ? user.getSpotManager().getSpotManagerId() : null);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
@@ -111,7 +111,7 @@ public class AuthController {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Usuário não autenticado."));
         }
-        UserDTO userDTO = new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPhone(), user.getRole());
+        UserDTO userDTO = new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPhone(), user.getRole(), user.getSpotManager() != null ? user.getSpotManager().getSpotManagerId() : null);
         return ResponseEntity.ok(userDTO);
     }
 }

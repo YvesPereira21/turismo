@@ -10,9 +10,13 @@ import { AuthCallbackComponent } from './features/auth/components/auth-callback/
 import { LoginComponent } from './features/auth/components/login/login.component';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
+import { homeGuard } from './core/guards/home.guard';
+import { SpotManagerDashboardComponent } from './features/spot-managers/components/spot-manager-dashboard/spot-manager-dashboard.component';
+import { ManagerTouristSpotDetailsComponent } from './features/spot-managers/components/manager-tourist-spot-details/manager-tourist-spot-details.component';
+import { TouristSpotEditComponent } from './features/tourist-spots/components/tourist-spot-edit/tourist-spot-edit.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent, canActivate: [authGuard] },
+  { path: '', component: HomeComponent, canActivate: [authGuard, homeGuard] },
   { path: 'mapa', component: MapViewComponent, canActivate: [authGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'auth/callback', component: AuthCallbackComponent },
@@ -30,5 +34,23 @@ export const routes: Routes = [
     canActivate: [roleGuard],
     data: { roles: ['SPOTMANAGER'] }
   },
-  { path: 'tourist-spots/:id', component: TouristSpotDetailsComponent, canActivate: [authGuard] }
+  { path: 'tourist-spots/:id', component: TouristSpotDetailsComponent, canActivate: [authGuard] },
+  { 
+    path: 'manager-dashboard', 
+    component: SpotManagerDashboardComponent, 
+    canActivate: [authGuard, roleGuard], 
+    data: { roles: ['SPOTMANAGER'] } 
+  },
+  { 
+    path: 'manager/tourist-spot/:id', 
+    component: ManagerTouristSpotDetailsComponent, 
+    canActivate: [authGuard, roleGuard], 
+    data: { roles: ['SPOTMANAGER'] } 
+  },
+  { 
+    path: 'tourist-spots/edit/:id', 
+    component: TouristSpotEditComponent, 
+    canActivate: [authGuard, roleGuard], 
+    data: { roles: ['SPOTMANAGER'] } 
+  }
 ];

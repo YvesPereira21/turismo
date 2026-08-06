@@ -11,9 +11,12 @@ import { CityService } from '../../../cities/services/city.service';
 import { State } from '../../../../core/models/state';
 import { City } from '../../../../core/models/city';
 
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../../core/services/auth.service';
+
 @Component({
   selector: 'app-tourist-spot-create',
-  imports: [ReactiveFormsModule, TagSelectorComponent],
+  imports: [ReactiveFormsModule, TagSelectorComponent, RouterLink],
   templateUrl: './tourist-spot-create.component.html',
   styleUrl: './tourist-spot-create.component.css'
 })
@@ -23,6 +26,7 @@ export class TouristSpotCreateComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private stateService = inject(StateService);
   private cityService = inject(CityService);
+  private authService = inject(AuthService);
 
   photos = signal<PhotoUpload[]>([]);
   isSubmiting = signal<boolean>(false);

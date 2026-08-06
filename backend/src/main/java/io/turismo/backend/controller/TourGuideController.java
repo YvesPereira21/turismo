@@ -9,6 +9,10 @@ import io.turismo.backend.dto.tour_guide.TourGuideDTO;
 import io.turismo.backend.dto.tour_guide.TourGuideUpdateDTO;
 import io.turismo.backend.service.TourGuideService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -76,5 +80,18 @@ public class TourGuideController {
     public ResponseEntity<Void> deleteTourGuide(@PathVariable UUID tourGuideId) {
         tourGuideService.deleteTourGuide(tourGuideId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/tourist-spots/{touristSpotId}/tour-guides")
+    @Operation(summary = "Listar guias por ponto turístico", description = "Busca os guias de turismo vinculados a um ponto turístico")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
+    })
+    public ResponseEntity<Page<TourGuideDTO>> getTourGuidesByTouristSpot(
+            @PathVariable UUID touristSpotId,
+            @PageableDefault(page = 0, size = 10, sort = "user.name", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        Page<TourGuideDTO> guides = tourGuideService.getTourGuidesByTouristSpot(touristSpotId, pageable);
+        return ResponseEntity.ok(guides);
     }
 }

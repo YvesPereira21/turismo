@@ -36,7 +36,12 @@ export class LoginComponent {
     this.authService.login(credentials).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        this.router.navigate(['/']);
+        const role = this.authService.userRole();
+        if (role === 'SPOTMANAGER') {
+          this.router.navigate(['/manager-dashboard']);
+        } else {
+          this.router.navigate(['/']);
+        }
       },
       error: (error) => {
         this.isSubmitting.set(false);

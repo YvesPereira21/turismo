@@ -7,6 +7,8 @@ import io.turismo.backend.mapper.TourGuideMapper;
 import io.turismo.backend.model.TourGuide;
 import io.turismo.backend.model.enums.UserRole;
 import io.turismo.backend.repository.TourGuideRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
@@ -65,5 +67,10 @@ public class TourGuideService {
                 .orElseThrow(() -> new RuntimeException("Guia de Turismo não encontrado"));
 
         tourGuideRepository.delete(tourGuide);
+    }
+
+    public Page<TourGuideDTO> getTourGuidesByTouristSpot(UUID touristSpotId, Pageable pageable) {
+        return tourGuideRepository.findAllByTouristSpots_TouristSpotId(touristSpotId, pageable)
+                .map(tourGuideMapper::toDTO);
     }
 }
