@@ -13,7 +13,7 @@ export class WarnService {
   private apiUrl = `${environment.apiUrl}/api/v1/warns`;
 
   createWarn(touristSpotId: string, warn: WarnCreate): Observable<Warn> {
-    return this.http.post<Warn>(`${this.apiUrl}/touristSpot/${touristSpotId}`, warn);
+    return this.http.post<Warn>(`${this.apiUrl}/spot/${touristSpotId}`, warn);
   }
 
   getWarn(id: string): Observable<Warn> {
@@ -24,7 +24,7 @@ export class WarnService {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-    return this.http.get<Page<Warn>>(`${this.apiUrl}/touristSpot/${touristSpotId}`, { params });
+    return this.http.get<Page<Warn>>(`${this.apiUrl}/spot/${touristSpotId}`, { params });
   }
 
   deleteWarn(id: string): Observable<void> {
