@@ -2,6 +2,8 @@ package io.turismo.backend.service;
 
 import io.turismo.backend.dto.city.CityCreateDTO;
 import io.turismo.backend.dto.city.CityDTO;
+import io.turismo.backend.exception.ObjectAlreadyExistsException;
+import io.turismo.backend.exception.ObjectNotFoundException;
 import io.turismo.backend.mapper.CityMapper;
 import io.turismo.backend.model.City;
 import io.turismo.backend.model.State;
@@ -26,11 +28,11 @@ public class CityService{
 
     public CityDTO createCity(CityCreateDTO dto) {
         State state = stateRepository.findByName(dto.stateName())
-                .orElseThrow(() -> new RuntimeException("Estado não encontrado"));
+                .orElseThrow(() -> new ObjectNotFoundException("Estado não encontrado"));
         boolean cityExists = cityRepository.existsByNameAndState_Name(dto.name(), dto.stateName());
 
         if(cityExists) {
-            throw new RuntimeException("Essa cidade já existe");
+            throw new ObjectAlreadyExistsException("Essa cidade já existe");
         }
 
         City newCity = cityMapper.toEntity(dto);
@@ -42,7 +44,7 @@ public class CityService{
     public CityDTO getCity(String cityName, String stateName) {
         return cityMapper.toDto(
                 cityRepository.findByNameAndState_Name(cityName, stateName)
-                        .orElseThrow(() -> new RuntimeException("Essa cidade não existe"))
+                        .orElseThrow(() -> new ObjectNotFoundException("Essa cidade não existe"))
         );
     }
 
@@ -52,7 +54,7 @@ public class CityService{
 
     public void deleteCity(UUID cityId){
         City city = cityRepository.findById(cityId)
-                .orElseThrow(() -> new RuntimeException("Essa cidade não existe"));
+                .orElseThrow(() -> new ObjectNotFoundException("Essa cidade não existe"));
 
         cityRepository.delete(city);
     }

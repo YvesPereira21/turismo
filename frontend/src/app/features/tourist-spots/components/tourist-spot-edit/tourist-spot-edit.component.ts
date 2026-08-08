@@ -185,7 +185,11 @@ export class TouristSpotEditComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao atualizar ponto turístico', err);
-        alert('Erro ao atualizar o ponto turístico.');
+        if (err.error?.errors) {
+          alert(err.error.errors[0]);
+        } else {
+          alert('Erro ao atualizar o ponto turístico.');
+        }
         this.isSubmiting.set(false);
       }
     });

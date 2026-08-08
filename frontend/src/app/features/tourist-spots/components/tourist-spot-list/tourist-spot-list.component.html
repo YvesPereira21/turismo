@@ -9,7 +9,7 @@
         @for (touristSpot of touristSpots(); track touristSpot.touristSpotId) {
         <article class="relative h-[640px] w-[370px] max-w-[370px] bg-base-200 rounded-xl shadow-md shadow-[#2C5C3E]/30">
             @if (touristSpot.photos && touristSpot.photos.length > 0) {
-                <img [src]="touristSpot.photos[0].url" [alt]="touristSpot.photos[0].altText || touristSpot.name" class="h-[240px] w-full rounded-t-xl object-cover">
+                <img [src]="mediaUrl + touristSpot.photos[0].url" [alt]="touristSpot.photos[0].altText || touristSpot.name" class="h-[240px] w-full rounded-t-xl object-cover">
             } @else {
                 <div class="h-[240px] w-full rounded-t-xl bg-gray-200 flex items-center justify-center text-gray-500 font-poppins">
                     Sem foto

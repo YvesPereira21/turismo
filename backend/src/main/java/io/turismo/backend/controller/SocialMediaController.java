@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.turismo.backend.config.SecurityConfig;
 
 @RestController
+@SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping(path = "/api/v1")
 @Validated
 @Tag(name = "Rede Social", description = "Endpoints para gerenciamento de redes sociais de gerentes")

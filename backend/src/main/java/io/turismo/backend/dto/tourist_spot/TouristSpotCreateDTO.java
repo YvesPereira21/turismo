@@ -13,11 +13,11 @@ public record TouristSpotCreateDTO(
         @NotBlank String name,
         @NotNull Double latitude,
         @NotNull Double longitude,
-        @NotBlank LocalTime opensAt,
-        @NotBlank LocalTime closesAt,
+        @NotNull LocalTime opensAt,
+        @NotNull LocalTime closesAt,
         @NotBlank String shortDescription,
         @NotBlank String description,
-        @NotBlank UUID cityId,
+        @NotNull UUID cityId,
         @Size(min = 1, max = 7) Set<String> tags,
         List<SocialMediaCreateDTO> socialsMedia
 ) {}

@@ -18,13 +18,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.turismo.backend.config.SecurityConfig;
 
 @RestController
+@SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping(path = "/api/v1")
 @Validated
 @Tag(name = "Ponto Turístico", description = "Endpoints para gerenciamento de pontos turísticos e buscas por geolocalização")
@@ -37,7 +41,7 @@ public class TouristSpotController {
     }
 
     @PreAuthorize("hasRole('SPOTMANAGER')")
-    @PostMapping("/manager/{spotManagerId}/tourist-spots")
+    @PostMapping("/tourist-spots")
     @Operation(summary = "Criar ponto turístico", description = "Cria um novo ponto turístico vinculado a um gerente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Ponto turístico criado com sucesso"),
@@ -45,9 +49,9 @@ public class TouristSpotController {
     })
     public ResponseEntity<TouristSpotDTO> createTouristSpot(
             @Valid @RequestBody TouristSpotCreateDTO dto,
-            @PathVariable UUID spotManagerId
+            @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
-        TouristSpotDTO created = touristSpotService.createTouristSpot(dto, spotManagerId);
+        TouristSpotDTO created = touristSpotService.createTouristSpot(dto, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
@@ -133,9 +137,10 @@ public class TouristSpotController {
     })
     public ResponseEntity<Void> updateTouristSpot(
             @PathVariable UUID touristSpotId,
-            @Valid @RequestBody TouristSpotUpdateDTO dto
+            @Valid @RequestBody TouristSpotUpdateDTO dto,
+            @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
-        touristSpotService.updateTouristSpot(touristSpotId, dto);
+        touristSpotService.updateTouristSpot(touristSpotId, dto, userId);
         return ResponseEntity.ok().build();
     }
 
@@ -146,8 +151,11 @@ public class TouristSpotController {
             @ApiResponse(responseCode = "204", description = "Ponto turístico removido com sucesso"),
             @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado")
     })
-    public ResponseEntity<Void> deleteTouristSpot(@PathVariable UUID touristSpotId) {
-        touristSpotService.deleteTouristSpot(touristSpotId);
+    public ResponseEntity<Void> deleteTouristSpot(
+            @PathVariable UUID touristSpotId,
+            @AuthenticationPrincipal(expression = "id") UUID userId
+    ) {
+        touristSpotService.deleteTouristSpot(touristSpotId, userId);
         return ResponseEntity.noContent().build();
     }
 }

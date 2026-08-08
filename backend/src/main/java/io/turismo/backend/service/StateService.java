@@ -2,6 +2,8 @@ package io.turismo.backend.service;
 
 import io.turismo.backend.dto.state.StateCreateDTO;
 import io.turismo.backend.dto.state.StateDTO;
+import io.turismo.backend.exception.ObjectAlreadyExistsException;
+import io.turismo.backend.exception.ObjectNotFoundException;
 import io.turismo.backend.mapper.StateMapper;
 import io.turismo.backend.model.State;
 import io.turismo.backend.repository.StateRepository;
@@ -24,7 +26,7 @@ public class StateService{
         boolean stateExists = stateRepository.existsByNameIgnoreCase(dto.name());
 
         if(stateExists){
-            throw new RuntimeException("Estado com esse nome " + dto.name() + " já existe");
+            throw new ObjectAlreadyExistsException("Estado com esse nome " + dto.name() + " já existe");
         }
 
         State newState = new State();
@@ -42,7 +44,7 @@ public class StateService{
 
     public void deleteState(UUID stateId) {
         State state = stateRepository.findById(stateId)
-                .orElseThrow(() -> new RuntimeException("Estado não encontrado"));
+                .orElseThrow(() -> new ObjectNotFoundException("Estado não encontrado"));
 
         stateRepository.delete(state);
     }

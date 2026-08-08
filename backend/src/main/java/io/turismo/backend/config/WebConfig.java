@@ -11,5 +11,13 @@ public class WebConfig implements WebMvcConfigurer {
         //All of url that starts with /uploads/profiles/ will search in a local folder
         registry.addResourceHandler("/uploads/profiles/**")
                 .addResourceLocations("file:uploads/profiles/");
+
+        // Expose tourist-spots photos
+        registry.addResourceHandler("/uploads/tourist-spots/**")
+                .addResourceLocations("file:uploads/tourist-spots/");
+
+        // Expose activities photos
+        registry.addResourceHandler("/uploads/activities/**")
+                .addResourceLocations("file:uploads/activities/");
     }
 }

@@ -64,7 +64,7 @@
                 <div class="bg-white rounded-2xl shadow-sm p-6">
                     <h3 class="text-lg font-bold text-gray-800 mb-4">Fotos ({{ spot.photos.length || 0 }})</h3>
                     <div class="grid grid-cols-2 gap-3" *ngIf="spot.photos && spot.photos.length > 0">
-                        <img *ngFor="let photo of spot.photos" [src]="photo.url" alt="Foto" class="w-full h-24 object-cover rounded-lg shadow-sm hover:scale-105 transition-transform">
+                        <img *ngFor="let photo of spot.photos" [src]="mediaUrl + photo.url" alt="Foto" class="w-full h-24 object-cover rounded-lg shadow-sm hover:scale-105 transition-transform">
                     </div>
                     <div *ngIf="!spot.photos || spot.photos.length === 0" class="text-center py-6 text-gray-400 text-sm">
                         Nenhuma foto adicionada.

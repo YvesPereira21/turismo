@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TouristSpotService } from '../../../tourist-spots/services/tourist-spot.service';
 import { TouristSpot } from '../../../../core/models/tourist-spot';
 import { SocialMediaListComponent } from '../../../social-medias/componentes/social-media-list/social-media-list.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-manager-tourist-spot-details',
@@ -15,6 +16,8 @@ import { SocialMediaListComponent } from '../../../social-medias/componentes/soc
 export class ManagerTouristSpotDetailsComponent implements OnInit {
   private touristSpotService = inject(TouristSpotService);
   private activatedRoute = inject(ActivatedRoute);
+
+  public mediaUrl = environment.mediaUrl;
 
   touristSpot = signal<TouristSpot | null>(null);
   isLoading = signal(true);

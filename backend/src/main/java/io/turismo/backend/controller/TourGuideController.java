@@ -15,13 +15,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.turismo.backend.config.SecurityConfig;
 
 @RestController
+@SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping(path = "/api/v1")
 @Validated
 @Tag(name = "Guia de Turismo", description = "Endpoints para gerenciamento de guias turísticos cadastrados")
@@ -64,9 +68,10 @@ public class TourGuideController {
     })
     public ResponseEntity<TourGuideDTO> updateTourGuide(
             @Valid @RequestBody TourGuideUpdateDTO dto,
-            @PathVariable UUID tourGuideId
+            @PathVariable UUID tourGuideId,
+            @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
-        TourGuideDTO updated = tourGuideService.updateTourGuide(dto, tourGuideId);
+        TourGuideDTO updated = tourGuideService.updateTourGuide(dto, tourGuideId, userId);
         return ResponseEntity.ok(updated);
     }
 
@@ -77,8 +82,11 @@ public class TourGuideController {
             @ApiResponse(responseCode = "204", description = "Guia excluído com sucesso"),
             @ApiResponse(responseCode = "404", description = "Guia não encontrado")
     })
-    public ResponseEntity<Void> deleteTourGuide(@PathVariable UUID tourGuideId) {
-        tourGuideService.deleteTourGuide(tourGuideId);
+    public ResponseEntity<Void> deleteTourGuide(
+            @PathVariable UUID tourGuideId,
+            @AuthenticationPrincipal(expression = "id") UUID userId
+    ) {
+        tourGuideService.deleteTourGuide(tourGuideId, userId);
         return ResponseEntity.noContent().build();
     }
 

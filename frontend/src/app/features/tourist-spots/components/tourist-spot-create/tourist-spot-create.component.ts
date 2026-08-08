@@ -11,7 +11,7 @@ import { CityService } from '../../../cities/services/city.service';
 import { State } from '../../../../core/models/state';
 import { City } from '../../../../core/models/city';
 
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
@@ -27,6 +27,7 @@ export class TouristSpotCreateComponent implements OnInit {
   private stateService = inject(StateService);
   private cityService = inject(CityService);
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   photos = signal<PhotoUpload[]>([]);
   isSubmiting = signal<boolean>(false);
@@ -39,7 +40,6 @@ export class TouristSpotCreateComponent implements OnInit {
     closesAt: ['', { nonNullable: true, validators: [Validators.required] }],
     shortDescription: ['', { nonNullable: true, validators: [Validators.required] }],
     description: ['', { nonNullable: true, validators: [Validators.required] }],
-    spotManagerId: ['', { nonNullable: true, validators: [Validators.required] }],
     cityId: ['', { nonNullable: true, validators: [Validators.required] }],
     tags: this.formBuilder.array([]),
     instagram: [''],
@@ -110,12 +110,22 @@ export class TouristSpotCreateComponent implements OnInit {
         touristSpot.socialsMedia!.push({ socialMediaLink: formValues.x.trim(), socialMediaType: 'X' });
       }
 
-      this.touristSpotService.createTouristSpot(touristSpot, formValues.spotManagerId!).subscribe({
+      this.touristSpotService.createTouristSpot(touristSpot).subscribe({
         next: (response) => {
           const touristSpotId = response.touristSpotId;
-          this.uploadPhotos(touristSpotId);
+          if (this.photos().length > 0) {
+            this.uploadPhotos(touristSpotId);
+          } else {
+            this.isSubmiting.set(false);
+            this.router.navigate(['/manager-dashboard']);
+          }
         },
-        error: () => {
+        error: (err) => {
+          if (err.error?.errors) {
+            alert(err.error.errors[0]);
+          } else {
+            alert('Erro ao criar o ponto turístico.');
+          }
           this.isSubmiting.set(false);
         }
       })
@@ -178,6 +188,7 @@ export class TouristSpotCreateComponent implements OnInit {
 
   uploadPhotos(touristSpotId: string) {
     const photosList = this.photos();
+    let completed = 0;
     for (let i = 0; i < photosList.length; i++) {
       const currentPhoto = photosList[i]
 
@@ -185,13 +196,21 @@ export class TouristSpotCreateComponent implements OnInit {
         .subscribe({
           next: (response) => {
             console.log(`✅ Foto ${currentPhoto.photo.name} enviada!`, response);
-            this.clearForm();
+            completed++;
+            if (completed === photosList.length) {
+              this.isSubmiting.set(false);
+              this.router.navigate(['/manager-dashboard']);
+            }
           },
           error: (error) => {
             console.error(`❌ Erro na foto ${currentPhoto.photo.name}:`, error);
+            completed++;
+            if (completed === photosList.length) {
+              this.isSubmiting.set(false);
+              this.router.navigate(['/manager-dashboard']);
+            }
           }
-        }
-        )
+        });
     }
   }
 

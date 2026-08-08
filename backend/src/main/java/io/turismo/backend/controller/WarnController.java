@@ -14,13 +14,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.turismo.backend.config.SecurityConfig;
 
 @RestController
+@SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping(path = "/api/v1")
 @Validated
 @Tag(name = "Aviso", description = "Endpoints para gerenciamento de avisos de pontos turísticos")
@@ -41,9 +45,10 @@ public class WarnController {
     })
     public ResponseEntity<WarnDTO> createWarn(
             @Valid @RequestBody WarnCreateDTO dto,
-            @PathVariable UUID touristSpotId
+            @PathVariable UUID touristSpotId,
+            @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
-        WarnDTO created = warnService.createWarn(dto, touristSpotId);
+        WarnDTO created = warnService.createWarn(userId, dto, touristSpotId);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
@@ -77,8 +82,11 @@ public class WarnController {
             @ApiResponse(responseCode = "204", description = "Aviso excluído com sucesso"),
             @ApiResponse(responseCode = "404", description = "Aviso não encontrado")
     })
-    public ResponseEntity<Void> deleteWarn(@PathVariable UUID warnId) {
-        warnService.deleteWarn(warnId);
+    public ResponseEntity<Void> deleteWarn(
+            @PathVariable UUID warnId,
+            @AuthenticationPrincipal(expression = "id") UUID userId
+    ) {
+        warnService.deleteWarn(userId, warnId);
         return ResponseEntity.noContent().build();
     }
 }

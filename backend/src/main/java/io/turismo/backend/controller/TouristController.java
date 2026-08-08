@@ -11,13 +11,17 @@ import io.turismo.backend.service.TouristService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.turismo.backend.config.SecurityConfig;
 
 @RestController
+@SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping(path = "/api/v1")
 @Validated
 @Tag(name = "Turista", description = "Endpoints para gerenciamento de turistas")
@@ -61,9 +65,10 @@ public class TouristController {
     })
     public ResponseEntity<TouristDTO> updateTourist(
             @Valid @RequestBody TouristUpdateDTO dto,
-            @PathVariable UUID touristId
+            @PathVariable UUID touristId,
+            @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
-        TouristDTO updated = touristService.updateTourist(dto, touristId);
+        TouristDTO updated = touristService.updateTourist(dto, touristId, userId);
         return ResponseEntity.ok(updated);
     }
 
@@ -74,8 +79,11 @@ public class TouristController {
             @ApiResponse(responseCode = "204", description = "Turista excluído com sucesso"),
             @ApiResponse(responseCode = "404", description = "Turista não encontrado")
     })
-    public ResponseEntity<Void> deleteTourist(@PathVariable UUID touristId) {
-        touristService.deleteTourist(touristId);
+    public ResponseEntity<Void> deleteTourist(
+            @PathVariable UUID touristId,
+            @AuthenticationPrincipal(expression = "id") UUID userId
+    ) {
+        touristService.deleteTourist(touristId, userId);
         return ResponseEntity.noContent().build();
     }
 }

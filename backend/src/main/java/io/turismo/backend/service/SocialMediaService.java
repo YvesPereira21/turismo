@@ -3,6 +3,7 @@ package io.turismo.backend.service;
 import io.turismo.backend.dto.social_media.SocialMediaCreateDTO;
 import io.turismo.backend.dto.social_media.SocialMediaDTO;
 import io.turismo.backend.dto.social_media.SocialMediaUpdateDTO;
+import io.turismo.backend.exception.ObjectNotFoundException;
 import io.turismo.backend.mapper.SocialMediaMapper;
 import io.turismo.backend.model.SocialMedia;
 import io.turismo.backend.model.TouristSpot;
@@ -26,7 +27,7 @@ public class SocialMediaService {
 
     public SocialMediaDTO createSocialMedia(SocialMediaCreateDTO dto, UUID touristSpotId) {
         TouristSpot touristSpot = touristSpotRepository.findById(touristSpotId)
-                .orElseThrow(() -> new RuntimeException("Ponto Turístico não encontrado"));
+                .orElseThrow(() -> new ObjectNotFoundException("Ponto Turístico não encontrado"));
 
         SocialMedia socialMedia = socialMediaMapper.toEntity(dto);
         socialMedia.setTouristSpot(touristSpot);
@@ -43,7 +44,7 @@ public class SocialMediaService {
 
     public SocialMediaDTO updateSocialMedia(SocialMediaUpdateDTO socialMediaUpdateDTO, UUID socialMediaId){
         SocialMedia socialMedia = socialMediaRepository.findById(socialMediaId)
-                .orElseThrow(() -> new RuntimeException("Rede social não encontrada"));
+                .orElseThrow(() -> new ObjectNotFoundException("Rede social não encontrada"));
 
         socialMediaMapper.updateEntityFromDto(socialMediaUpdateDTO, socialMedia);
 
@@ -52,7 +53,7 @@ public class SocialMediaService {
 
     public void deleteSocialMedia(UUID socialMediaId) {
         SocialMedia socialMedia = socialMediaRepository.findById(socialMediaId)
-                .orElseThrow(() -> new RuntimeException("Rede social não encontrada"));
+                .orElseThrow(() -> new ObjectNotFoundException("Rede social não encontrada"));
 
         socialMediaRepository.delete(socialMedia);
     }

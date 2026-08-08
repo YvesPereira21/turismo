@@ -2,6 +2,8 @@ package io.turismo.backend.service;
 
 import io.turismo.backend.dto.tag.TagCreateUpdateDTO;
 import io.turismo.backend.dto.tag.TagDTO;
+import io.turismo.backend.exception.ObjectAlreadyExistsException;
+import io.turismo.backend.exception.ObjectNotFoundException;
 import io.turismo.backend.mapper.TagMapper;
 import io.turismo.backend.model.Tag;
 import io.turismo.backend.repository.TagRepository;
@@ -28,7 +30,7 @@ public class TagService {
     public TagDTO createTag(TagCreateUpdateDTO dto) {
         boolean tagExists = tagRepository.existsByName(dto.name());
         if (tagExists) {
-            throw new RuntimeException("Tag com esse nome já existe");
+            throw new ObjectAlreadyExistsException("Tag com esse nome já existe");
         }
 
         Tag newTag = new Tag();
@@ -39,7 +41,7 @@ public class TagService {
 
     public TagDTO getTagByName(String name) {
         Tag tag = tagRepository.findByNameContainingIgnoreCase(name)
-                .orElseThrow(() -> new RuntimeException("Essa tag não existe"));
+                .orElseThrow(() -> new ObjectNotFoundException("Essa tag não existe"));
 
         return tagMapper.toDTO(tag);
     }
@@ -53,7 +55,7 @@ public class TagService {
                 .orElseThrow(() -> new RuntimeException(""));
         //verificar se o nome atualizado que o dto traz já existe
         if (tagRepository.existsByName(dto.name())) {
-            throw new RuntimeException("Essa tag já existe.");
+            throw new ObjectAlreadyExistsException("Essa tag já existe.");
         }
 
         tag.setName(dto.name());
@@ -63,7 +65,7 @@ public class TagService {
 
     public void deleteTagByTechnologyName(String technologyName) {
         Tag tag = tagRepository.findByName(technologyName)
-                .orElseThrow(() -> new RuntimeException("Tag não encontrada."));
+                .orElseThrow(() -> new ObjectNotFoundException("Tag não encontrada."));
 
         tagRepository.delete(tag);
     }
@@ -74,7 +76,7 @@ public class TagService {
 
         names.forEach(name -> {
             Tag tag = tagRepository.findByName(name)
-                    .orElseThrow(() -> new RuntimeException("Tag " + name + " não encontrada"));
+                    .orElseThrow(() -> new ObjectNotFoundException("Tag " + name + " não encontrada"));
             tags.add(tag);
         }
         );

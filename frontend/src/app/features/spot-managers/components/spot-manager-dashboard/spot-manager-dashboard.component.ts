@@ -9,6 +9,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { TouristSpotList } from '../../../../core/models/tourist-spot';
 import { TourGuide } from '../../../../core/models/tour-guide';
 import { Warn } from '../../../../core/models/warn';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-spot-manager-dashboard',
@@ -23,6 +24,7 @@ export class SpotManagerDashboardComponent implements OnInit {
   private warnService = inject(WarnService);
   public authService = inject(AuthService);
   private router = inject(Router);
+  public mediaUrl = environment.mediaUrl;
 
   touristSpots = signal<TouristSpotList[]>([]);
   tourGuides = signal<TourGuide[]>([]);

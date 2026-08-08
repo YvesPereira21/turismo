@@ -16,12 +16,34 @@ import { ManagerTouristSpotDetailsComponent } from './features/spot-managers/com
 import { TouristSpotEditComponent } from './features/tourist-spots/components/tourist-spot-edit/tourist-spot-edit.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent, canActivate: [authGuard, homeGuard] },
-  { path: 'mapa', component: MapViewComponent, canActivate: [authGuard] },
-  { path: 'login', component: LoginComponent },
-  { path: 'auth/callback', component: AuthCallbackComponent },
-  { path: 'create-tour-guide', component: TourGuideCreateComponent },
-  { path: 'create-tourist', component: TouristCreateComponent },
+  {
+    path: '',
+    component: HomeComponent,
+    canActivate: [authGuard, homeGuard]
+  },
+  {
+    path: 'mapa',
+    component: MapViewComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
+    path: 'auth/callback',
+    component: AuthCallbackComponent
+  },
+  {
+    path: 'create-tour-guide',
+    component: TourGuideCreateComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['ADMIN'] }
+  },
+  {
+    path: 'create-tourist',
+    component: TouristCreateComponent
+  },
   {
     path: 'create-spot-manager',
     component: SpotManagerCreateComponent,
@@ -34,23 +56,27 @@ export const routes: Routes = [
     canActivate: [roleGuard],
     data: { roles: ['SPOTMANAGER'] }
   },
-  { path: 'tourist-spots/:id', component: TouristSpotDetailsComponent, canActivate: [authGuard] },
-  { 
-    path: 'manager-dashboard', 
-    component: SpotManagerDashboardComponent, 
-    canActivate: [authGuard, roleGuard], 
-    data: { roles: ['SPOTMANAGER'] } 
+  {
+    path: 'tourist-spots/:id',
+    component: TouristSpotDetailsComponent,
+    canActivate: [authGuard]
   },
-  { 
-    path: 'manager/tourist-spot/:id', 
-    component: ManagerTouristSpotDetailsComponent, 
-    canActivate: [authGuard, roleGuard], 
-    data: { roles: ['SPOTMANAGER'] } 
+  {
+    path: 'manager-dashboard',
+    component: SpotManagerDashboardComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['SPOTMANAGER'] }
   },
-  { 
-    path: 'tourist-spots/edit/:id', 
-    component: TouristSpotEditComponent, 
-    canActivate: [authGuard, roleGuard], 
-    data: { roles: ['SPOTMANAGER'] } 
+  {
+    path: 'manager/tourist-spot/:id',
+    component: ManagerTouristSpotDetailsComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['SPOTMANAGER'] }
+  },
+  {
+    path: 'tourist-spots/edit/:id',
+    component: TouristSpotEditComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['SPOTMANAGER'] }
   }
 ];

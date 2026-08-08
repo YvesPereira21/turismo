@@ -13,8 +13,8 @@ export class TouristSpotService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/api/v1/tourist-spots`;
 
-  createTouristSpot(touristSpot: TouristSpotCreate, spotManagerId: string): Observable<TouristSpot> {
-    return this.http.post<TouristSpot>(`${environment.apiUrl}/api/v1/manager/${spotManagerId}/tourist-spots`, touristSpot);
+  createTouristSpot(touristSpot: TouristSpotCreate): Observable<TouristSpot> {
+    return this.http.post<TouristSpot>(this.apiUrl, touristSpot);
   }
 
   getTouristSpot(id: string): Observable<TouristSpot> {

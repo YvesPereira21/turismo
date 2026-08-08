@@ -1,5 +1,6 @@
 package io.turismo.backend.service;
 
+import io.turismo.backend.exception.ObjectAlreadyExistsException;
 import io.turismo.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ public class UserService{
     protected void verifyUserAlreadyExists(String email) {
         boolean userAlreadyExists = userRepository.existsByEmail(email);
         if (userAlreadyExists) {
-            throw new RuntimeException("Email ou senha inválidos");
+            throw new ObjectAlreadyExistsException("Email ou senha inválidos");
         }
     }
 }

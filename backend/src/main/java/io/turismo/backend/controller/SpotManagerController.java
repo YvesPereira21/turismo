@@ -12,13 +12,17 @@ import io.turismo.backend.service.SpotManagerService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.turismo.backend.config.SecurityConfig;
 
 @RestController
+@SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping(path = "/api/v1")
 @Validated
 @Tag(name = "Gerente de Ponto Turístico", description = "Endpoints para gerenciamento de administradores/gerentes de pontos turísticos")
@@ -73,9 +77,10 @@ public class SpotManagerController {
     })
     public ResponseEntity<SpotManagerSimpleDTO> updateSpotManager(
             @Valid @RequestBody SpotManagerUpdateDTO spotManagerUpdateDTO,
-            @PathVariable UUID spotManagerId
+            @PathVariable UUID spotManagerId,
+            @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
-        SpotManagerSimpleDTO updated = spotManagerService.updateSpotManager(spotManagerUpdateDTO, spotManagerId);
+        SpotManagerSimpleDTO updated = spotManagerService.updateSpotManager(spotManagerUpdateDTO, spotManagerId, userId);
         return ResponseEntity.ok(updated);
     }
 
@@ -86,8 +91,11 @@ public class SpotManagerController {
             @ApiResponse(responseCode = "204", description = "Gerente removido com sucesso"),
             @ApiResponse(responseCode = "404", description = "Gerente não encontrado")
     })
-    public ResponseEntity<Void> deleteSpotManager(@PathVariable UUID spotManagerId) {
-        spotManagerService.deleteSpotManager(spotManagerId);
+    public ResponseEntity<Void> deleteSpotManager(
+            @PathVariable UUID spotManagerId,
+            @AuthenticationPrincipal(expression = "id") UUID userId
+    ) {
+        spotManagerService.deleteSpotManager(spotManagerId, userId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,4 +1,5 @@
 import { Component, effect, inject, input, OnInit, signal } from '@angular/core';
+import { environment } from '../../../../environments/environment';
 import { TouristSpotService } from '../../services/tourist-spot.service';
 import { TouristSpotList } from '../../../../core/models/tourist-spot';
 import { RouterLink } from '@angular/router';
@@ -11,6 +12,7 @@ import { RouterLink } from '@angular/router';
 })
 export class TouristSpotListComponent implements OnInit {
   private touristSpotService = inject(TouristSpotService);
+  public mediaUrl = environment.mediaUrl;
 
   distance = input<number | null>(null);
   touristSpots = signal<TouristSpotList[]>([]);

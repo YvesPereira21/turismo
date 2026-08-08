@@ -5,12 +5,12 @@
     <section aria-label="Galeria de fotos" class="w-[1180px] max-w-[1180px] h-[480px] grid grid-cols-3 grid-rows-2 gap-1 mt-1 mx-auto">
         @for (photo of touristSpot()?.photos; track photo.url) {
         <div class="row-span-2">
-            <img [src]="mediaUrl + '/' + photo.url" [alt]="photo.altText"
+            <img [src]="mediaUrl + photo.url" [alt]="photo.altText"
                 class="w-full h-full object-cover rounded-l-lg">
         </div>
 
         <div class="row-span-1">
-            <img [src]="mediaUrl + '/' + photo.url" [alt]="photo.altText" class="w-full h-full object-cover">
+            <img [src]="mediaUrl + photo.url" [alt]="photo.altText" class="w-full h-full object-cover">
         </div>
         }
     </section>
