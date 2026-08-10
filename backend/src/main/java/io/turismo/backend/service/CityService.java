@@ -12,6 +12,8 @@ import io.turismo.backend.repository.StateRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import java.util.UUID;
 
 @Service
@@ -26,6 +28,7 @@ public class CityService{
         this.stateRepository = stateRepository;
     }
 
+    @CacheEvict(value = "cidades", allEntries = true)
     public CityDTO createCity(CityCreateDTO dto) {
         State state = stateRepository.findByName(dto.stateName())
                 .orElseThrow(() -> new ObjectNotFoundException("Estado não encontrado"));
@@ -41,6 +44,7 @@ public class CityService{
         return cityMapper.toDto(cityRepository.save(newCity));
     }
 
+    @Cacheable(value = "cidades", sync = true)
     public CityDTO getCity(String cityName, String stateName) {
         return cityMapper.toDto(
                 cityRepository.findByNameAndState_Name(cityName, stateName)
@@ -48,10 +52,12 @@ public class CityService{
         );
     }
 
+    @Cacheable(value = "cidades", sync = true)
     public Page<CityDTO> getCitiesFromState(String stateName, Pageable pageable) {
         return cityRepository.findAllByState_Name(stateName, pageable).map(cityMapper::toDto);
     }
 
+    @CacheEvict(value = "cidades", allEntries = true)
     public void deleteCity(UUID cityId){
         City city = cityRepository.findById(cityId)
                 .orElseThrow(() -> new ObjectNotFoundException("Essa cidade não existe"));

@@ -12,6 +12,9 @@ import io.turismo.backend.repository.WarnRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -28,6 +31,10 @@ public class WarnService {
         this.touristSpotRepository = touristSpotRepository;
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "aviso_detalhe", allEntries = true),
+            @CacheEvict(value = "avisos", allEntries = true)
+    })
     public WarnDTO createWarn(UUID userSpotManagerId, WarnCreateDTO dto, UUID touristSpotId){
         TouristSpot touristSpot = touristSpotRepository.findById(touristSpotId)
                 .orElseThrow(() -> new ObjectNotFoundException("Ponto turístico não encontrado"));
@@ -43,6 +50,7 @@ public class WarnService {
         return warnMapper.toDTO(warnRepository.save(warn));
     }
 
+    @Cacheable(value = "aviso_detalhe", sync = true)
     public WarnDTO getWarn(UUID warnId){
         return warnMapper.toDTO(
                 warnRepository.findById(warnId)
@@ -50,11 +58,16 @@ public class WarnService {
         );
     }
 
+    @Cacheable(value = "avisos", sync = true)
     public Page<WarnDTO> getAllTouristSpotWarn(UUID touristSpotId, Pageable pageable){
         return warnRepository.findAllByTouristSpot_TouristSpotId(touristSpotId, pageable)
                 .map(warnMapper::toDTO);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "aviso_detalhe", allEntries = true),
+            @CacheEvict(value = "avisos", allEntries = true)
+    })
     public void deleteWarn(UUID userSpotManagerId, UUID warnId) {
         Warn warn = warnRepository.findById(warnId)
                         .orElseThrow(() -> new ObjectNotFoundException("Aviso não encontrado"));

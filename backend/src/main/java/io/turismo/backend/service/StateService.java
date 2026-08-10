@@ -8,6 +8,8 @@ import io.turismo.backend.mapper.StateMapper;
 import io.turismo.backend.model.State;
 import io.turismo.backend.repository.StateRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,6 +24,7 @@ public class StateService{
         this.stateMapper = stateMapper;
     }
 
+    @CacheEvict(value = "estados", allEntries = true)
     public void createState(StateCreateDTO dto) {
         boolean stateExists = stateRepository.existsByNameIgnoreCase(dto.name());
 
@@ -35,6 +38,7 @@ public class StateService{
         stateRepository.save(newState);
     }
 
+    @Cacheable(value = "estados", sync = true)
     public Set<StateDTO> getAllStates() {
         return stateRepository.findAll()
                 .stream()
@@ -42,6 +46,7 @@ public class StateService{
                 .collect(Collectors.toSet());
     }
 
+    @CacheEvict(value = "estados", allEntries = true)
     public void deleteState(UUID stateId) {
         State state = stateRepository.findById(stateId)
                 .orElseThrow(() -> new ObjectNotFoundException("Estado não encontrado"));

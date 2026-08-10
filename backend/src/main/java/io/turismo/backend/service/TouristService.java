@@ -13,6 +13,9 @@ import io.turismo.backend.model.User;
 import io.turismo.backend.model.enums.UserRole;
 import io.turismo.backend.repository.TouristRepository;
 import io.turismo.backend.repository.UserRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
@@ -50,6 +53,7 @@ public class TouristService{
         return touristMapper.toDTO(touristRepository.save(tourist));
     }
 
+    @Cacheable(value = "turista", key = "#touristId", sync = true)
     public TouristDTO getTourist(UUID touristId) {
         return touristMapper.toDTO(
                 touristRepository.findById(touristId)
@@ -57,6 +61,7 @@ public class TouristService{
         );
     }
 
+    @CachePut(value = "turista", key = "#touristId")
     public TouristDTO updateTourist(TouristUpdateDTO touristUpdateDTO, UUID touristId, UUID userId) {
         Tourist tourist = touristRepository.findById(touristId)
                 .orElseThrow(() -> new ObjectNotFoundException("Não encontrado"));
@@ -74,6 +79,7 @@ public class TouristService{
         return touristMapper.toDTO(touristRepository.save(tourist));
     }
 
+    @CacheEvict(value = "turista", key = "#touristId")
     public void deleteTourist(UUID touristId, UUID userId) {
         Tourist tourist = touristRepository.findById(touristId)
                 .orElseThrow(() -> new ObjectNotFoundException("Não encontrado"));

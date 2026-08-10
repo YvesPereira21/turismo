@@ -15,6 +15,9 @@ import io.turismo.backend.repository.SpotManagerRepository;
 import io.turismo.backend.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import java.util.UUID;
 
 @Service
@@ -46,6 +49,7 @@ public class SpotManagerService{
         return spotManagerMapper.toSimpleDTO(spotManagerRepository.save(newSpotManager));
     }
 
+    @Cacheable(value = "gestor_simples", sync = true)
     public SpotManagerSimpleDTO getSpotManager(UUID spotManagerId) {
         return spotManagerMapper.toSimpleDTO(
                 spotManagerRepository.findById(spotManagerId)
@@ -53,6 +57,7 @@ public class SpotManagerService{
         );
     }
 
+    @Cacheable(value = "gestor_completo", sync = true)
     public SpotManagerDTO currentSpotManager(UUID spotManagerId) {
         SpotManager spotManager = spotManagerRepository.findById(spotManagerId)
                 .orElseThrow(() -> new ObjectNotFoundException("Gerente não encontrado"));
@@ -60,6 +65,10 @@ public class SpotManagerService{
         return spotManagerMapper.toDTO(spotManager);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "gestor_simples", allEntries = true),
+            @CacheEvict(value = "gestor_completo", allEntries = true)
+    })
     public SpotManagerSimpleDTO updateSpotManager(SpotManagerUpdateDTO spotManagerUpdateDTO, UUID spotManagerId, UUID userId){
         SpotManager spotManager = spotManagerRepository.findById(spotManagerId)
                 .orElseThrow(() -> new ObjectNotFoundException("Gerente não encontrado"));
@@ -75,6 +84,10 @@ public class SpotManagerService{
         return spotManagerMapper.toSimpleDTO(spotManagerUpdated);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "gestor_simples", allEntries = true),
+            @CacheEvict(value = "gestor_completo", allEntries = true)
+    })
     public void deleteSpotManager(UUID spotManagerId, UUID userId){
         SpotManager spotManager = spotManagerRepository.findById(spotManagerId)
                 .orElseThrow(() -> new ObjectNotFoundException("Gerente não encontrado"));
