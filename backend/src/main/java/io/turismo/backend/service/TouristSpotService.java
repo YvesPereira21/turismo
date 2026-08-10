@@ -52,12 +52,11 @@ public class TouristSpotService{
         City city = cityRepository.findById(dto.cityId())
                 .orElseThrow(() -> new ObjectNotFoundException("Cidade não encontrada"));
 
-        TouristSpot touristSpot = touristSpotMapper.toEntity(dto);
-        
-        if (!timeIsValid(touristSpot.getOpensAt(), touristSpot.getClosesAt())) {
+        if (isTimeInvalid(dto.opensAt(), dto.closesAt())) {
             throw new InvalidDateException("Horário de fechamento não pode ser antes do horário de abertura");
         }
 
+        TouristSpot touristSpot = touristSpotMapper.toEntity(dto);
         touristSpot.setTags(tagService.convertNamesToTags(dto.tags()));
         touristSpot.setCity(city);
         touristSpot.setSpotManager(spotManager);
@@ -136,7 +135,7 @@ public class TouristSpotService{
 
         touristSpotMapper.updateEntityFromDTO(touristSpotUpdate, touristSpot);
         
-        if (!timeIsValid(touristSpot.getOpensAt(), touristSpot.getClosesAt())) {
+        if (isTimeInvalid(touristSpot.getOpensAt(), touristSpot.getClosesAt())) {
             throw new InvalidDateException("Horário de fechamento não pode ser antes do horário de abertura");
         }
 
@@ -163,10 +162,10 @@ public class TouristSpotService{
         touristSpotRepository.delete(touristSpot);
     }
 
-    private boolean timeIsValid(LocalTime opensAt, LocalTime closesAt) {
+    private boolean isTimeInvalid(LocalTime opensAt, LocalTime closesAt) {
         if (opensAt != null && closesAt != null) {
-            return !closesAt.isBefore(opensAt);
+            return closesAt.isBefore(opensAt);
         }
-        return true;
+        return false;
     }
 }

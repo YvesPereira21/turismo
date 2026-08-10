@@ -170,16 +170,14 @@ class TouristServiceTest {
 
     @Test
     void shouldNotCreateTouristAndThrowExceptionWhenInvalidAge() {
-        Tourist invalidTourist = new Tourist();
-        invalidTourist.setUser(userPerson1);
-        invalidTourist.setBirthDate(LocalDate.now().minusYears(130)); // > 125 anos
+        UserCreateDTO userCreateDTO = new UserCreateDTO("John Doe", "tourist@gmail.com", "password123", "123456789");
+        TouristCreateDTO invalidAgeDTO = new TouristCreateDTO(LocalDate.now().minusYears(130), userCreateDTO);
 
-        doNothing().when(userService).verifyUserAlreadyExists(touristCreateDTO.user().email());
-        when(touristMapper.toEntity(touristCreateDTO)).thenReturn(invalidTourist);
+        doNothing().when(userService).verifyUserAlreadyExists(invalidAgeDTO.user().email());
 
         assertThrows(
                 InvalidDateException.class,
-                () -> touristService.createTourist(touristCreateDTO)
+                () -> touristService.createTourist(invalidAgeDTO)
         );
 
         verify(touristRepository, never()).save(any(Tourist.class));

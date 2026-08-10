@@ -37,12 +37,11 @@ public class TouristService{
     public TouristDTO createTourist(TouristCreateDTO dto) {
         userService.verifyUserAlreadyExists(dto.user().email());
 
-        Tourist tourist = touristMapper.toEntity(dto);
-
-        if (!ageIsValid(tourist.getBirthDate())) {
+        if (isAgeInvalid(dto.birthDate())) {
             throw new InvalidDateException("Data de nascimento inválida ou idade maior que 125 anos");
         }
 
+        Tourist tourist = touristMapper.toEntity(dto);
         tourist.getUser().setTourist(tourist);
         tourist.getUser().setRole(UserRole.TOURIST);
         String encodedPassword = bCryptPasswordEncoder.encode(dto.user().password());
@@ -68,7 +67,7 @@ public class TouristService{
 
         touristMapper.updateEntityFromDTO(touristUpdateDTO, tourist);
 
-        if (!ageIsValid(tourist.getBirthDate())) {
+        if (isAgeInvalid(tourist.getBirthDate())) {
             throw new InvalidDateException("Data de nascimento inválida ou idade maior que 125 anos");
         }
 
@@ -88,9 +87,9 @@ public class TouristService{
         touristRepository.delete(tourist);
     }
 
-    private boolean ageIsValid(LocalDate birthDate) {
-        if (birthDate == null) return false;
+    private boolean isAgeInvalid(LocalDate birthDate) {
+        if (birthDate == null) return true;
         LocalDate now = LocalDate.now();
-        return !birthDate.isBefore(now.minusYears(125)) && !birthDate.isAfter(now);
+        return birthDate.isBefore(now.minusYears(125)) || birthDate.isAfter(now);
     }
 }

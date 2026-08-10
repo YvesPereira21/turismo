@@ -307,17 +307,18 @@ class TouristSpotServiceTest {
     void shouldNotCreateTouristSpotAndThrowExceptionWhenInvalidTime() {
         UUID userId = userOwner.getId();
 
-        TouristSpot invalidSpot = new TouristSpot();
-        invalidSpot.setOpensAt(LocalTime.of(18, 0));
-        invalidSpot.setClosesAt(LocalTime.of(8, 0)); // Fechamento antes da abertura
+        TouristSpotCreateDTO invalidTimeDTO = new TouristSpotCreateDTO(
+                "Parque Ibirapuera", -23.550520, -46.633308,
+                LocalTime.of(18, 0), LocalTime.of(8, 0), "Descrição curta", "Descrição",
+                city.getCityId(), Set.of("Parque"), Collections.emptyList()
+        );
 
         when(spotManagerRepository.findByUser_Id(userId)).thenReturn(Optional.of(spotManager));
-        when(cityRepository.findById(touristSpotCreateDTO.cityId())).thenReturn(Optional.of(city));
-        when(touristSpotMapper.toEntity(touristSpotCreateDTO)).thenReturn(invalidSpot);
+        when(cityRepository.findById(invalidTimeDTO.cityId())).thenReturn(Optional.of(city));
 
         assertThrows(
                 InvalidDateException.class,
-                () -> touristSpotService.createTouristSpot(touristSpotCreateDTO, userId)
+                () -> touristSpotService.createTouristSpot(invalidTimeDTO, userId)
         );
 
         verify(touristSpotRepository, never()).save(any());

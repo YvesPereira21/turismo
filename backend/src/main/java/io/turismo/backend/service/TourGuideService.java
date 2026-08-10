@@ -43,13 +43,13 @@ public class TourGuideService {
             throw new ObjectAlreadyExistsException("Cadastur já cadastrado");
         }
 
-        TourGuide newTourGuide = tourGuideMapper.toEntity(dto);
-        newTourGuide.getUser().setTourGuide(newTourGuide);
-        newTourGuide.getUser().setRole(UserRole.TOURGUIDE);
+        TourGuide tourGuide = tourGuideMapper.toEntity(dto);
+        tourGuide.getUser().setTourGuide(tourGuide);
+        tourGuide.getUser().setRole(UserRole.TOURGUIDE);
         String encodedPassword = bCryptPasswordEncoder.encode(dto.user().password());
-        newTourGuide.getUser().setPassword(encodedPassword);
+        tourGuide.getUser().setPassword(encodedPassword);
 
-        return tourGuideMapper.toDTO(tourGuideRepository.save(newTourGuide));
+        return tourGuideMapper.toDTO(tourGuideRepository.save(tourGuide));
     }
 
     public TourGuideDTO getTourGuide(UUID tourGuideId) {
