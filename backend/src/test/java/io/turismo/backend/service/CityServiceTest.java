@@ -97,18 +97,15 @@ class CityServiceTest {
 
     @Test
     void shouldGetCitiesFromState() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<City> cityPage = new PageImpl<>(List.of(city));
-
-        when(cityRepository.findAllByState_Name("São Paulo", pageable)).thenReturn(cityPage);
+        when(cityRepository.findAllByState_Name("São Paulo")).thenReturn(List.of(city));
         when(cityMapper.toDto(city)).thenReturn(cityDTO);
 
-        Page<CityDTO> result = cityService.getCitiesFromState("São Paulo", pageable);
+        List<CityDTO> result = cityService.getCitiesFromState("São Paulo");
 
         assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
+        assertEquals(1, result.size());
 
-        verify(cityRepository, times(1)).findAllByState_Name("São Paulo", pageable);
+        verify(cityRepository, times(1)).findAllByState_Name("São Paulo");
     }
 
     @Test

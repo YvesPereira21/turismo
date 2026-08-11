@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { tap, catchError, of } from 'rxjs';
+import { tap, catchError, of, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
@@ -39,12 +39,13 @@ export class AuthService {
       })
     );
   }
-  saveToken(token: string, user?: UserResponse): void {
+  saveToken(token: string, user?: UserResponse) {
     this.tokenSignal.set(token);
     if (user) {
       this.userSignal.set(user);
+      return of(user);
     } else {
-      this.loadCurrentUser();
+      return this.loadCurrentUser();
     }
   }
 
@@ -52,11 +53,13 @@ export class AuthService {
     return this.tokenSignal();
   }
 
-  loadCurrentUser(): void {
-    this.http.get<UserResponse>(`${environment.apiUrl}/api/v1/auth/me`).subscribe({
-      next: (user) => this.userSignal.set(user),
-      error: () => this.clearSession()
-    });
+  loadCurrentUser() {
+    return this.http.get<UserResponse>(`${environment.apiUrl}/api/v1/auth/me`).pipe(
+      tap({
+        next: (user) => this.userSignal.set(user),
+        error: () => this.clearSession()
+      })
+    );
   }
 
   restoreSession() {
@@ -65,8 +68,9 @@ export class AuthService {
       {},
       { withCredentials: true }
     ).pipe(
-      tap((response) => {
-        this.saveToken(response.accessToken);
+      switchMap((response) => {
+        this.tokenSignal.set(response.accessToken);
+        return this.loadCurrentUser();
       }),
       catchError(() => {
         this.clearSession();

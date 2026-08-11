@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/v1/tourist-spots/**", "/api/v1/spots-to-map/**", "/api/v1/states/**", "/api/v1/cities/**", "/api/v1/tags/**", "/uploads/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/tourists", "/api/v1/tour-guides").permitAll()
                         .requestMatchers("/api/v1/auth/**", "/oauth2/**", "/login/**", "/error").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()

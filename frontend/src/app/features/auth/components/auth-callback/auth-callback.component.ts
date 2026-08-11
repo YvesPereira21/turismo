@@ -21,8 +21,10 @@ export class AuthCallbackComponent implements OnInit {
     const token = this.route.snapshot.queryParamMap.get('token');
 
     if (token) {
-      this.authService.saveToken(token);
-      this.router.navigate(['/']);
+      this.authService.saveToken(token).subscribe({
+        next: () => this.router.navigate(['/']),
+        error: () => this.router.navigate(['/'])
+      });
     } else {
       alert('Não foi possível concluir a autenticação com o Google.');
       this.router.navigate(['/']);

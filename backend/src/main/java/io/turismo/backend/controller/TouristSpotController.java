@@ -24,6 +24,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import java.util.Set;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.turismo.backend.config.SecurityConfig;
 
@@ -82,21 +83,17 @@ public class TouristSpotController {
             @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
     })
     public ResponseEntity<Page<TouristSpotListDTO>> getTouristSpots(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String cityName,
+            @RequestParam(required = false) String stateName,
+            @RequestParam(required = false) Set<String> tags,
+            @RequestParam(required = false) Double longitude,
+            @RequestParam(required = false) Double latitude,
+            @RequestParam(required = false) Double radius,
             @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<TouristSpotListDTO> spots = touristSpotService.getTouristSpots(pageable);
-        return ResponseEntity.ok(spots);
-    }
-
-    @GetMapping("/state/{stateName}/tourist-spots")
-    @Operation(summary = "Listar pontos turísticos de um estado", description = "Retorna os pontos turísticos localizados em um determinado estado")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
-    })
-    public ResponseEntity<Page<TouristSpotListDTO>> getTouristSpotsFromState(
-            @PathVariable String stateName,
-            @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
-        Page<TouristSpotListDTO> spots = touristSpotService.getTouristSpotsFromState(stateName, pageable);
+        Page<TouristSpotListDTO> spots = touristSpotService.getTouristSpots(
+                name, cityName, stateName, tags, longitude, latitude, radius, pageable
+        );
         return ResponseEntity.ok(spots);
     }
 
@@ -110,21 +107,6 @@ public class TouristSpotController {
             @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Page<TouristSpotListDTO> spots = touristSpotService.getSpotManagerTouristSpots(spotManagerId, pageable);
-        return ResponseEntity.ok(spots);
-    }
-
-    @GetMapping("/tourist-spots/near")
-    @Operation(summary = "Buscar pontos turísticos próximos", description = "Busca pontos turísticos em um determinado raio de distância (em metros) de uma coordenada geográfica")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Pontos turísticos próximos retornados com sucesso")
-    })
-    public ResponseEntity<Page<TouristSpotListDTO>> getNearTouristSpots(
-            @RequestParam Double longitude,
-            @RequestParam Double latitude,
-            @RequestParam Double radius,
-            @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
-        Page<TouristSpotListDTO> spots = touristSpotService.getNearTouristSpots(longitude, latitude, radius, pageable);
         return ResponseEntity.ok(spots);
     }
 

@@ -66,9 +66,9 @@ export class TouristSpotCreateComponent implements OnInit {
     const selectElement = event.target as HTMLSelectElement;
     const stateName = selectElement.value;
     if (stateName) {
-      this.cityService.getCitiesFromState(stateName, 0, 1000).subscribe({
-        next: (page) => {
-          this.cities.set(page.content);
+      this.cityService.getCitiesFromState(stateName).subscribe({
+        next: (data) => {
+          this.cities.set(data);
           this.touristSpotForm.patchValue({ cityId: '' });
         },
         error: (err) => console.error('Erro ao carregar cidades', err)

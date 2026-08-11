@@ -38,7 +38,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           ).pipe(
             switchMap((response) => {
               isRefreshing = false;
-              authService.saveToken(response.accessToken);
+              authService.saveToken(response.accessToken).subscribe();
               refreshTokenSubject.next(response.accessToken);
 
               return next(req.clone({

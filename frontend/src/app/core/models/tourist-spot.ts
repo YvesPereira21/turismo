@@ -76,3 +76,14 @@ export interface TouristSpotUpdate {
   tags?: string[];
   socialsMedia?: SocialMediaCreate[];
 }
+
+export interface TouristSpotFilters {
+  name?: string | null;
+  cityName?: string | null;
+  stateName?: string | null;
+  tags?: string[] | null;
+  longitude?: number | null;
+  latitude?: number | null;
+  radius?: number | null;
+  distance?: number | null;
+}

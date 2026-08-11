@@ -22,7 +22,7 @@ export class MapViewComponent implements OnInit {
   }
 
   loadTouristSpots() {
-    this.touristSpotService.getTouristSpots(0, 50).subscribe({
+    this.touristSpotService.getTouristSpots(undefined, 0, 50).subscribe({
       next: (page) => {
         this.touristSpots.set(page.content);
       },

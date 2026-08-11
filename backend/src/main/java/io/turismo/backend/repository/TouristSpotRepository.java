@@ -6,10 +6,11 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import java.util.UUID;
 
-public interface TouristSpotRepository extends JpaRepository<TouristSpot, UUID> {
+public interface TouristSpotRepository extends JpaRepository<TouristSpot, UUID>, JpaSpecificationExecutor<TouristSpot> {
     Page<TouristSpot> findAllBySpotManager_SpotManagerId(UUID spotManagerId, Pageable pageable);
     @Query(
             "SELECT t FROM TouristSpot t " +

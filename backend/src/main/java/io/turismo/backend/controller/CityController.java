@@ -59,14 +59,12 @@ public class CityController {
     }
 
     @GetMapping("/state/{stateName}/cities")
-    @Operation(summary = "Listar cidades de um estado", description = "Retorna uma página com as cidades pertencentes a um estado")
+    @Operation(summary = "Listar cidades de um estado", description = "Retorna todas as cidades pertencentes a um estado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista recuperada com sucesso")
     })
-    public ResponseEntity<Page<CityDTO>> getCitiesFromState(
-            @PathVariable String stateName,
-            @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<CityDTO> cities = cityService.getCitiesFromState(stateName, pageable);
+    public ResponseEntity<java.util.List<CityDTO>> getCitiesFromState(@PathVariable String stateName) {
+        java.util.List<CityDTO> cities = cityService.getCitiesFromState(stateName);
         return ResponseEntity.ok(cities);
     }
 

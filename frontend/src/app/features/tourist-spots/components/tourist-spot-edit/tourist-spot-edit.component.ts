@@ -113,8 +113,8 @@ export class TouristSpotEditComponent implements OnInit {
 
         // Fill cities for state if state exists
         if (spot.city?.stateName) {
-          this.cityService.getCitiesFromState(spot.city.stateName, 0, 1000).subscribe({
-            next: (page) => this.cities.set(page.content),
+          this.cityService.getCitiesFromState(spot.city.stateName).subscribe({
+            next: (data) => this.cities.set(data),
             error: (err) => console.error(err)
           });
         }
@@ -132,9 +132,9 @@ export class TouristSpotEditComponent implements OnInit {
     const selectElement = event.target as HTMLSelectElement;
     const stateName = selectElement.value;
     if (stateName) {
-      this.cityService.getCitiesFromState(stateName, 0, 1000).subscribe({
-        next: (page) => {
-          this.cities.set(page.content);
+      this.cityService.getCitiesFromState(stateName).subscribe({
+        next: (data) => {
+          this.cities.set(data);
           this.touristSpotForm.patchValue({ cityName: '' });
         },
         error: (err) => console.error('Erro ao carregar cidades', err)

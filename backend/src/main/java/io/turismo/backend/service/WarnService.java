@@ -58,7 +58,6 @@ public class WarnService {
         );
     }
 
-    @Cacheable(value = "avisos", sync = true)
     public Page<WarnDTO> getAllTouristSpotWarn(UUID touristSpotId, Pageable pageable){
         return warnRepository.findAllByTouristSpot_TouristSpotId(touristSpotId, pageable)
                 .map(warnMapper::toDTO);

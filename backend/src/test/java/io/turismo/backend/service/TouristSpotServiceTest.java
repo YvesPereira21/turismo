@@ -183,32 +183,20 @@ class TouristSpotServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<TouristSpot> page = new PageImpl<>(List.of(touristSpot));
 
-        when(touristSpotRepository.findAll(pageable)).thenReturn(page);
+        when(touristSpotRepository.findAll(any(org.springframework.data.jpa.domain.Specification.class), eq(pageable))).thenReturn(page);
         when(touristSpotMapper.toListDTO(touristSpot)).thenReturn(touristSpotListDTO);
 
-        Page<TouristSpotListDTO> result = touristSpotService.getTouristSpots(pageable);
+        Page<TouristSpotListDTO> result = touristSpotService.getTouristSpots(
+                null, null, null, null, null, null, null, pageable
+        );
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
 
-        verify(touristSpotRepository, times(1)).findAll(pageable);
+        verify(touristSpotRepository, times(1)).findAll(any(org.springframework.data.jpa.domain.Specification.class), eq(pageable));
     }
 
-    @Test
-    void shouldGetTouristSpotsFromState() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<TouristSpot> page = new PageImpl<>(List.of(touristSpot));
 
-        when(touristSpotRepository.findAllByStateName("SP", pageable)).thenReturn(page);
-        when(touristSpotMapper.toListDTO(touristSpot)).thenReturn(touristSpotListDTO);
-
-        Page<TouristSpotListDTO> result = touristSpotService.getTouristSpotsFromState("SP", pageable);
-
-        assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-
-        verify(touristSpotRepository, times(1)).findAllByStateName("SP", pageable);
-    }
 
     @Test
     void shouldGetSpotManagerTouristSpots() {
@@ -366,6 +354,6 @@ class TouristSpotServiceTest {
                 () -> touristSpotService.deleteTouristSpot(spotId, otherUserId)
         );
 
-        verify(touristSpotRepository, never()).delete(any());
+        verify(touristSpotRepository, never()).delete(any(TouristSpot.class));
     }
 }

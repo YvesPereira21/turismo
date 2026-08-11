@@ -173,24 +173,9 @@ public class TouristSpotControllerTest {
     @Test
     void shouldGetTouristSpotsAndReturn200Ok() throws Exception {
         Page<TouristSpotListDTO> page = new PageImpl<>(List.of(touristSpotListDTO));
-        when(touristSpotService.getTouristSpots(any(Pageable.class))).thenReturn(page);
+        when(touristSpotService.getTouristSpots(any(), any(), any(), any(), any(), any(), any(), any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/api/v1/tourist-spots")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].touristSpotId").value(touristSpotListDTO.touristSpotId().toString()))
-                .andExpect(jsonPath("$.content[0].name").value(touristSpotListDTO.name()))
-                .andExpect(jsonPath("$.content[0].opensAt").value("08:00:00"))
-                .andExpect(jsonPath("$.content[0].closesAt").value("18:00:00"))
-                .andExpect(jsonPath("$.content[0].shortDescription").value(touristSpotListDTO.shortDescription()));
-    }
-
-    @Test
-    void shouldGetTouristSpotsFromStateAndReturn200Ok() throws Exception {
-        Page<TouristSpotListDTO> page = new PageImpl<>(List.of(touristSpotListDTO));
-        when(touristSpotService.getTouristSpotsFromState(eq("São Paulo"), any(Pageable.class))).thenReturn(page);
-
-        mockMvc.perform(get("/api/v1/state/{stateName}/tourist-spots", "São Paulo")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].touristSpotId").value(touristSpotListDTO.touristSpotId().toString()))
@@ -213,25 +198,6 @@ public class TouristSpotControllerTest {
                 .andExpect(jsonPath("$.content[0].opensAt").value("08:00:00"))
                 .andExpect(jsonPath("$.content[0].closesAt").value("18:00:00"))
                 .andExpect(jsonPath("$.content[0].shortDescription").value(touristSpotListDTO.shortDescription()));
-    }
-
-    @Test
-    void shouldGetNearTouristSpotsAndReturn200Ok() throws Exception {
-        Page<TouristSpotListDTO> page = new PageImpl<>(List.of(touristSpotListDTO));
-        when(touristSpotService.getNearTouristSpots(eq(-46.633308), eq(-23.550520), eq(5000.0), any(Pageable.class))).thenReturn(page);
-
-        mockMvc.perform(get("/api/v1/tourist-spots/near")
-                        .param("longitude", "-46.633308")
-                        .param("latitude", "-23.550520")
-                        .param("radius", "5000.0")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].touristSpotId").value(touristSpotListDTO.touristSpotId().toString()))
-                .andExpect(jsonPath("$.content[0].name").value(touristSpotListDTO.name()))
-                .andExpect(jsonPath("$.content[0].opensAt").value("08:00:00"))
-                .andExpect(jsonPath("$.content[0].closesAt").value("18:00:00"))
-                .andExpect(jsonPath("$.content[0].shortDescription").value(touristSpotListDTO.shortDescription()))
-                .andExpect(jsonPath("$.content[0].distance").value(touristSpotListDTO.distance()));
     }
 
     @Test

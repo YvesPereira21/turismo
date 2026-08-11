@@ -20,11 +20,8 @@ export class CityService {
     return this.http.get<City>(`${this.apiUrl}/${id}`);
   }
 
-  getCitiesFromState(stateName: string, page = 0, size = 10): Observable<Page<City>> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-    return this.http.get<Page<City>>(`${environment.apiUrl}/api/v1/state/${stateName}/cities`, { params });
+  getCitiesFromState(stateName: string): Observable<City[]> {
+    return this.http.get<City[]>(`${environment.apiUrl}/api/v1/state/${stateName}/cities`);
   }
 
   deleteCity(id: string): Observable<void> {

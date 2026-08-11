@@ -1,24 +1,45 @@
-<main class="w-full h-full container mx-auto">
+<div class="min-h-screen bg-[#f3f4f6] pb-10">
+<main class="w-full h-full container mx-auto pt-6 px-4">
 
     @if (touristSpot()) {
-    <!-- Aqui é onde ficam as fotos do ponto turístico -->
-    <section aria-label="Galeria de fotos" class="w-[1180px] max-w-[1180px] h-[480px] grid grid-cols-3 grid-rows-2 gap-1 mt-1 mx-auto">
-        @for (photo of touristSpot()?.photos; track photo.url) {
-        <div class="row-span-2">
-            <img [src]="mediaUrl + photo.url" [alt]="photo.altText"
-                class="w-full h-full object-cover rounded-l-lg">
-        </div>
-
-        <div class="row-span-1">
-            <img [src]="mediaUrl + photo.url" [alt]="photo.altText" class="w-full h-full object-cover">
-        </div>
+    <!-- Galeria de fotos (Até 5 fotos) -->
+    @if (touristSpot()?.photos && touristSpot()!.photos.length > 0) {
+    <section aria-label="Galeria de fotos" class="w-full max-w-[1200px] h-[450px] grid grid-cols-4 grid-rows-2 gap-2 mt-2 mx-auto rounded-2xl overflow-hidden shadow-sm bg-gray-200">
+        @for (photo of touristSpot()!.photos.slice(0, 5); track photo.url; let i = $index; let count = $count) {
+            @if (i === 0) {
+                <!-- 1ª Foto (Principal) -->
+                <div [class]="count === 1 ? 'col-span-4 row-span-2 h-full' : 'col-span-2 row-span-2 h-full'">
+                    <img [src]="mediaUrl + photo.url" [alt]="photo.altText || touristSpot()?.name" class="w-full h-full object-cover hover:opacity-95 transition-opacity cursor-pointer">
+                </div>
+            } @else if (i === 1) {
+                <!-- 2ª Foto -->
+                <div [class]="count === 2 ? 'col-span-2 row-span-2 h-full' : (count === 3 || count === 4 ? 'col-span-2 row-span-1 h-full' : 'col-span-1 row-span-1 h-full')">
+                    <img [src]="mediaUrl + photo.url" [alt]="photo.altText || touristSpot()?.name" class="w-full h-full object-cover hover:opacity-95 transition-opacity cursor-pointer">
+                </div>
+            } @else if (i === 2) {
+                <!-- 3ª Foto -->
+                <div [class]="count === 3 ? 'col-span-2 row-span-1 h-full' : 'col-span-1 row-span-1 h-full'">
+                    <img [src]="mediaUrl + photo.url" [alt]="photo.altText || touristSpot()?.name" class="w-full h-full object-cover hover:opacity-95 transition-opacity cursor-pointer">
+                </div>
+            } @else if (i === 3) {
+                <!-- 4ª Foto -->
+                <div [class]="count === 4 ? 'col-span-1 row-span-1 h-full' : 'col-span-1 row-span-1 h-full'">
+                    <img [src]="mediaUrl + photo.url" [alt]="photo.altText || touristSpot()?.name" class="w-full h-full object-cover hover:opacity-95 transition-opacity cursor-pointer">
+                </div>
+            } @else if (i === 4) {
+                <!-- 5ª Foto -->
+                <div class="col-span-1 row-span-1 h-full">
+                    <img [src]="mediaUrl + photo.url" [alt]="photo.altText || touristSpot()?.name" class="w-full h-full object-cover hover:opacity-95 transition-opacity cursor-pointer">
+                </div>
+            }
         }
     </section>
+    }
 
     <!-- Aqui é onde ficam os detalhes do ponto turístico -->
-    <article class="w-[1180px] max-w-[1180px] h-full flex justify-between mt-2 mx-auto">
+    <article class="w-full max-w-[1200px] h-full flex gap-6 mt-2 mx-auto">
 
-        <section class="w-[780px] h-full">
+        <section class="flex-1 my-6 bg-white rounded-2xl shadow-md p-8">
             <h1 class="font-roboto-slab font-semibold text-[#2C5C3E] text-3xl">
                 {{ touristSpot()?.name }}
             </h1>
@@ -26,7 +47,7 @@
                 {{ touristSpot()?.city?.name }}, {{ touristSpot()?.city?.stateName }}
             </h3>
 
-            <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl my-6 border border-gray-100 max-w-[500px]">
+            <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl my-6 border border-gray-100 w-full">
 
                 <div class="avatar pt-1">
                     <div class="w-12 h-12 rounded-full ring ring-[#6EB57D]/30 ring-offset-2">
@@ -79,86 +100,49 @@
 
             </div>
 
-            <div class="mt-12">
-                <h2 class="font-roboto-slab font-semibold text-[#2C5C3E] text-xl">
+            <div class="mt-8">
+                <h2 class="font-roboto-slab font-semibold text-[#2C5C3E] text-xl border-b border-gray-100 pb-2 mb-3">
                     Sobre este ponto
                 </h2>
-                <p class="font-poppins text-[#2C5C3E] text-base text-justify break-all">
+                <p class="font-poppins text-gray-700 text-base leading-relaxed text-justify break-all">
                     {{ touristSpot()?.description }}
                 </p>
             </div>
 
             <!-- Aqui é onde fica a descrição de aviso, caso haja -->
-            @if (touristSpot()?.warns != []) {
-            <div class="my-6 text-amber-600">
+            @if (touristSpot()?.warns?.length) {
+            <div class="mt-8 text-amber-600 bg-amber-50 p-4 rounded-xl border border-amber-200">
                 @for (warn of touristSpot()?.warns; track warn.id) {
-                <h2 class="font-roboto-slab font-semibold text-xl">
+                <h2 class="font-roboto-slab font-semibold text-lg flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                     Aviso!
                 </h2>
-                <p class="font-poppins text-base text-justify break-all">
+                <p class="font-poppins text-sm text-gray-700 mt-1">
                     {{ warn.description }}
                 </p>
-                <div class="flex justify-between font-roboto-slab font-semibold">
+                <div class="flex justify-end font-roboto-slab text-xs text-amber-700 font-medium mt-2">
                     <span> {{ warn.eventDate }} </span>
                 </div>
                 }
             </div>
             }
 
-            <!-- <div class="my-6"> -->
-            <!-- Aqui é onde fica a lista de atividades, e seus detalhes, 
-                presentes no ponto, caso haja -->
-            <!-- @if (touristSpot()?.activities != []) {
-                <h1 class="font-roboto-slab font-semibold text-[#2C5C3E] text-xl">
-                    Atividades presentes no local
-                </h1>
-                <div class="flex flex-col gap-8 my-4">
-                    @for (activity of touristSpot.activities; track activity.name) {
-                    <div class="flex flex-row gap-6 items-start">
-                        <img src="" class="w-[340px] h-[400px] flex-shrink-0">
-
-                        <div class="flex flex-col gap-2">
-                            <h1 class="text-lg font-roboto-slab">
-                                {{ activity.name }}
-                            </h1>
-                            <p class="font-poppins text-[#2C5C3E] text-base break-all text-justify">
-                                {{ activity.shortDescription }}
-                            </p>
-                        </div>
-                    </div>
-                    }
-                </div>
-                } -->
-
-            <!-- </div> -->
-
         </section>
 
-        <section class="w-[300px] max-w-[300px] h-[890px] my-6 flex flex-col gap-4 shadow-md">
-            <div class="w-full h-[140px] flex flex-col gap-3 p-4 bg-white rounded-lg shadow-md">
+        <section class="w-[300px] shrink-0 my-6 flex flex-col gap-4">
+            <div class="w-full flex flex-col gap-3 p-6 bg-white rounded-2xl shadow-md border border-gray-100">
                 <h2 class="text-xl font-roboto-slab font-semibold text-[#2C5C3E]">
                     Funcionamento
                 </h2>
                 <hr class="border-[#6EB57D] border">
 
                 <div class="flex flex-col font-poppins gap-1 text-[#2C5C3E]">
-                    <h3>
+                    <h3 class="text-sm font-medium text-gray-500">
                         Horário
                     </h3>
-                    <span class="font-semibold">
+                    <span class="font-semibold text-base text-gray-800">
                         {{ touristSpot()?.opensAt }} até {{ touristSpot()?.closesAt }}
                     </span>
-                </div>
-
-            </div>
-
-            <div class="relative w-full h-[450px] flex flex-col justify-center items-center overflow-hidden">
-
-                <div class="absolute inset-0 bg-white bg-cover opacity-40"></div>
-
-                <div
-                    class="relative z-10 w-[225px] h-[50px] bg-[#4A8C5E] flex justify-center items-center font-poppins text-white rounded-full">
-                    <span>Ver rota até o ponto</span>
                 </div>
 
             </div>
@@ -167,3 +151,4 @@
     </article>
     }
 </main>
+</div>

@@ -21,13 +21,12 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import io.turismo.backend.repository.specification.TouristSpotSpecification;
 import java.time.LocalTime;
+import java.util.Set;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,11 +48,6 @@ public class TouristSpotService{
         this.userRepository = userRepository;
     }
 
-    @Caching(evict = {
-            @CacheEvict(value = "pontos", allEntries = true),
-            @CacheEvict(value = "pontos_mapa", allEntries = true),
-            @CacheEvict(value = "pontos_gestor", allEntries = true)
-    })
     public TouristSpotDTO createTouristSpot(TouristSpotCreateDTO dto, UUID userId){
         SpotManager spotManager = spotManagerRepository.findByUser_Id(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Gerente não encontrado"));
@@ -76,7 +70,6 @@ public class TouristSpotService{
         return touristSpotMapper.toDTO(touristSpotRepository.save(touristSpot));
     }
 
-    @Cacheable(value = "ponto", key = "#touristSpotId", sync = true)
     public TouristSpotDTO getTouristSpot(UUID touristSpotId){
         return touristSpotMapper.toDTO(
                 touristSpotRepository
@@ -85,7 +78,6 @@ public class TouristSpotService{
         );
     }
 
-    @Cacheable(value = "pontos_mapa", sync = true)
     public GeoFeatureCollectionDTO<TouristSpotToMapDTO> getTouristSpotsToMap(){
         List<GeoFeatureDTO<TouristSpotToMapDTO>> features = touristSpotRepository.findAll()
                 .stream()
@@ -98,46 +90,35 @@ public class TouristSpotService{
         return new GeoFeatureCollectionDTO<>(features);
     }
 
-    @Cacheable(value = "pontos", sync = true)
-    public Page<TouristSpotListDTO> getTouristSpots(Pageable pageable){
-        return touristSpotRepository.findAll(pageable).map(touristSpotMapper::toListDTO);
+    public Page<TouristSpotListDTO> getTouristSpots(
+            String name,
+            String cityName,
+            String stateName,
+            Set<String> tags,
+            Double longitude,
+            Double latitude,
+            Double radius,
+            Pageable pageable
+    ) {
+        Point userLocation = null;
+        if (longitude != null && latitude != null) {
+            GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+            userLocation = geometryFactory.createPoint(new Coordinate(longitude, latitude));
+        }
+
+        TouristSpotSpecification spec = new TouristSpotSpecification(
+                name, cityName, stateName, tags, userLocation, radius
+        );
+
+        return touristSpotRepository.findAll(spec, pageable).map(touristSpotMapper::toListDTO);
     }
 
-    @Cacheable(value = "pontos", sync = true)
-    public Page<TouristSpotListDTO> getTouristSpotsFromState(String stateName, Pageable pageable){
-        return touristSpotRepository.findAllByStateName(stateName, pageable).map(touristSpotMapper::toListDTO);
-    }
-
-    @Cacheable(value = "pontos_gestor", sync = true)
     public Page<TouristSpotListDTO> getSpotManagerTouristSpots(UUID spotManagerId, Pageable pageable){
         return touristSpotRepository
                 .findAllBySpotManager_SpotManagerId(spotManagerId, pageable)
                 .map(touristSpotMapper::toListDTO);
     }
 
-    @Cacheable(value = "pontos", sync = true)
-    public Page<TouristSpotListDTO> getNearTouristSpots(
-            Double longitude,
-            Double latitude,
-            Double radius,
-            Pageable pageable
-    ){
-        GeometryFactory geometry = new GeometryFactory(new PrecisionModel(), 4326);
-        Point userLocation = geometry.createPoint(new Coordinate(longitude, latitude));
-
-        return touristSpotRepository
-                .findAllPointsNearUserWithinCertainRadius(userLocation, radius, pageable)
-                .map(proj ->
-                        touristSpotMapper.toListWithDistanceDTO(proj.getTouristSpot(), proj.getDistance())
-                );
-    }
-
-    @Caching(evict = {
-            @CacheEvict(value = "pontos", allEntries = true),
-            @CacheEvict(value = "pontos_mapa", allEntries = true),
-            @CacheEvict(value = "pontos_gestor", allEntries = true),
-            @CacheEvict(value = "ponto", key = "#touristSpotId")
-    })
     public void updateTouristSpot(UUID touristSpotId, TouristSpotUpdateDTO touristSpotUpdate, UUID userId){
         TouristSpot touristSpot = touristSpotRepository.findById(touristSpotId)
                 .orElseThrow(() -> new ObjectNotFoundException("Ponto turístico não encontrado"));
@@ -168,12 +149,6 @@ public class TouristSpotService{
         touristSpotRepository.save(touristSpot);
     }
 
-    @Caching(evict = {
-            @CacheEvict(value = "pontos", allEntries = true),
-            @CacheEvict(value = "pontos_mapa", allEntries = true),
-            @CacheEvict(value = "pontos_gestor", allEntries = true),
-            @CacheEvict(value = "ponto", key = "#touristSpotId")
-    })
     public void deleteTouristSpot(UUID touristSpotId, UUID userId){
         TouristSpot touristSpot = touristSpotRepository.findById(touristSpotId)
                 .orElseThrow(() -> new ObjectNotFoundException("Ponto turístico não encontrado"));

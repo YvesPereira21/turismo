@@ -1,5 +1,15 @@
-<app-welcome-section></app-welcome-section>
-<main class="flex items-baseline gap-6 container mx-auto">
-    <app-filter-bar class="flex-none" (distanceSelected)="onDistanceSelected($event)"></app-filter-bar>
-    <app-tourist-spot-list [distance]="selectedDistance()"></app-tourist-spot-list>
-</main>
+<app-welcome-section (searchChange)="onSearchChange($event)"></app-welcome-section>
+
+<div class="min-h-screen bg-[#f3f4f6] pt-6 pb-12">
+  <main class="flex items-start gap-6 container mx-auto px-4">
+    <app-filter-bar
+      class="flex-none"
+      (filterChange)="onFilterChange($event)"
+    ></app-filter-bar>
+
+    <app-tourist-spot-list
+      class="flex-1 min-w-0"
+      [filters]="activeFilters()"
+    ></app-tourist-spot-list>
+  </main>
+</div>

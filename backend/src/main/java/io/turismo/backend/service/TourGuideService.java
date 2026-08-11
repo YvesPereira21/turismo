@@ -64,7 +64,6 @@ public class TourGuideService {
         return tourGuideMapper.toDTO(tourGuide);
     }
 
-    @Cacheable(value = "guias_turismo_ponto_turistico", sync = true)
     public Page<TourGuideDTO> getTourGuidesByTouristSpot(UUID touristSpotId, Pageable pageable) {
         return tourGuideRepository.findAllByTouristSpots_TouristSpotId(touristSpotId, pageable)
                 .map(tourGuideMapper::toDTO);

@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { TouristSpot, TouristSpotCreate, TouristSpotList, TouristSpotUpdate, TouristSpotToMap } from '../../../core/models/tourist-spot';
+import { TouristSpot, TouristSpotCreate, TouristSpotList, TouristSpotUpdate, TouristSpotToMap, TouristSpotFilters } from '../../../core/models/tourist-spot';
 import { GeoFeatureCollection } from '../../../core/models/geojson';
 import { Page } from '../../../core/models/page';
 
@@ -25,35 +25,30 @@ export class TouristSpotService {
     return this.http.get<GeoFeatureCollection<TouristSpotToMap>>(`${environment.apiUrl}/api/v1/spots-to-map/`);
   }
 
-  getTouristSpots(page = 0, size = 10): Observable<Page<TouristSpotList>> {
-    const params = new HttpParams()
+  getTouristSpots(filters?: TouristSpotFilters, page = 0, size = 10): Observable<Page<TouristSpotList>> {
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
+
+    if (filters?.name) params = params.set('name', filters.name);
+    if (filters?.cityName) params = params.set('cityName', filters.cityName);
+    if (filters?.stateName) params = params.set('stateName', filters.stateName);
+    if (filters?.longitude != null) params = params.set('longitude', filters.longitude.toString());
+    if (filters?.latitude != null) params = params.set('latitude', filters.latitude.toString());
+    if (filters?.radius != null) params = params.set('radius', filters.radius.toString());
+
+    if (filters?.tags?.length) {
+      filters.tags.forEach(tag => {
+        params = params.append('tags', tag);
+      });
+    }
+
     return this.http.get<Page<TouristSpotList>>(this.apiUrl, { params });
   }
 
-  getTouristSpotsFromState(stateName: string, page = 0, size = 10): Observable<Page<TouristSpotList>> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-    return this.http.get<Page<TouristSpotList>>(`${environment.apiUrl}/api/v1/state/${stateName}/tourist-spots`, { params });
-  }
-
   getSpotManagerTouristSpots(spotManagerId: string, page = 0, size = 10): Observable<Page<TouristSpotList>> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
+    const params = new HttpParams().set('page', page.toString()).set('size', size.toString());
     return this.http.get<Page<TouristSpotList>>(`${environment.apiUrl}/api/v1/manager/${spotManagerId}/all-tourist-spots`, { params });
-  }
-
-  getNearTouristSpots(longitude: number, latitude: number, radius: number, page = 0, size = 10): Observable<Page<TouristSpotList>> {
-    const params = new HttpParams()
-      .set('longitude', longitude.toString())
-      .set('latitude', latitude.toString())
-      .set('radius', radius.toString())
-      .set('page', page.toString())
-      .set('size', size.toString());
-    return this.http.get<Page<TouristSpotList>>(`${this.apiUrl}/near`, { params });
   }
 
   updateTouristSpot(id: string, touristSpot: TouristSpotUpdate): Observable<void> {

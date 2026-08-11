@@ -97,15 +97,14 @@ public class CityControllerTest {
 
     @Test
     void shouldGetCitiesFromStateAndReturn200Ok() throws Exception {
-        Page<CityDTO> page = new PageImpl<>(List.of(cityDTO));
-        when(cityService.getCitiesFromState(eq("São Paulo"), any(Pageable.class))).thenReturn(page);
+        when(cityService.getCitiesFromState(eq("São Paulo"))).thenReturn(List.of(cityDTO));
 
         mockMvc.perform(get("/api/v1/state/{stateName}/cities", "São Paulo")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].cityId").value(cityDTO.cityId().toString()))
-                .andExpect(jsonPath("$.content[0].name").value(cityDTO.name()))
-                .andExpect(jsonPath("$.content[0].stateName").value(cityDTO.stateName()));
+                .andExpect(jsonPath("$[0].cityId").value(cityDTO.cityId().toString()))
+                .andExpect(jsonPath("$[0].name").value(cityDTO.name()))
+                .andExpect(jsonPath("$[0].stateName").value(cityDTO.stateName()));
     }
 
     @Test
@@ -162,7 +161,7 @@ public class CityControllerTest {
 
     @Test
     void shouldNotGetCitiesFromStateAndReturn404NotFoundWhenStateDoesNotExist() throws Exception {
-        when(cityService.getCitiesFromState(eq("EstadoInexistente"), any(Pageable.class)))
+        when(cityService.getCitiesFromState(eq("EstadoInexistente")))
                 .thenThrow(new ObjectNotFoundException("Estado não encontrado"));
 
         mockMvc.perform(get("/api/v1/state/{stateName}/cities", "EstadoInexistente")
