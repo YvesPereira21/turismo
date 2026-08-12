@@ -5,6 +5,7 @@ import { Tag } from './tag';
 import { TourGuideSimple } from './tour-guide';
 import { Warn } from './warn';
 import { SocialMedia, SocialMediaCreate } from './social-media';
+import { Activity } from './activity';
 
 export interface Point {
   type: string;
@@ -39,6 +40,7 @@ export interface TouristSpot {
   tags: Tag[];
   tourGuides: TourGuideSimple[];
   socialsMedia: SocialMedia[];
+  activities?: Activity[];
 }
 
 export interface TouristSpotList {

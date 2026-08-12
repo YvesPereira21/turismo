@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -92,6 +91,7 @@ public class PhotoService {
             Photo newPhoto = new Photo();
             newPhoto.setUrl(fileUrl);
             newPhoto.setActivity(activity);
+            newPhoto.setTouristSpot(activity.getTouristSpot());
             activity.setPhoto(newPhoto);
 
             activityRepository.save(activity);
@@ -128,6 +128,7 @@ public class PhotoService {
 
             currentPhoto = new Photo();
             currentPhoto.setActivity(activity);
+            currentPhoto.setTouristSpot(activity.getTouristSpot());
             currentPhoto.setUrl(fileUrl);
             activity.setPhoto(currentPhoto);
         } catch (IOException ex) {

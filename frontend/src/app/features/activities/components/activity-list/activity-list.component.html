@@ -1,0 +1,119 @@
+<div class="bg-white rounded-2xl shadow-sm p-8 border border-gray-100">
+  <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-6">
+    <div class="w-10 h-10 rounded-xl bg-[#2C5C3E]/10 text-[#2C5C3E] flex items-center justify-center font-bold">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"
+        class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 1 9 5.25a8.25 8.25 0 0 1 6.362 0ZM9 21a8.25 8.25 0 0 1 0-16.5m0 0a8.25 8.25 0 0 1 6.362 1.963" />
+      </svg>
+    </div>
+    <div>
+      <h2 class="font-roboto-slab font-semibold text-[#2C5C3E] text-xl">
+        Atividades
+      </h2>
+      <p class="font-poppins text-xs text-gray-500">
+        O que você pode fazer neste ponto turístico
+      </p>
+    </div>
+  </div>
+
+  <!-- Indicator de carregamento -->
+  @if (isLoading()) {
+  <div class="flex items-center justify-center py-8">
+    <span class="loading loading-spinner loading-md text-[#2C5C3E]"></span>
+    <span class="ml-2 font-poppins text-sm text-gray-500">Carregando atividades...</span>
+  </div>
+  }
+
+  <!-- Mensagem de erro -->
+  @if (errorMessage() && !isLoading()) {
+  <div class="alert alert-warning text-sm py-2">
+    <span>{{ errorMessage() }}</span>
+  </div>
+  }
+
+  <!-- Lista de atividades -->
+  @if (!isLoading() && activitiesList().length > 0) {
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    @for (activity of activitiesList(); track activity.activityId) {
+    <div
+      class="group bg-gray-50 border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 flex flex-col relative">
+
+      <!-- Ações do Gestor -->
+      @if (isManager()) {
+      <div class="absolute top-2 right-2 flex items-center gap-1.5 z-10">
+        <button (click)="openEditModal(activity)"
+          class="btn btn-xs btn-circle bg-white/90 hover:bg-white text-gray-700 shadow-md border-none"
+          title="Editar Atividade">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+            stroke="currentColor" class="w-3.5 h-3.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+          </svg>
+        </button>
+        <button (click)="confirmDelete(activity)" [disabled]="deletingActivityId() === activity.activityId"
+          class="btn btn-xs btn-circle bg-white/90 hover:bg-red-50 text-red-600 shadow-md border-none"
+          title="Excluir Atividade">
+          @if (deletingActivityId() === activity.activityId) {
+          <span class="loading loading-spinner loading-xs text-red-600"></span>
+          } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+            stroke="currentColor" class="w-3.5 h-3.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+          </svg>
+          }
+        </button>
+      </div>
+      }
+
+      <div
+        class="h-64 w-full bg-gradient-to-br from-[#2C5C3E]/10 to-[#6EB57D]/20 overflow-hidden relative flex items-center justify-center">
+        @if (activity.photo?.url) {
+        <img [src]="mediaUrl + activity.photo?.url" [alt]="activity.name"
+          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+        } @else {
+        <div class="flex flex-col items-center text-[#2C5C3E]/60 gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-9 h-9">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316A2.192 2.192 0 0 0 14.53 4H9.47c-.68 0-1.312.33-1.706.878l-.937 1.297Z" />
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+          </svg>
+          <span class="text-xs font-poppins font-medium">Sem foto</span>
+        </div>
+        }
+      </div>
+
+      <div class="p-5 flex-1 flex items-center justify-between">
+        <h3
+          class="font-roboto-slab font-semibold text-[#2C5C3E] text-base group-hover:text-[#20442E] transition-colors">
+          {{ activity.name }}
+        </h3>
+        <span class="w-2.5 h-2.5 rounded-full bg-[#6EB57D] shrink-0"></span>
+      </div>
+    </div>
+    }
+  </div>
+  }
+
+  <!-- Estado vazio -->
+  @if (!isLoading() && activitiesList().length === 0 && !errorMessage()) {
+  <div class="text-center py-8 bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+      class="w-8 h-8 mx-auto text-gray-400 mb-2">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+    </svg>
+    <p class="font-poppins text-sm text-gray-500 font-medium">Nenhuma atividade cadastrada para este ponto turístico.
+    </p>
+  </div>
+  }
+</div>
+
+<!-- Edição de Atividade -->
+@if (editingActivity()) {
+<app-activity-edit [activity]="editingActivity()!" (closed)="closeEditModal()" (activityUpdated)="onActivityUpdated()">
+</app-activity-edit>
+}

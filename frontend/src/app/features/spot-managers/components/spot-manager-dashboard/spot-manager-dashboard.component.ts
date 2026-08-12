@@ -10,11 +10,12 @@ import { TouristSpotList } from '../../../../core/models/tourist-spot';
 import { TourGuide } from '../../../../core/models/tour-guide';
 import { Warn } from '../../../../core/models/warn';
 import { environment } from '../../../../environments/environment';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-spot-manager-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, PaginationComponent],
   templateUrl: './spot-manager-dashboard.component.html',
   styleUrl: './spot-manager-dashboard.component.css'
 })
@@ -34,6 +35,16 @@ export class SpotManagerDashboardComponent implements OnInit {
   selectedSpotId = signal<string | null>(null);
   spotManagerId: string | undefined;
 
+  // Pagination signals
+  isEmpty = signal<boolean>(false);
+  isFirst = signal<boolean>(true);
+  isLast = signal<boolean>(false);
+  pageSize = signal<number>(10);
+  currentPage = signal<number>(0);
+  numberOfElements = signal<number>(0);
+  totalElements = signal<number>(0);
+  totalPages = signal<number>(0);
+
   // New warn fields
   newWarnTitle = signal('');
   newWarnDescription = signal('');
@@ -48,18 +59,32 @@ export class SpotManagerDashboardComponent implements OnInit {
     }
   }
 
-  loadTouristSpots() {
+  loadTouristSpots(page = 0, size = 10) {
     this.isLoading.set(true);
-    this.touristSpotService.getSpotManagerTouristSpots(this.spotManagerId!, 0, 100).subscribe({
-      next: (page) => {
-        this.touristSpots.set(page.content);
+    this.touristSpotService.getSpotManagerTouristSpots(this.spotManagerId!, page, size).subscribe({
+      next: (pageResponse) => {
+        this.touristSpots.set(pageResponse.content);
+        this.isEmpty.set(pageResponse.empty);
+        this.isFirst.set(pageResponse.first);
+        this.isLast.set(pageResponse.last);
+        this.pageSize.set(pageResponse.size);
+        this.currentPage.set(pageResponse.number);
+        this.numberOfElements.set(pageResponse.numberOfElements);
+        this.totalElements.set(pageResponse.totalElements);
+        this.totalPages.set(pageResponse.totalPages);
         this.isLoading.set(false);
       },
       error: (err) => {
         console.error('Erro ao carregar pontos turísticos', err);
+        this.touristSpots.set([]);
+        this.isEmpty.set(true);
         this.isLoading.set(false);
       }
     });
+  }
+
+  onPageChange(page: number) {
+    this.loadTouristSpots(page, this.pageSize() || 10);
   }
 
   openGuidesModal(spot: TouristSpotList) {
@@ -150,7 +175,7 @@ export class SpotManagerDashboardComponent implements OnInit {
     if (confirm('Tem certeza que deseja deletar este ponto turístico?')) {
       this.touristSpotService.deleteTouristSpot(id).subscribe({
         next: () => {
-          this.loadTouristSpots();
+          this.loadTouristSpots(this.currentPage(), this.pageSize() || 10);
         },
         error: (err) => console.error('Erro ao deletar', err)
       });

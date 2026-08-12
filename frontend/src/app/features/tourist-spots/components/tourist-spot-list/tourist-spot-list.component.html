@@ -1,9 +1,14 @@
 <main class="w-full max-w-[840px] mx-auto py-2">
 
-    <div class="flex items-center justify-between mb-4 px-2">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4 px-2">
         <h1 class="text-2xl font-roboto-slab font-bold text-[#2C5C3E]">
-            Resultados ({{ touristSpots().length }})
+            Resultados ({{ totalElements() }})
         </h1>
+
+        <app-pagination [isEmpty]="isEmpty()" [isFirst]="isFirst()" [isLast]="isLast()" [pageSize]="pageSize()"
+            [currentPage]="currentPage()" [numberOfElements]="numberOfElements()" [totalElements]="totalElements()"
+            [totalPages]="totalPages()" (pageChange)="onPageChange($event)">
+        </app-pagination>
     </div>
 
     @if (touristSpots().length === 0) {
@@ -80,7 +85,7 @@
                         <!-- Botão Saiba Mais Fixo no Rodapé -->
                         <a [routerLink]="['/tourist-spots', touristSpot.touristSpotId]"
                            class="w-full inline-flex items-center justify-center px-4 py-2.5 bg-[#4A8C5E] hover:bg-[#20442E] text-white rounded-xl gap-2 transition-colors duration-200 text-xs font-poppins font-semibold shadow-sm mt-auto">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                 <circle cx="12" cy="12" r="10" stroke-width="2" />
                                 <path stroke-width="2" d="M12 16v-4M12 8h.01" />
                             </svg>

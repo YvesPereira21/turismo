@@ -95,4 +95,11 @@ public class TouristSpot {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<SocialMedia> socialsMedia = new HashSet<>();
+
+    public List<Photo> getSpotOnlyPhotos() {
+        if (this.photos == null) return null;
+        return this.photos.stream()
+                .filter(p -> p.getActivity() == null)
+                .toList();
+    }
 }

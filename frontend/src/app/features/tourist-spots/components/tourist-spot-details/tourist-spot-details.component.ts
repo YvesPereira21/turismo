@@ -4,10 +4,11 @@ import { TouristSpotService } from '../../services/tourist-spot.service';
 import { ActivatedRoute } from '@angular/router';
 import { TouristSpot } from '../../../../core/models/tourist-spot';
 import { SocialMediaListComponent } from '../../../social-medias/componentes/social-media-list/social-media-list.component';
+import { ActivityListComponent } from '../../../activities/components/activity-list/activity-list.component';
 
 @Component({
   selector: 'app-tourist-spot-details',
-  imports: [SocialMediaListComponent],
+  imports: [SocialMediaListComponent, ActivityListComponent],
   templateUrl: './tourist-spot-details.component.html',
   styleUrl: './tourist-spot-details.component.css'
 })

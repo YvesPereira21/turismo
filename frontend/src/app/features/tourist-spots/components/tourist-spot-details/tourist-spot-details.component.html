@@ -109,6 +109,68 @@
                 </p>
             </div>
 
+            <!-- Lista de Atividades -->
+            <div class="mt-8">
+                <app-activity-list [touristSpotId]="touristSpot()?.touristSpotId"></app-activity-list>
+            </div>
+
+            <!-- Seção de Guias de Turismo Credenciados -->
+            @if (touristSpot()?.tourGuides?.length) {
+            <div class="mt-8">
+                <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-[#2C5C3E]/10 text-[#2C5C3E] flex items-center justify-center font-bold">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="font-roboto-slab font-semibold text-[#2C5C3E] text-xl">
+                            Guias de Turismo Credenciados
+                        </h2>
+                        <p class="font-poppins text-xs text-gray-500">
+                            Profissionais disponíveis para acompanhar sua visita
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    @for (guide of touristSpot()?.tourGuides; track guide.tourGuideId) {
+                    <div class="bg-gray-50/80 border border-gray-100 rounded-xl p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
+                        <div class="flex items-start justify-between gap-3 mb-2">
+                            <div>
+                                <h3 class="font-roboto-slab font-bold text-[#2C5C3E] text-base">
+                                    {{ guide.name }}
+                                </h3>
+                                @if (guide.type) {
+                                <span class="inline-block mt-0.5 text-[11px] font-poppins font-medium text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-md">
+                                    @switch (guide.type) {
+                                        @case ('REGIONAL') { Guia Regional }
+                                        @case ('NATIONAL') { Guia Nacional }
+                                        @case ('SPECIALIZED') { Guia Especializado }
+                                        @default { {{ guide.type }} }
+                                    }
+                                </span>
+                                }
+                            </div>
+                            <span class="badge badge-success text-white text-[11px] font-semibold font-poppins shrink-0">
+                                CADASTUR: {{ guide.cadastur }}
+                            </span>
+                        </div>
+
+                        @if (guide.phone) {
+                        <div class="flex items-center gap-2 text-xs font-poppins text-gray-600 mt-2 pt-2 border-t border-gray-200/50">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-4 h-4 text-[#2C5C3E] shrink-0">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.387a12.035 12.035 0 0 1-7.108-7.108c-.155-.44.01-1.02.387-1.3l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25z" />
+                            </svg>
+                            <span class="font-medium">{{ guide.phone }}</span>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+            </div>
+            }
+
             <!-- Aqui é onde fica a descrição de aviso, caso haja -->
             @if (touristSpot()?.warns?.length) {
             <div class="mt-8 text-amber-600 bg-amber-50 p-4 rounded-xl border border-amber-200">

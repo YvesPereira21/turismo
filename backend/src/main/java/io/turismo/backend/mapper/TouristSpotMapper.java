@@ -26,9 +26,11 @@ public interface TouristSpotMapper {
     @Mapping(target = "tourGuides", ignore = true)
     TouristSpot toEntity(TouristSpotCreateDTO dto);
 
+    @Mapping(target = "photos", source = "spotOnlyPhotos")
     TouristSpotDTO toDTO(TouristSpot entity);
 
     @Mapping(target = "distance", ignore = true)
+    @Mapping(target = "photos", source = "spotOnlyPhotos")
     TouristSpotListDTO toListDTO(TouristSpot entity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -43,6 +45,7 @@ public interface TouristSpotMapper {
     @Mapping(target = "tourGuides", ignore = true)
     void updateEntityFromDTO(TouristSpotUpdateDTO dto, @MappingTarget TouristSpot entity);
 
+    @Mapping(target = "photos", source = "entity.spotOnlyPhotos")
     TouristSpotListDTO toListWithDistanceDTO(TouristSpot entity, Double distance);
 
     default Point mapLatLngToPoint(Double latitude, Double longitude) {

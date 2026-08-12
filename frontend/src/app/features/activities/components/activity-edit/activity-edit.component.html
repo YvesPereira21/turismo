@@ -1,0 +1,37 @@
+<div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 border border-gray-100 relative animate-in fade-in zoom-in duration-200">
+    <div class="flex items-center justify-between border-b pb-3 mb-4">
+      <h3 class="text-lg font-bold text-gray-800">Editar Atividade</h3>
+      <button (click)="closeModal()" class="btn btn-sm btn-circle btn-ghost text-gray-500">✕</button>
+    </div>
+
+    <form [formGroup]="editForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text font-medium text-gray-700">Nome da Atividade *</span>
+        </label>
+        <input type="text" formControlName="name" class="input input-bordered w-full focus:outline-none focus:ring-2 focus:ring-[#6EB57D]/50 focus:border-[#2C5C3E]" />
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text font-medium text-gray-700">Nova Foto (opcional)</span>
+        </label>
+        <input type="file" accept="image/*" (change)="onFileSelected($event)" class="file-input file-input-bordered w-full focus:outline-none focus:ring-2 focus:ring-[#6EB57D]/50 focus:border-[#2C5C3E]" />
+        <label class="label">
+          <span class="label-text-alt text-gray-500">Deixe em branco se quiser manter a foto atual.</span>
+        </label>
+      </div>
+
+      <div class="flex justify-end gap-3 mt-6">
+        <button type="button" (click)="closeModal()" class="btn bg-gray-200 hover:bg-gray-300 text-gray-700 border-none rounded-xl px-6 transition-colors">Cancelar</button>
+        <button type="submit" [disabled]="isSubmitting() || editForm.invalid" class="btn bg-[#2C5C3E] hover:bg-[#20442E] text-white border-none rounded-xl px-6 shadow-md flex items-center gap-2">
+          @if (isSubmitting()) {
+            <span class="loading loading-spinner loading-xs"></span>
+          }
+          <span>Salvar</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

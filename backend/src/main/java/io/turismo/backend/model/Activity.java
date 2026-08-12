@@ -29,7 +29,7 @@ public class Activity {
     private TouristSpot touristSpot;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "photo_id", nullable = false)
+    @JoinColumn(name = "photo_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Photo photo;

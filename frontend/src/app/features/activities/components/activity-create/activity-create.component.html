@@ -1,0 +1,37 @@
+<div class="bg-white rounded-2xl shadow-sm p-8 mb-6 border border-gray-100">
+    <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Nova Atividade</h3>
+    
+    <form [formGroup]="activityForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+        
+        <div class="form-control">
+            <label class="label">
+                <span class="label-text font-poppins font-medium text-gray-700">Nome da Atividade *</span>
+            </label>
+            <input type="text" formControlName="name" placeholder="Ex: Trilha Guiada, Mergulho..." 
+                class="input input-bordered w-full focus:outline-none focus:ring-2 focus:ring-[#6EB57D]/50 focus:border-[#2C5C3E]" />
+        </div>
+
+        <div class="form-control">
+            <label class="label">
+                <span class="label-text font-poppins font-medium text-gray-700">Foto da Atividade *</span>
+            </label>
+            <input type="file" accept="image/*" (change)="onFileSelected($event)" 
+                class="file-input file-input-bordered w-full focus:outline-none focus:ring-2 focus:ring-[#6EB57D]/50 focus:border-[#2C5C3E]" />
+            <label class="label">
+                <span class="label-text-alt text-gray-500">Apenas 1 foto é permitida. Tamanho máximo recomendado: 2MB.</span>
+            </label>
+        </div>
+
+        <div class="flex justify-end mt-2">
+            <button type="submit" [disabled]="isSubmiting() || activityForm.invalid || !selectedPhoto()" 
+                class="btn bg-[#2C5C3E] hover:bg-[#20442E] text-white border-none rounded-xl px-8 shadow-md transition-all flex items-center gap-2">
+                
+                @if (isSubmiting()) {
+                    <span class="loading loading-spinner loading-sm"></span>
+                } @else {
+                    <span>Adicionar Atividade</span>
+                }
+            </button>
+        </div>
+    </form>
+</div>

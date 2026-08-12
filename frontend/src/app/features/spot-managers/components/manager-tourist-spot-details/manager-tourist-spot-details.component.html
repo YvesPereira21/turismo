@@ -52,6 +52,10 @@
                     <p class="text-gray-700 leading-relaxed whitespace-pre-line">{{ spot.description }}</p>
                 </div>
 
+                <app-activity-create [touristSpotId]="spot.touristSpotId" (activityCreated)="onActivityCreated()"></app-activity-create>
+
+                <app-activity-list [touristSpotId]="spot.touristSpotId" [isManager]="true"></app-activity-list>
+
                 <div class="bg-white rounded-2xl shadow-sm p-8" *ngIf="spot.socialsMedia && spot.socialsMedia.length > 0">
                     <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Redes Sociais</h3>
                     <app-social-media-list [socialsMedia]="spot.socialsMedia"></app-social-media-list>

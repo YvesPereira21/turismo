@@ -107,6 +107,13 @@
                 </div>
 
             </div>
+
+            <div class="mt-8 mb-4">
+                <app-pagination [isEmpty]="isEmpty()" [isFirst]="isFirst()" [isLast]="isLast()" [pageSize]="pageSize()"
+                    [currentPage]="currentPage()" [numberOfElements]="numberOfElements()" [totalElements]="totalElements()"
+                    [totalPages]="totalPages()" (pageChange)="onPageChange($event)">
+                </app-pagination>
+            </div>
         </section>
     </main>
 
