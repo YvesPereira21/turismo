@@ -6,7 +6,9 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     phone VARCHAR(255),
-    role VARCHAR(50)
+    role VARCHAR(50),
+    provider VARCHAR(50) DEFAULT 'LOCAL',
+    provider_id VARCHAR(255)
 );
 
 CREATE TABLE tourists (
@@ -55,12 +57,13 @@ CREATE TABLE socials_media (
     social_media_id UUID PRIMARY KEY,
     social_media_link VARCHAR(255) NOT NULL,
     social_media_type VARCHAR(50) NOT NULL,
-    spot_manager_id UUID REFERENCES spot_managers(spot_manager_id) ON DELETE CASCADE
+    tourist_spot_id UUID REFERENCES tourist_spots(tourist_spot_id) ON DELETE CASCADE
 );
 
 CREATE TABLE photos (
     photo_id UUID PRIMARY KEY,
     url VARCHAR(255) NOT NULL,
+    alt_text VARCHAR(255),
     tourist_spot_id UUID NOT NULL REFERENCES tourist_spots(tourist_spot_id) ON DELETE CASCADE
 );
 
@@ -68,7 +71,7 @@ CREATE TABLE activities (
     activity_id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     tourist_spot_id UUID NOT NULL REFERENCES tourist_spots(tourist_spot_id) ON DELETE CASCADE,
-    photo_id UUID NOT NULL UNIQUE REFERENCES photos(photo_id) ON DELETE RESTRICT
+    photo_id UUID REFERENCES photos(photo_id) ON DELETE SET NULL
 );
 
 CREATE TABLE events (
@@ -94,4 +97,11 @@ CREATE TABLE tourist_spot_tour_guides (
     tourist_spot_id UUID NOT NULL REFERENCES tourist_spots(tourist_spot_id) ON DELETE CASCADE,
     tour_guide_id UUID NOT NULL REFERENCES tour_guides(tour_guide_id) ON DELETE CASCADE,
     PRIMARY KEY (tourist_spot_id, tour_guide_id)
+);
+
+CREATE TABLE refresh_tokens (
+    id UUID PRIMARY KEY,
+    token VARCHAR(255) NOT NULL UNIQUE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    expiry_date TIMESTAMP WITH TIME ZONE NOT NULL
 );

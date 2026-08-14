@@ -1,1 +1,0 @@
-ALTER TABLE activities ALTER COLUMN photo_id DROP NOT NULL;

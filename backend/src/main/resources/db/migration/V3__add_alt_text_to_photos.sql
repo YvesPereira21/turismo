@@ -1,1 +1,0 @@
-ALTER TABLE photos ADD COLUMN alt_text VARCHAR(255);
