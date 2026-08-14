@@ -20,8 +20,9 @@ O **Plataforma de Turismo** é uma aplicação Fullstack voltada para a gestão 
 - **Banco de Dados e Geoespacial:** 
   - PostgreSQL com extensão **PostGIS** (Hibernate Spatial & JTS, juntamente com serialização customizada para dados geoespaciais seguindo o padrão RFC 7946)
   - H2 Database (suporte para testes/desenvolvimento)
+  - Implementação de index e index geoespacial (GiST)
 - **Migração de Banco de Dados:** Flyway
-- **Cache:** Redis (`spring-boot-starter-data-redis`)
+- **Cache:** Redis
 - **Documentação de API:** Swagger UI
 - **Produtividade e Mapeamento:** Lombok, MapStruct
 - **Testes:** Testes unitários no backend com JUnit, MockMvc e Mockito
