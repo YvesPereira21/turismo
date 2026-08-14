@@ -17,6 +17,7 @@ import io.turismo.backend.repository.CityRepository;
 import io.turismo.backend.repository.SpotManagerRepository;
 import io.turismo.backend.repository.TouristSpotRepository;
 import io.turismo.backend.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -30,6 +31,7 @@ import java.util.Set;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class TouristSpotService{
     private final TouristSpotRepository touristSpotRepository;
@@ -49,6 +51,7 @@ public class TouristSpotService{
     }
 
     public TouristSpotDTO createTouristSpot(TouristSpotCreateDTO dto, UUID userId){
+        log.info("Creating tourist spot: {} for user ID: {}", dto.name(), userId);
         SpotManager spotManager = spotManagerRepository.findByUser_Id(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Gerente não encontrado"));
         City city = cityRepository.findById(dto.cityId())
@@ -71,6 +74,7 @@ public class TouristSpotService{
     }
 
     public TouristSpotDTO getTouristSpot(UUID touristSpotId){
+        log.info("Fetching tourist spot ID: {}", touristSpotId);
         return touristSpotMapper.toDTO(
                 touristSpotRepository
                         .findById(touristSpotId)
@@ -120,6 +124,7 @@ public class TouristSpotService{
     }
 
     public void updateTouristSpot(UUID touristSpotId, TouristSpotUpdateDTO touristSpotUpdate, UUID userId){
+        log.info("Updating tourist spot ID: {} by user ID: {}", touristSpotId, userId);
         TouristSpot touristSpot = touristSpotRepository.findById(touristSpotId)
                 .orElseThrow(() -> new ObjectNotFoundException("Ponto turístico não encontrado"));
 
@@ -150,6 +155,7 @@ public class TouristSpotService{
     }
 
     public void deleteTouristSpot(UUID touristSpotId, UUID userId){
+        log.info("Deleting tourist spot ID: {} by user ID: {}", touristSpotId, userId);
         TouristSpot touristSpot = touristSpotRepository.findById(touristSpotId)
                 .orElseThrow(() -> new ObjectNotFoundException("Ponto turístico não encontrado"));
         User user = userRepository.findById(userId)

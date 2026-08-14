@@ -3,9 +3,10 @@ package io.turismo.backend.service;
 import io.turismo.backend.model.Activity;
 import io.turismo.backend.model.Photo;
 import io.turismo.backend.model.TouristSpot;
+import io.turismo.backend.dto.photo.PhotoUploadDTO;
 import io.turismo.backend.repository.ActivityRepository;
 import io.turismo.backend.repository.TouristSpotRepository;
-import io.turismo.backend.dto.photo.PhotoUploadDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class PhotoService {
 
@@ -33,6 +35,7 @@ public class PhotoService {
 
     @Transactional(rollbackFor = IOException.class)
     public void uploadTouristSpotsPhotos(UUID touristSpotId, PhotoUploadDTO dto) throws IOException {
+        log.info("Uploading photo for tourist spot ID: {}", touristSpotId);
         TouristSpot touristSpot = touristSpotRepository.findById(touristSpotId)
                 .orElseThrow(() -> new RuntimeException("Ponto turístico não encontrado"));
 
@@ -68,6 +71,7 @@ public class PhotoService {
 
     @Transactional(rollbackFor = IOException.class)
     public void uploadActivityPhoto(UUID activityId, MultipartFile photo) throws IOException {
+        log.info("Uploading photo for activity ID: {}", activityId);
         if (photo == null || photo.getContentType() == null || !photo.getContentType().startsWith("image/")) {
             throw new RuntimeException("Por favor, insira uma imagem válida.");
         }
@@ -96,12 +100,14 @@ public class PhotoService {
 
             activityRepository.save(activity);
         } catch (IOException ex) {
+            log.error("Failed to save activity photo: {}", ex.getMessage());
             throw new IOException("Erro ao salvar foto do ponto turístico");
         }
     }
 
     @Transactional(rollbackFor = IOException.class)
     public void updateActivityPhoto(UUID activityId, MultipartFile photo) throws IOException {
+        log.info("Updating photo for activity ID: {}", activityId);
         if (photo == null || photo.getContentType() == null || !photo.getContentType().startsWith("image/")) {
             throw new RuntimeException("Por favor, insira uma imagem válida.");
         }

@@ -13,6 +13,7 @@ import io.turismo.backend.model.User;
 import io.turismo.backend.model.enums.UserRole;
 import io.turismo.backend.repository.TouristRepository;
 import io.turismo.backend.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class TouristService{
     private final TouristRepository touristRepository;
@@ -38,6 +40,7 @@ public class TouristService{
     }
 
     public TouristDTO createTourist(TouristCreateDTO dto) {
+        log.info("Creating tourist for email: {}", dto.user().email());
         userService.verifyUserAlreadyExists(dto.user().email());
 
         if (isAgeInvalid(dto.birthDate())) {
@@ -50,11 +53,14 @@ public class TouristService{
         String encodedPassword = bCryptPasswordEncoder.encode(dto.user().password());
         tourist.getUser().setPassword(encodedPassword);
 
-        return touristMapper.toDTO(touristRepository.save(tourist));
+        Tourist saved = touristRepository.save(tourist);
+        log.info("Tourist created with ID: {}", saved.getTouristId());
+        return touristMapper.toDTO(saved);
     }
 
     @Cacheable(value = "turista", key = "#touristId", sync = true)
     public TouristDTO getTourist(UUID touristId) {
+        log.info("Fetching tourist with ID: {}", touristId);
         return touristMapper.toDTO(
                 touristRepository.findById(touristId)
                 .orElseThrow(() -> new ObjectNotFoundException("Não encontrado"))
@@ -63,6 +69,7 @@ public class TouristService{
 
     @CachePut(value = "turista", key = "#touristId")
     public TouristDTO updateTourist(TouristUpdateDTO touristUpdateDTO, UUID touristId, UUID userId) {
+        log.info("Updating tourist ID: {} by user ID: {}", touristId, userId);
         Tourist tourist = touristRepository.findById(touristId)
                 .orElseThrow(() -> new ObjectNotFoundException("Não encontrado"));
 
@@ -81,6 +88,7 @@ public class TouristService{
 
     @CacheEvict(value = "turista", key = "#touristId")
     public void deleteTourist(UUID touristId, UUID userId) {
+        log.info("Deleting tourist ID: {} by user ID: {}", touristId, userId);
         Tourist tourist = touristRepository.findById(touristId)
                 .orElseThrow(() -> new ObjectNotFoundException("Não encontrado"));
         User user = userRepository.findById(userId)

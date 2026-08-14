@@ -13,6 +13,7 @@ import io.turismo.backend.model.User;
 import io.turismo.backend.model.enums.UserRole;
 import io.turismo.backend.repository.TourGuideRepository;
 import io.turismo.backend.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -23,6 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class TourGuideService {
     private final TourGuideRepository tourGuideRepository;
@@ -40,6 +42,7 @@ public class TourGuideService {
     }
 
     public TourGuideDTO createTourGuide(TourGuideCreateDTO dto) {
+        log.info("Creating tour guide with email: {}", dto.user().email());
         userService.verifyUserAlreadyExists(dto.user().email());
         boolean cadasturExists = tourGuideRepository.existsByCadastur(dto.cadastur());
 
@@ -53,11 +56,14 @@ public class TourGuideService {
         String encodedPassword = bCryptPasswordEncoder.encode(dto.user().password());
         tourGuide.getUser().setPassword(encodedPassword);
 
-        return tourGuideMapper.toDTO(tourGuideRepository.save(tourGuide));
+        TourGuide saved = tourGuideRepository.save(tourGuide);
+        log.info("Tour guide created with ID: {}", saved.getTourGuideId());
+        return tourGuideMapper.toDTO(saved);
     }
 
     @Cacheable(value = "guia_turismo", key = "#tourGuideId", sync = true)
     public TourGuideDTO getTourGuide(UUID tourGuideId) {
+        log.info("Fetching tour guide ID: {}", tourGuideId);
         TourGuide tourGuide = tourGuideRepository.findById(tourGuideId)
                 .orElseThrow(() -> new ObjectNotFoundException("Guia de Turismo não encontrado"));
 
@@ -74,6 +80,7 @@ public class TourGuideService {
             evict = { @CacheEvict(value = "guias_turismo_ponto_turistico", allEntries = true) }
     )
     public TourGuideDTO updateTourGuide(TourGuideUpdateDTO tourGuideUpdate, UUID tourGuideId, UUID userId) {
+        log.info("Updating tour guide ID: {} by user ID: {}", tourGuideId, userId);
         TourGuide tourGuide = tourGuideRepository.findById(tourGuideId)
                 .orElseThrow(() -> new ObjectNotFoundException("Guia de Turismo não encontrado"));
 
@@ -99,6 +106,7 @@ public class TourGuideService {
             @CacheEvict(value = "guias_turismo_ponto_turistico", allEntries = true)
     })
     public void deleteTourGuide(UUID tourGuideId, UUID userId) {
+        log.info("Deleting tour guide ID: {} by user ID: {}", tourGuideId, userId);
         TourGuide tourGuide = tourGuideRepository.findById(tourGuideId)
                 .orElseThrow(() -> new ObjectNotFoundException("Guia de Turismo não encontrado"));
         User user = userRepository.findById(userId)

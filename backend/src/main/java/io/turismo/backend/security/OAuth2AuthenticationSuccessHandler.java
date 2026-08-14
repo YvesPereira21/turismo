@@ -8,6 +8,7 @@ import io.turismo.backend.service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
@@ -18,6 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -44,8 +46,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             user = userRepository.findByEmail(email).orElse(null);
         }
         if (user == null) {
+            log.warn("OAuth2 login failed: user not found in database for email: {}", email);
             throw new RuntimeException("Usuário autenticado no Google não encontrado na base de dados");
         }
+
+        log.info("OAuth2 authentication successful for user: {}", user.getEmail());
 
         String token = tokenService.generateToken(user);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);

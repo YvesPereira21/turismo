@@ -13,9 +13,10 @@ O **Plataforma de Turismo** é uma aplicação Fullstack voltada para a gestão 
   - JWT (Auth0 `java-jwt`)
   - OAuth2 Client (`spring-boot-starter-oauth2-client` - Google Login)
   - Cookies (HttpOnly)
-- **Tratamento de erros**
-  - classe GlobalHanlderException para capturar erros e devolver uma resposta adequada com status code, descrição e horário
-  - classes exception customizadas para retornar um código de status e mensagem de acordo com a natureza da exceção
+- **Tratamento de erros e Observabilidade**
+  - Classe GlobalHanlderException para capturar erros e devolver uma resposta adequada com status code, descrição e horário
+  - Classes exception customizadas para retornar um código de status e mensagem de acordo com a natureza da exceção
+  - Logs para observabilidade do sistema
 - **Banco de Dados e Geoespacial:** 
   - PostgreSQL com extensão **PostGIS** (Hibernate Spatial & JTS, juntamente com serialização customizada para dados geoespaciais seguindo o padrão RFC 7946)
   - H2 Database (suporte para testes/desenvolvimento)

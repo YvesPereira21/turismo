@@ -50,3 +50,9 @@ file:
   upload-dir:
     tourist-spot-dir: uploads/tourist-spots/
     activity-dir: uploads/activities/
+
+logging:
+  level:
+    root: INFO
+    io.turismo.backend: DEBUG
+    org.springframework.security: DEBUG

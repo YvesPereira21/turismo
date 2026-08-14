@@ -9,6 +9,7 @@ import io.turismo.backend.dto.tourist.TouristDTO;
 import io.turismo.backend.dto.tourist.TouristUpdateDTO;
 import io.turismo.backend.service.TouristService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,6 +21,7 @@ import java.util.UUID;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.turismo.backend.config.SecurityConfig;
 
+@Slf4j
 @RestController
 @SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping(path = "/api/v1")
@@ -40,6 +42,7 @@ public class TouristController {
             @ApiResponse(responseCode = "400", description = "Email já cadastrado ou dados inválidos")
     })
     public ResponseEntity<TouristDTO> createTourist(@Valid @RequestBody TouristCreateDTO dto) {
+        log.info("REST request to create tourist");
         TouristDTO created = touristService.createTourist(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -52,6 +55,7 @@ public class TouristController {
             @ApiResponse(responseCode = "404", description = "Turista não encontrado")
     })
     public ResponseEntity<TouristDTO> getTourist(@PathVariable UUID touristId) {
+        log.info("REST request to get tourist ID: {}", touristId);
         TouristDTO tourist = touristService.getTourist(touristId);
         return ResponseEntity.ok(tourist);
     }
@@ -68,6 +72,7 @@ public class TouristController {
             @PathVariable UUID touristId,
             @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
+        log.info("REST request to update tourist ID: {}", touristId);
         TouristDTO updated = touristService.updateTourist(dto, touristId, userId);
         return ResponseEntity.ok(updated);
     }
@@ -83,6 +88,7 @@ public class TouristController {
             @PathVariable UUID touristId,
             @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
+        log.info("REST request to delete tourist ID: {}", touristId);
         touristService.deleteTourist(touristId, userId);
         return ResponseEntity.noContent().build();
     }

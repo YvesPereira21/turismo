@@ -4,12 +4,14 @@ import io.turismo.backend.model.RefreshToken;
 import io.turismo.backend.model.User;
 import io.turismo.backend.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
@@ -19,6 +21,7 @@ public class RefreshTokenService {
 
     @Transactional
     public RefreshToken createRefreshToken(User user) {
+        log.info("Creating refresh token for user ID: {}", user.getId());
         refreshTokenRepository.deleteByUser(user);
 
         RefreshToken refreshToken = RefreshToken.builder()
@@ -33,6 +36,7 @@ public class RefreshTokenService {
     @Transactional
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().isBefore(Instant.now())) {
+            log.warn("Refresh token expired for user ID: {}", token.getUser().getId());
             refreshTokenRepository.delete(token);
             throw new RuntimeException("Refresh Token expirado. Por favor, faça login novamente.");
         }

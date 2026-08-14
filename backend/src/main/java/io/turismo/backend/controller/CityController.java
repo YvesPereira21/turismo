@@ -8,6 +8,7 @@ import io.turismo.backend.dto.city.CityCreateDTO;
 import io.turismo.backend.dto.city.CityDTO;
 import io.turismo.backend.service.CityService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,6 +23,7 @@ import java.util.UUID;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.turismo.backend.config.SecurityConfig;
 
+@Slf4j
 @RestController
 @SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping(path = "/api/v1")
@@ -43,6 +45,7 @@ public class CityController {
             @ApiResponse(responseCode = "400", description = "Dados de requisição inválidos ou cidade já existe")
     })
     public ResponseEntity<CityDTO> createCity(@Valid @RequestBody CityCreateDTO dto) {
+        log.info("REST request to create city: {}", dto.name());
         CityDTO created = cityService.createCity(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -54,6 +57,7 @@ public class CityController {
             @ApiResponse(responseCode = "404", description = "Cidade não encontrada")
     })
     public ResponseEntity<CityDTO> getCity(@PathVariable String cityName, @PathVariable String stateName) {
+        log.info("REST request to get city: {} in state: {}", cityName, stateName);
         CityDTO city = cityService.getCity(cityName, stateName);
         return ResponseEntity.ok(city);
     }
@@ -64,6 +68,7 @@ public class CityController {
             @ApiResponse(responseCode = "200", description = "Lista recuperada com sucesso")
     })
     public ResponseEntity<java.util.List<CityDTO>> getCitiesFromState(@PathVariable String stateName) {
+        log.info("REST request to get cities from state: {}", stateName);
         java.util.List<CityDTO> cities = cityService.getCitiesFromState(stateName);
         return ResponseEntity.ok(cities);
     }
@@ -76,6 +81,7 @@ public class CityController {
             @ApiResponse(responseCode = "404", description = "Cidade não encontrada")
     })
     public ResponseEntity<Void> deleteCity(@PathVariable UUID cityId) {
+        log.info("REST request to delete city ID: {}", cityId);
         cityService.deleteCity(cityId);
         return ResponseEntity.noContent().build();
     }

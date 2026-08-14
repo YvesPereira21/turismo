@@ -13,12 +13,14 @@ import io.turismo.backend.model.enums.UserRole;
 import io.turismo.backend.repository.ActivityRepository;
 import io.turismo.backend.repository.TouristSpotRepository;
 import io.turismo.backend.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class ActivityService {
     
@@ -35,6 +37,7 @@ public class ActivityService {
     }
 
     public ActivityDTO createActivity(UUID touristSpotId, UUID userId, ActivityCreateDTO dto) {
+        log.info("Creating activity: {} for tourist spot ID: {}", dto.name(), touristSpotId);
         TouristSpot touristSpot = touristSpotRepository.findById(touristSpotId)
                 .orElseThrow(() -> new ObjectNotFoundException("Ponto turístico não encontrado"));
 
@@ -45,10 +48,13 @@ public class ActivityService {
         Activity activity = activityMapper.toEntity(dto);
         activity.setTouristSpot(touristSpot);
         
-        return activityMapper.toDTO(activityRepository.save(activity));
+        Activity saved = activityRepository.save(activity);
+        log.info("Activity created with ID: {}", saved.getActivityId());
+        return activityMapper.toDTO(saved);
     }
 
     public Set<ActivityDTO> getActivitiesByTouristSpotId(UUID touristSpotId) {
+        log.info("Fetching activities for tourist spot ID: {}", touristSpotId);
         if (!touristSpotRepository.existsById(touristSpotId)) {
             throw new ObjectNotFoundException("Ponto turístico não encontrado");
         }
@@ -59,6 +65,7 @@ public class ActivityService {
     }
 
     public void updateActivity(UUID activityId, UUID userId, ActivityCreateDTO dto) {
+        log.info("Updating activity ID: {} by user ID: {}", activityId, userId);
         Activity activity = activityRepository.findById(activityId)
                 .orElseThrow(() -> new ObjectNotFoundException("Atividade não encontrada"));
                 
@@ -73,6 +80,7 @@ public class ActivityService {
     }
 
     public void deleteActivity(UUID activityId, UUID userId) {
+        log.info("Deleting activity ID: {} by user ID: {}", activityId, userId);
         Activity activity = activityRepository.findById(activityId)
                 .orElseThrow(() -> new ObjectNotFoundException("Atividade não encontrada"));
                 

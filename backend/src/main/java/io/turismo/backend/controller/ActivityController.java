@@ -10,6 +10,7 @@ import io.turismo.backend.dto.activity.ActivityCreateDTO;
 import io.turismo.backend.dto.activity.ActivityDTO;
 import io.turismo.backend.service.ActivityService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping(path = "/api/v1")
@@ -45,6 +47,7 @@ public class ActivityController {
             @Valid @RequestBody ActivityCreateDTO dto,
             @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
+        log.info("REST request to create activity for tourist spot ID: {}", touristSpotId);
         ActivityDTO created = activityService.createActivity(touristSpotId, userId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -59,6 +62,7 @@ public class ActivityController {
     public ResponseEntity<Set<ActivityDTO>> getActivitiesByTouristSpotId(
             @PathVariable UUID touristSpotId
     ) {
+        log.info("REST request to get activities for tourist spot ID: {}", touristSpotId);
         Set<ActivityDTO> activities = activityService.getActivitiesByTouristSpotId(touristSpotId);
         return ResponseEntity.ok(activities);
     }
@@ -75,6 +79,7 @@ public class ActivityController {
             @Valid @RequestBody ActivityCreateDTO dto,
             @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
+        log.info("REST request to update activity ID: {}", activityId);
         activityService.updateActivity(activityId, userId, dto);
         return ResponseEntity.ok().build();
     }
@@ -90,6 +95,7 @@ public class ActivityController {
             @PathVariable UUID activityId,
             @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
+        log.info("REST request to delete activity ID: {}", activityId);
         activityService.deleteActivity(activityId, userId);
         return ResponseEntity.noContent().build();
     }

@@ -9,6 +9,7 @@ import io.turismo.backend.model.TouristSpot;
 import io.turismo.backend.model.Warn;
 import io.turismo.backend.repository.TouristSpotRepository;
 import io.turismo.backend.repository.WarnRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import org.springframework.cache.annotation.Caching;
 import java.time.LocalDate;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class WarnService {
     private final WarnRepository warnRepository;
@@ -36,6 +38,7 @@ public class WarnService {
             @CacheEvict(value = "avisos", allEntries = true)
     })
     public WarnDTO createWarn(UUID userSpotManagerId, WarnCreateDTO dto, UUID touristSpotId){
+        log.info("Creating warn for tourist spot ID: {} by user ID: {}", touristSpotId, userSpotManagerId);
         TouristSpot touristSpot = touristSpotRepository.findById(touristSpotId)
                 .orElseThrow(() -> new ObjectNotFoundException("Ponto turístico não encontrado"));
 
@@ -47,11 +50,14 @@ public class WarnService {
         warn.setTouristSpot(touristSpot);
         warn.setEventDate(LocalDate.now());
 
-        return warnMapper.toDTO(warnRepository.save(warn));
+        Warn saved = warnRepository.save(warn);
+        log.info("Warn created with ID: {}", saved.getId());
+        return warnMapper.toDTO(saved);
     }
 
     @Cacheable(value = "aviso_detalhe", sync = true)
     public WarnDTO getWarn(UUID warnId){
+        log.info("Fetching warn ID: {}", warnId);
         return warnMapper.toDTO(
                 warnRepository.findById(warnId)
                 .orElseThrow(() -> new ObjectNotFoundException("Aviso não encontrado"))
@@ -59,6 +65,7 @@ public class WarnService {
     }
 
     public Page<WarnDTO> getAllTouristSpotWarn(UUID touristSpotId, Pageable pageable){
+        log.info("Fetching warns for tourist spot ID: {}", touristSpotId);
         return warnRepository.findAllByTouristSpot_TouristSpotId(touristSpotId, pageable)
                 .map(warnMapper::toDTO);
     }
@@ -68,6 +75,7 @@ public class WarnService {
             @CacheEvict(value = "avisos", allEntries = true)
     })
     public void deleteWarn(UUID userSpotManagerId, UUID warnId) {
+        log.info("Deleting warn ID: {} by user ID: {}", warnId, userSpotManagerId);
         Warn warn = warnRepository.findById(warnId)
                         .orElseThrow(() -> new ObjectNotFoundException("Aviso não encontrado"));
         TouristSpot touristSpot = warn.getTouristSpot();

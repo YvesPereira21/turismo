@@ -10,6 +10,7 @@ import io.turismo.backend.security.CookieUtils;
 import io.turismo.backend.service.RefreshTokenService;
 import io.turismo.backend.security.TokenService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -24,6 +25,7 @@ import java.util.Map;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.turismo.backend.config.SecurityConfig;
 
+@Slf4j
 @RestController
 @SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping("/api/v1/auth")
@@ -39,13 +41,17 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginDTO loginDTO) {
+        log.info("Authentication attempt for email: {}", loginDTO.email());
         User user = userRepository.findByEmail(loginDTO.email())
                 .orElse(null);
 
         if (user == null || !passwordEncoder.matches(loginDTO.password(), user.getPassword())) {
+            log.warn("Authentication failed for email: {}", loginDTO.email());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("message", "E-mail ou senha incorretos."));
         }
+
+        log.info("User authenticated successfully: {}", user.getEmail());
 
         String accessToken = tokenService.generateToken(user);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
@@ -64,8 +70,10 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(
             @CookieValue(name = CookieUtils.REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshTokenStr) {
+        log.info("Token refresh request received");
 
         if (refreshTokenStr == null || refreshTokenStr.isBlank()) {
+            log.warn("Token refresh rejected: missing cookie");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("message", "Refresh Token ausente. Faça login novamente."));
         }
@@ -75,11 +83,13 @@ public class AuthController {
                 .orElse(null);
 
         if (refreshToken == null) {
+            log.warn("Token refresh rejected: token invalid or expired");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("message", "Refresh Token inválido ou revogado."));
         }
 
         User user = refreshToken.getUser();
+        log.info("Token refreshed successfully for user: {}", user.getEmail());
 
         // Rotação: Apaga o Refresh Token antigo
         refreshTokenService.deleteByToken(refreshTokenStr);
@@ -97,6 +107,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(
             @CookieValue(name = CookieUtils.REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshTokenStr) {
+        log.info("Logout requested");
 
         if (refreshTokenStr != null && !refreshTokenStr.isBlank()) {
             refreshTokenService.deleteByToken(refreshTokenStr);

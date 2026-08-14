@@ -13,6 +13,7 @@ import io.turismo.backend.model.User;
 import io.turismo.backend.model.enums.UserRole;
 import io.turismo.backend.repository.SpotManagerRepository;
 import io.turismo.backend.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.CacheEvict;
@@ -20,6 +21,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class SpotManagerService{
     private final SpotManagerRepository spotManagerRepository;
@@ -37,6 +39,7 @@ public class SpotManagerService{
     }
 
     public SpotManagerSimpleDTO createSpotManager(SpotManagerCreateDTO dto){
+        log.info("Creating spot manager with email: {}", dto.user().email());
         userService.verifyUserAlreadyExists(dto.user().email());
 
         SpotManager newSpotManager = spotManagerMapper.toEntity(dto);
@@ -45,12 +48,15 @@ public class SpotManagerService{
         String encodedPassword = bCryptPasswordEncoder.encode(dto.user().password());
         newSpotManager.getUser().setPassword(encodedPassword);
 
+        SpotManager saved = spotManagerRepository.save(newSpotManager);
+        log.info("Spot manager created with ID: {}", saved.getSpotManagerId());
 
-        return spotManagerMapper.toSimpleDTO(spotManagerRepository.save(newSpotManager));
+        return spotManagerMapper.toSimpleDTO(saved);
     }
 
     @Cacheable(value = "gestor_simples", sync = true)
     public SpotManagerSimpleDTO getSpotManager(UUID spotManagerId) {
+        log.info("Fetching spot manager ID: {}", spotManagerId);
         return spotManagerMapper.toSimpleDTO(
                 spotManagerRepository.findById(spotManagerId)
                         .orElseThrow(() -> new ObjectNotFoundException("Gerente não encontrado"))
@@ -59,6 +65,7 @@ public class SpotManagerService{
 
     @Cacheable(value = "gestor_completo", sync = true)
     public SpotManagerDTO currentSpotManager(UUID spotManagerId) {
+        log.info("Fetching current spot manager details ID: {}", spotManagerId);
         SpotManager spotManager = spotManagerRepository.findById(spotManagerId)
                 .orElseThrow(() -> new ObjectNotFoundException("Gerente não encontrado"));
 
@@ -70,6 +77,7 @@ public class SpotManagerService{
             @CacheEvict(value = "gestor_completo", allEntries = true)
     })
     public SpotManagerSimpleDTO updateSpotManager(SpotManagerUpdateDTO spotManagerUpdateDTO, UUID spotManagerId, UUID userId){
+        log.info("Updating spot manager ID: {} by user ID: {}", spotManagerId, userId);
         SpotManager spotManager = spotManagerRepository.findById(spotManagerId)
                 .orElseThrow(() -> new ObjectNotFoundException("Gerente não encontrado"));
 
@@ -89,6 +97,7 @@ public class SpotManagerService{
             @CacheEvict(value = "gestor_completo", allEntries = true)
     })
     public void deleteSpotManager(UUID spotManagerId, UUID userId){
+        log.info("Deleting spot manager ID: {} by user ID: {}", spotManagerId, userId);
         SpotManager spotManager = spotManagerRepository.findById(spotManagerId)
                 .orElseThrow(() -> new ObjectNotFoundException("Gerente não encontrado"));
         User user = userRepository.findById(userId)

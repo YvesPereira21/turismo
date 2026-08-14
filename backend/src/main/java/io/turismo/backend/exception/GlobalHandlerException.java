@@ -2,6 +2,7 @@ package io.turismo.backend.exception;
 
 import io.turismo.backend.dto.ApiError;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,11 +14,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalHandlerException {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> genericException(Exception e) {
+        log.error("Unexpected error occurred: {}", e.getMessage(), e);
         ApiError er = ApiError
                 .builder()
                 .timestamp(LocalDateTime.now())
@@ -35,6 +38,7 @@ public class GlobalHandlerException {
                 .stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .toList();
+        log.warn("Validation failed: {}", errorList);
         ApiError error = ApiError
                 .builder()
                 .timestamp(LocalDateTime.now())
@@ -51,6 +55,7 @@ public class GlobalHandlerException {
                 .stream()
                 .map(error -> error.getPropertyPath() + ": " + error.getMessage())
                 .collect(Collectors.toList());
+        log.warn("Constraint violation: {}", errorsList);
 
         ApiError apiError = ApiError
                 .builder()
@@ -65,6 +70,7 @@ public class GlobalHandlerException {
     @ExceptionHandler(ObjectNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ApiError> objectNotFoundException(ObjectNotFoundException e) {
+        log.warn("Resource not found: {}", e.getMessage());
         ApiError error = ApiError.builder()
                 .timestamp(LocalDateTime.now())
                 .code(HttpStatus.NOT_FOUND.value())
@@ -77,6 +83,7 @@ public class GlobalHandlerException {
     @ExceptionHandler(ObjectAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<ApiError> objectAlreadyExistsException(ObjectAlreadyExistsException e) {
+        log.warn("Resource conflict: {}", e.getMessage());
         ApiError error = ApiError.builder()
                 .timestamp(LocalDateTime.now())
                 .code(HttpStatus.CONFLICT.value())
@@ -89,6 +96,7 @@ public class GlobalHandlerException {
     @ExceptionHandler(UserIsNotOwnerException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<ApiError> userIsNotTheOwnerException(UserIsNotOwnerException e) {
+        log.warn("Unauthorized owner access: {}", e.getMessage());
         ApiError error = ApiError.builder()
                 .timestamp(LocalDateTime.now())
                 .code(HttpStatus.UNAUTHORIZED.value())
@@ -101,6 +109,7 @@ public class GlobalHandlerException {
     @ExceptionHandler(UserIsNotAdminOrOwnerException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<ApiError> userIsNotAdminOrOwnerException(UserIsNotAdminOrOwnerException e) {
+        log.warn("Unauthorized admin/owner access: {}", e.getMessage());
         ApiError error = ApiError.builder()
                 .timestamp(LocalDateTime.now())
                 .code(HttpStatus.UNAUTHORIZED.value())
@@ -113,6 +122,7 @@ public class GlobalHandlerException {
     @ExceptionHandler(InvalidDateException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<ApiError> invalidDateException(InvalidDateException e) {
+        log.warn("Invalid date rule: {}", e.getMessage());
         ApiError error = ApiError.builder()
                 .timestamp(LocalDateTime.now())
                 .code(HttpStatus.CONFLICT.value())
@@ -125,6 +135,7 @@ public class GlobalHandlerException {
     @ExceptionHandler(TokenRefreshException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<ApiError> tokenRefreshException(TokenRefreshException e) {
+        log.warn("Token refresh rejected: {}", e.getMessage());
         ApiError error = ApiError.builder()
                 .timestamp(LocalDateTime.now())
                 .code(HttpStatus.FORBIDDEN.value())

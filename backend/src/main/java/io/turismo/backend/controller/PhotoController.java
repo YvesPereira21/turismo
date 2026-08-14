@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.turismo.backend.dto.photo.PhotoUploadDTO;
 import io.turismo.backend.service.PhotoService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.UUID;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.turismo.backend.config.SecurityConfig;
 
+@Slf4j
 @RestController
 @SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping(path = "/api/v1")
@@ -45,6 +47,7 @@ public class PhotoController {
             @PathVariable UUID touristSpotId,
             @ModelAttribute @Valid PhotoUploadDTO dto
     ) throws IOException {
+        log.info("REST request to upload photo for tourist spot ID: {}", touristSpotId);
         photoService.uploadTouristSpotsPhotos(touristSpotId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -61,6 +64,7 @@ public class PhotoController {
             @PathVariable UUID activityId,
             @RequestParam("photo") MultipartFile photo
     ) throws IOException {
+        log.info("REST request to upload photo for activity ID: {}", activityId);
         photoService.uploadActivityPhoto(activityId, photo);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -77,6 +81,7 @@ public class PhotoController {
             @PathVariable UUID activityId,
             @RequestParam("photo") MultipartFile photo
     ) throws IOException {
+        log.info("REST request to update photo for activity ID: {}", activityId);
         photoService.updateActivityPhoto(activityId, photo);
         return ResponseEntity.ok().build();
     }
