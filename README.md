@@ -1,10 +1,10 @@
-# 🗺️ Plataforma de Turismo e Pontos Turísticos
+# 🗺️ Plataforma de Turismo
 
 O **Plataforma de Turismo** é uma aplicação Fullstack voltada para a gestão e localização de pontos turísticos. O sistema disponibiliza suporte geoespacial através de mapa via Leaflet, autenticação segura via JWT e login social via Google OAuth2, além de controle rigoroso de permissões por perfil (Tourist, Tour Guide, Spot Manager e Admin).
 
 ---
 
-## Tecnologias Utilizadas
+## Tecnologias utilizadas
 
 ### **Backend**
 - **Linguagem:** Java 21
@@ -29,13 +29,13 @@ O **Plataforma de Turismo** é uma aplicação Fullstack voltada para a gestão 
 ### **Frontend**
 - **Framework:** Angular 19
 - **Linguagem:** TypeScript
-- **Estilização & UI:** Tailwind CSS 4 + DaisyUI
+- **Estilização e UI:** Tailwind CSS 4 + DaisyUI
 - **Mapas Interativos:** Leaflet + `@bluehalo/ngx-leaflet`
-- **Gerenciamento de Estado & Reatividade:** RxJS
+- **Gerenciamento de Estado e Reatividade:** RxJS
 
 ---
 
-## Estrutura do Repositório
+## Estrutura do repositório
 
 ```text
 turismo/
@@ -53,11 +53,11 @@ turismo/
 
 ---
 
-## Controle de Acesso, Roles e Proteção contra IDOR
+## Controle de acesso, roles e proteção contra IDOR
 
 O sistema implementa uma camada robusta de controle de acesso baseada em perfis (**RBAC**) combinada com validação de propriedade de recursos (**ABAC**) na camada de serviço para mitigar vulnerabilidades de **IDOR (Insecure Direct Object Reference)**.
 
-### **Perfis de Usuário (Roles)**
+### **Perfis de usuário (Roles)**
 
 - **`ADMIN`**:
   - Acesso irrestrito a todas as funcionalidades do sistema.
@@ -77,7 +77,7 @@ O sistema implementa uma camada robusta de controle de acesso baseada em perfis 
 
 ---
 
-### **Mitigação de IDOR (Validação de Propriedade)**
+### **Mitigação de IDOR**
 
 Para prevenir falhas de referência direta a objetos (IDOR), onde um usuário autenticado tenta alterar o ID de um recurso para manipular dados de terceiros, a aplicação aplica checagens rigorosas no Backend:
 
@@ -95,7 +95,7 @@ Para prevenir falhas de referência direta a objetos (IDOR), onde um usuário au
 
 ---
 
-## Variáveis de Ambiente & Configurações
+## Variáveis de ambiente e configurações
 
 ### **1. Backend**
 As configurações do backend estão localizadas no arquivo [`backend/src/main/resources/application.yaml`](file:///home/yves/projetos_web/turismo/backend/src/main/resources/application.yaml). As seguintes variáveis de ambiente podem ser definidas no sistema operacional ou em um arquivo `.env` para produção/desenvolvimento:
@@ -167,7 +167,7 @@ O backend utiliza **JUnit 5**, **Mockito**, **MockMvc** e **REST Assured** para 
   - Integrações com Banco de Dados H2 em memória e manipulação de Mappers.
 
 
-## Como Rodar o Projeto Localmente
+## Como rodar o projeto localmente
 
 ### **Pré-requisitos**
 - **Java JDK 21** ou superior
@@ -177,7 +177,7 @@ O backend utiliza **JUnit 5**, **Mockito**, **MockMvc** e **REST Assured** para 
 
 ---
 
-### **1. Executando o Backend**
+### **1. Executando o backend**
 
 1. Navegue até a pasta `backend`:
    ```bash
@@ -193,7 +193,7 @@ O backend utiliza **JUnit 5**, **Mockito**, **MockMvc** e **REST Assured** para 
 
 ---
 
-### **2. Executando o Frontend**
+### **2. Executando o frontend**
 
 1. Navegue até a pasta `frontend`:
    ```bash
