@@ -1,5 +1,6 @@
 package io.turismo.backend.model;
 
+import io.turismo.backend.model.enums.AuthProvider;
 import io.turismo.backend.model.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,6 +39,14 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private UserRole role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider")
+    @Builder.Default
+    private AuthProvider provider = AuthProvider.LOCAL;
+
+    @Column(name = "provider_id")
+    private String providerId;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude

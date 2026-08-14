@@ -1,5 +1,6 @@
 package io.turismo.backend.security;
 
+import io.turismo.backend.model.enums.AuthProvider;
 import io.turismo.backend.model.RefreshToken;
 import io.turismo.backend.model.User;
 import io.turismo.backend.repository.UserRepository;
@@ -30,9 +31,21 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = oAuth2User.getAttribute("email");
+        String providerId = oAuth2User.getAttribute("sub");
+        if (providerId == null) {
+            providerId = oAuth2User.getAttribute("id");
+        }
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário autenticado no Google não encontrado na base de dados"));
+        User user = null;
+        if (providerId != null) {
+            user = userRepository.findByProviderAndProviderId(AuthProvider.GOOGLE, providerId).orElse(null);
+        }
+        if (user == null && email != null) {
+            user = userRepository.findByEmail(email).orElse(null);
+        }
+        if (user == null) {
+            throw new RuntimeException("Usuário autenticado no Google não encontrado na base de dados");
+        }
 
         String token = tokenService.generateToken(user);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
