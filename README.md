@@ -78,6 +78,25 @@ O sistema implementa uma camada robusta de controle de acesso baseada em perfis 
 
 ---
 
+### **Fluxo de Login e Credenciais de Teste**
+
+O login no sistema é realizado em uma única tela de acesso (`/login`), independente do perfil do usuário. Após a autenticação (via e-mail/senha ou Google OAuth2), o sistema identifica o papel (*role*) da conta e realiza o redirecionamento automático:
+
+- **Gestor (`SPOTMANAGER`):** Redirecionado diretamente para o **Dashboard do Gestor** (`/manager-dashboard`), onde pode cadastrar/editar pontos turísticos, criar avisos e gerenciar atrações.
+- **Turista (`TOURIST`), Guia (`TOURGUIDE`) e Admin (`ADMIN`):** Redirecionados para a **Tela de Início / Feed Principal** (`/`).
+
+#### **Credenciais para Teste (Dados Iniciais)**
+*(Todas as contas de teste abaixo utilizam a senha padrão: `12345678`)*
+
+| Perfil | E-mail de Login | Senha | Direcionamento Pós-Login |
+| :--- | :--- | :--- | :--- |
+| **Administrador (`ADMIN`)** | `admin@turismo.io` | `12345678` | Tela Inicial (`/`) com menus para cadastrar gestores e guias |
+| **Gestor (`SPOTMANAGER`)** | `joao.manager@example.com`<br>`gestor@teste.com` | `12345678` | Painel do Gestor (`/manager-dashboard`) |
+| **Guia de Turismo (`TOURGUIDE`)** | `maria.guide@example.com`<br>`carlos.guia@example.com` | `12345678` | Tela Inicial (`/`) |
+| **Turista (`TOURIST`)** | `pedro.tourist@example.com` | `12345678` | Tela Inicial (`/`) |
+
+---
+
 ### **Mitigação de IDOR**
 
 Para prevenir falhas de referência direta a objetos (IDOR), onde um usuário autenticado tenta alterar o ID de um recurso para manipular dados de terceiros, a aplicação aplica checagens rigorosas no Backend:
