@@ -1,6 +1,6 @@
 package io.turismo.backend.controller;
 
-import io.turismo.backend.controller.docs.TagDocs;
+import io.turismo.backend.controller.doc.TagDoc;
 import io.turismo.backend.dto.tag.TagCreateUpdateDTO;
 import io.turismo.backend.dto.tag.TagDTO;
 import io.turismo.backend.service.TagService;
@@ -20,7 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "/api/v1")
 @Validated
-public class TagController implements TagDocs {
+public class TagController implements TagDoc {
 
     private final TagService tagService;
 

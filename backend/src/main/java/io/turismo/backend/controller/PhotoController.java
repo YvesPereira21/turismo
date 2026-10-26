@@ -1,6 +1,6 @@
 package io.turismo.backend.controller;
 
-import io.turismo.backend.controller.docs.PhotoDocs;
+import io.turismo.backend.controller.doc.PhotoDoc;
 import io.turismo.backend.dto.photo.PhotoUploadDTO;
 import io.turismo.backend.service.PhotoService;
 import jakarta.validation.Valid;
@@ -20,7 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "/api/v1")
 @Validated
-public class PhotoController implements PhotoDocs {
+public class PhotoController implements PhotoDoc {
 
     private final PhotoService photoService;
 

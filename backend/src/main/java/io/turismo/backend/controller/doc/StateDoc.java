@@ -1,4 +1,4 @@
-package io.turismo.backend.controller.docs;
+package io.turismo.backend.controller.doc;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Tag(name = "Estado", description = "Endpoints para gerenciamento de estados brasileiros")
 @SecurityRequirement(name = SecurityConfig.SECURITY)
-public interface StateDocs {
+public interface StateDoc {
 
     @Operation(summary = "Criar estado", description = "Cadastra um novo estado")
     @ApiResponses(value = {

@@ -1,6 +1,6 @@
 package io.turismo.backend.controller;
 
-import io.turismo.backend.controller.docs.WarnDocs;
+import io.turismo.backend.controller.doc.WarnDoc;
 import io.turismo.backend.dto.warn.WarnCreateDTO;
 import io.turismo.backend.dto.warn.WarnDTO;
 import io.turismo.backend.service.WarnService;
@@ -21,7 +21,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "/api/v1")
 @Validated
-public class WarnController implements WarnDocs {
+public class WarnController implements WarnDoc {
 
     private final WarnService warnService;
 

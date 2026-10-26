@@ -1,6 +1,6 @@
 package io.turismo.backend.controller;
 
-import io.turismo.backend.controller.docs.TouristDocs;
+import io.turismo.backend.controller.doc.TouristDoc;
 import io.turismo.backend.dto.tourist.TouristCreateDTO;
 import io.turismo.backend.dto.tourist.TouristDTO;
 import io.turismo.backend.dto.tourist.TouristUpdateDTO;
@@ -20,7 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "/api/v1")
 @Validated
-public class TouristController implements TouristDocs {
+public class TouristController implements TouristDoc {
 
     private final TouristService touristService;
 

@@ -1,4 +1,4 @@
-package io.turismo.backend.controller.docs;
+package io.turismo.backend.controller.doc;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Tag(name = "Foto", description = "Endpoints para upload e gerenciamento de fotos de pontos turísticos e atividades")
 @SecurityRequirement(name = SecurityConfig.SECURITY)
-public interface PhotoDocs {
+public interface PhotoDoc {
 
     @Operation(summary = "Fazer upload de fotos do ponto turístico", description = "Faz o upload de uma ou mais fotos para um ponto turístico específico")
     @ApiResponses(value = {

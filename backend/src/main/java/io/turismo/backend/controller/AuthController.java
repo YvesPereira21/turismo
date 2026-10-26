@@ -1,6 +1,6 @@
 package io.turismo.backend.controller;
 
-import io.turismo.backend.controller.docs.AuthDocs;
+import io.turismo.backend.controller.doc.AuthDoc;
 import io.turismo.backend.dto.user.UserDTO;
 import io.turismo.backend.dto.user.UserLoginDTO;
 import io.turismo.backend.model.RefreshToken;
@@ -26,7 +26,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-public class AuthController implements AuthDocs {
+public class AuthController implements AuthDoc {
 
     private final UserRepository userRepository;
     private final TokenService tokenService;

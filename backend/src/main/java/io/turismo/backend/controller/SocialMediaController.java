@@ -1,6 +1,6 @@
 package io.turismo.backend.controller;
 
-import io.turismo.backend.controller.docs.SocialMediaDocs;
+import io.turismo.backend.controller.doc.SocialMediaDoc;
 import io.turismo.backend.dto.social_media.SocialMediaCreateDTO;
 import io.turismo.backend.dto.social_media.SocialMediaDTO;
 import io.turismo.backend.dto.social_media.SocialMediaUpdateDTO;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "/api/v1")
 @Validated
-public class SocialMediaController implements SocialMediaDocs {
+public class SocialMediaController implements SocialMediaDoc {
 
     private final SocialMediaService socialMediaService;
 

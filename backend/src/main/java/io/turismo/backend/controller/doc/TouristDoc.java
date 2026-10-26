@@ -1,4 +1,4 @@
-package io.turismo.backend.controller.docs;
+package io.turismo.backend.controller.doc;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Tag(name = "Turista", description = "Endpoints para gerenciamento de turistas")
 @SecurityRequirement(name = SecurityConfig.SECURITY)
-public interface TouristDocs {
+public interface TouristDoc {
 
     @Operation(summary = "Criar turista", description = "Cadastra um novo turista no sistema")
     @ApiResponses(value = {

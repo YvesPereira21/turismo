@@ -1,6 +1,6 @@
 package io.turismo.backend.controller;
 
-import io.turismo.backend.controller.docs.CityDocs;
+import io.turismo.backend.controller.doc.CityDoc;
 import io.turismo.backend.dto.city.CityCreateDTO;
 import io.turismo.backend.dto.city.CityDTO;
 import io.turismo.backend.service.CityService;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "/api/v1")
 @Validated
-public class CityController implements CityDocs {
+public class CityController implements CityDoc {
 
     private final CityService cityService;
 

@@ -1,6 +1,6 @@
 package io.turismo.backend.controller;
 
-import io.turismo.backend.controller.docs.ActivityDocs;
+import io.turismo.backend.controller.doc.ActivityDoc;
 import io.turismo.backend.dto.activity.ActivityCreateDTO;
 import io.turismo.backend.dto.activity.ActivityDTO;
 import io.turismo.backend.service.ActivityService;
@@ -20,7 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "/api/v1")
 @Validated
-public class ActivityController implements ActivityDocs {
+public class ActivityController implements ActivityDoc {
 
     private final ActivityService activityService;
 

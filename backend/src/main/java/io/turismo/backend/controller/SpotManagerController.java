@@ -1,6 +1,6 @@
 package io.turismo.backend.controller;
 
-import io.turismo.backend.controller.docs.SpotManagerDocs;
+import io.turismo.backend.controller.doc.SpotManagerDoc;
 import io.turismo.backend.dto.spot_manager.SpotManagerCreateDTO;
 import io.turismo.backend.dto.spot_manager.SpotManagerDTO;
 import io.turismo.backend.dto.spot_manager.SpotManagerSimpleDTO;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "/api/v1")
 @Validated
-public class SpotManagerController implements SpotManagerDocs {
+public class SpotManagerController implements SpotManagerDoc {
 
     private final SpotManagerService spotManagerService;
 

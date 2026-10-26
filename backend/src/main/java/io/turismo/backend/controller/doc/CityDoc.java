@@ -1,4 +1,4 @@
-package io.turismo.backend.controller.docs;
+package io.turismo.backend.controller.doc;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Tag(name = "Cidade", description = "Endpoints para gerenciamento de cidades")
 @SecurityRequirement(name = SecurityConfig.SECURITY)
-public interface CityDocs {
+public interface CityDoc {
 
     @Operation(summary = "Criar cidade", description = "Cria uma nova cidade vinculada a um estado")
     @ApiResponses(value = {

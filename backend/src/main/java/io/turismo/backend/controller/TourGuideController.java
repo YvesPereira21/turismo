@@ -1,6 +1,6 @@
 package io.turismo.backend.controller;
 
-import io.turismo.backend.controller.docs.TourGuideDocs;
+import io.turismo.backend.controller.doc.TourGuideDoc;
 import io.turismo.backend.dto.tour_guide.TourGuideCreateDTO;
 import io.turismo.backend.dto.tour_guide.TourGuideDTO;
 import io.turismo.backend.dto.tour_guide.TourGuideUpdateDTO;
@@ -22,7 +22,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "/api/v1")
 @Validated
-public class TourGuideController implements TourGuideDocs {
+public class TourGuideController implements TourGuideDoc {
 
     private final TourGuideService tourGuideService;
 

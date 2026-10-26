@@ -1,4 +1,4 @@
-package io.turismo.backend.controller.docs;
+package io.turismo.backend.controller.doc;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @Tag(name = "Rede Social", description = "Endpoints para gerenciamento de redes sociais de gerentes")
 @SecurityRequirement(name = SecurityConfig.SECURITY)
-public interface SocialMediaDocs {
+public interface SocialMediaDoc {
 
     @Operation(summary = "Criar rede social", description = "Cria uma nova rede social para um ponto turístico")
     @ApiResponses(value = {

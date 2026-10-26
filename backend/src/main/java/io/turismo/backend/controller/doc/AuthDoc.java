@@ -1,4 +1,4 @@
-package io.turismo.backend.controller.docs;
+package io.turismo.backend.controller.doc;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 
 @Tag(name = "Autenticação", description = "Endpoints para login, renovação de token, logout e consulta do usuário autenticado")
 @SecurityRequirement(name = SecurityConfig.SECURITY)
-public interface AuthDocs {
+public interface AuthDoc {
 
     @Operation(summary = "Realizar login", description = "Autentica o usuário com e-mail e senha, retornando o token de acesso e cookie HttpOnly com refresh token")
     @ApiResponses(value = {

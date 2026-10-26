@@ -1,6 +1,6 @@
 package io.turismo.backend.controller;
 
-import io.turismo.backend.controller.docs.TouristSpotDocs;
+import io.turismo.backend.controller.doc.TouristSpotDoc;
 import io.turismo.backend.dto.geojson.GeoFeatureCollectionDTO;
 import io.turismo.backend.dto.tourist_spot.TouristSpotCreateDTO;
 import io.turismo.backend.dto.tourist_spot.TouristSpotDTO;
@@ -26,7 +26,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "/api/v1")
 @Validated
-public class TouristSpotController implements TouristSpotDocs {
+public class TouristSpotController implements TouristSpotDoc {
 
     private final TouristSpotService touristSpotService;
 
