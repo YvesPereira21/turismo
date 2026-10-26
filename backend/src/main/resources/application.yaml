@@ -2,7 +2,7 @@ spring:
   application:
     name: backend
   datasource:
-    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:turismo}
     username: ${POSTGRES_USER:postgres}
     password: ${POSTGRES_PASSWORD:sua_senha_aqui}
     driver-class-name: org.postgresql.Driver
