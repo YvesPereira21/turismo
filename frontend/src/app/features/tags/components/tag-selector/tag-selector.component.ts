@@ -25,7 +25,7 @@ export class TagSelectorComponent implements OnInit {
       next: (data) => {
         this.tags.set(data.content);
       },
-      error: (erro) => {
+      error: (error) => {
         alert('Erro ao buscar tags. Por favor recarregue a página e tente novamente');
       }
     });

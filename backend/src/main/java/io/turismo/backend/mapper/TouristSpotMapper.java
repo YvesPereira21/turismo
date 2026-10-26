@@ -16,7 +16,7 @@ import org.mapstruct.*;
 public interface TouristSpotMapper {
 
     @Mapping(target = "touristSpotId", ignore = true)
-    @Mapping(target = "location", expression = "java(mapLatLngToPoint(dto.latitude(), dto.longitude()))")
+    @Mapping(target = "location", expression = "java(mapLatLngToPoint(dto.latitude(), dto.longitude(), null))")
     @Mapping(target = "spotManager", ignore = true)
     @Mapping(target = "city", ignore = true)
     @Mapping(target = "photos", ignore = true)
@@ -35,7 +35,7 @@ public interface TouristSpotMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "touristSpotId", ignore = true)
-    @Mapping(target = "location", expression = "java(mapLatLngToPoint(dto.latitude(), dto.longitude()))")
+    @Mapping(target = "location", expression = "java(mapLatLngToPoint(dto.latitude(), dto.longitude(), entity.getLocation()))")
     @Mapping(target = "spotManager", ignore = true)
     @Mapping(target = "city", ignore = true)
     @Mapping(target = "photos", ignore = true)
@@ -48,9 +48,9 @@ public interface TouristSpotMapper {
     @Mapping(target = "photos", source = "entity.spotOnlyPhotos")
     TouristSpotListDTO toListWithDistanceDTO(TouristSpot entity, Double distance);
 
-    default Point mapLatLngToPoint(Double latitude, Double longitude) {
+    default Point mapLatLngToPoint(Double latitude, Double longitude, Point existingLocation) {
         if (latitude == null || longitude == null) {
-            return null;
+            return existingLocation;
         }
         GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
         return geometryFactory.createPoint(new Coordinate(longitude, latitude));

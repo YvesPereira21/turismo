@@ -27,6 +27,10 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'map',
+    redirectTo: 'mapa'
+  },
+  {
     path: 'login',
     component: LoginComponent
   },

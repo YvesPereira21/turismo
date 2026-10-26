@@ -24,7 +24,7 @@
         <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             @for (touristSpot of touristSpots(); track touristSpot.touristSpotId) {
-            <article class="h-[640px] w-full bg-white rounded-2xl shadow-[0_10px_20px_rgba(44,92,62,0.15)] border border-gray-100 flex flex-col overflow-hidden hover:shadow-[0_15px_30px_rgba(44,92,62,0.2)] transition-shadow duration-300 relative group">
+            <article class="min-h-[600px] h-full w-full bg-white rounded-2xl shadow-[0_10px_20px_rgba(44,92,62,0.15)] border border-gray-100 flex flex-col overflow-hidden hover:shadow-[0_15px_30px_rgba(44,92,62,0.2)] transition-shadow duration-300 relative group">
                 
                 <!-- Imagem do Ponto com Badge da Cidade -->
                 <div class="relative h-[280px] w-full shrink-0 overflow-hidden bg-gray-100">
@@ -57,8 +57,8 @@
                             {{ touristSpot.name }}
                         </h2>
 
-                        <!-- Descrição Curta com limite de 3 linhas -->
-                        <p class="font-poppins text-[14px] text-gray-600 leading-relaxed text-justify line-clamp-3 mb-3">
+                        <!-- Descrição Curta (sem limitação de linhas) -->
+                        <p class="font-poppins text-[14px] text-gray-600 leading-relaxed text-justify mb-3">
                             {{ touristSpot.shortDescription }}
                         </p>
                     </div>
@@ -79,18 +79,29 @@
                                 <circle cx="12" cy="12" r="10" stroke-width="2" />
                                 <path stroke-width="2" d="M12 6v6l4 2" />
                             </svg>
-                            <span>Funcionamento: {{ touristSpot.opensAt }} às {{ touristSpot.closesAt }}h</span>
+                            <span>Funcionamento: {{ touristSpot.opensAt.slice(0, 5) }} às {{ touristSpot.closesAt.slice(0, 5) }}h</span>
                         </div>
 
-                        <!-- Botão Saiba Mais Fixo no Rodapé -->
-                        <a [routerLink]="['/tourist-spots', touristSpot.touristSpotId]"
-                           class="w-full inline-flex items-center justify-center px-4 py-2.5 bg-[#4A8C5E] hover:bg-[#20442E] text-white rounded-xl gap-2 transition-colors duration-200 text-xs font-poppins font-semibold shadow-sm mt-auto">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <circle cx="12" cy="12" r="10" stroke-width="2" />
-                                <path stroke-width="2" d="M12 16v-4M12 8h.01" />
-                            </svg>
-                            <span>Saiba mais sobre o ponto</span>
-                        </a>
+                        <!-- Botões de Ação no Rodapé -->
+                        <div class="flex flex-col gap-2 mt-auto pt-2">
+                            <a [routerLink]="['/mapa']"
+                               [queryParams]="{ destinationId: touristSpot.touristSpotId, destName: touristSpot.name }"
+                               class="w-full inline-flex items-center justify-center px-4 py-2.5 bg-[#2C5C3E] hover:bg-[#1f422c] text-white rounded-xl gap-2 transition-colors duration-200 text-xs font-poppins font-semibold shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                                </svg>
+                                <span>Ver rota até o ponto</span>
+                            </a>
+
+                            <a [routerLink]="['/tourist-spots', touristSpot.touristSpotId]"
+                               class="w-full inline-flex items-center justify-center px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 rounded-xl gap-2 transition-colors duration-200 text-xs font-poppins font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <circle cx="12" cy="12" r="10" stroke-width="2" />
+                                    <path stroke-width="2" d="M12 16v-4M12 8h.01" />
+                                </svg>
+                                <span>Saiba mais sobre o ponto</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
 

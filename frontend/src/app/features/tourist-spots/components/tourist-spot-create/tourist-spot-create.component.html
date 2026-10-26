@@ -12,13 +12,13 @@
     <form [formGroup]="touristSpotForm" (ngSubmit)="onSubmit()" class="w-full max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-2xl space-y-6">
 
         <div class="border-b pb-4 mb-4">
-            <h2 class="text-2xl font-bold text-[#2C5C3E]">Cadastrar Ponto Turístico</h2>
+            <h2 class="text-2xl font-bold text-[#2C5C3E]">Cadastrar ponto turístico</h2>
             <p class="text-sm text-gray-500 mt-1">Preencha as informações do novo local para adicioná-lo ao mapa.</p>
         </div>
 
         <div class="form-control w-full">
             <label class="label" for="name">
-                <span class="label-text font-semibold text-gray-700">Nome do Local</span>
+                <span class="label-text font-semibold text-gray-700">Nome do local</span>
             </label>
             <input id="name" type="text" formControlName="name" placeholder="Ex: Farol do Cabo Branco"
                 class="input input-bordered w-full focus:outline-[#4A8C5E]" />
@@ -27,7 +27,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="form-control w-full">
                 <label class="label" for="opensAt">
-                    <span class="label-text font-semibold text-gray-700">Horário de Abertura</span>
+                    <span class="label-text font-semibold text-gray-700">Horário de abertura</span>
                 </label>
                 <input id="opensAt" type="time" formControlName="opensAt"
                     class="input input-bordered w-full focus:outline-[#4A8C5E]" />
@@ -35,7 +35,7 @@
 
             <div class="form-control w-full">
                 <label class="label" for="closesAt">
-                    <span class="label-text font-semibold text-gray-700">Horário de Fechamento</span>
+                    <span class="label-text font-semibold text-gray-700">Horário de fechamento</span>
                 </label>
                 <input id="closesAt" type="time" formControlName="closesAt"
                     class="input input-bordered w-full focus:outline-[#4A8C5E]" />
@@ -74,7 +74,7 @@
 
         <div class="form-control w-full">
             <label class="label" for="shortDescription">
-                <span class="label-text font-semibold text-gray-700">Breve Descrição (Resumo)</span>
+                <span class="label-text font-semibold text-gray-700">Breve descrição (resumo)</span>
             </label>
             <input id="shortDescription" type="text" formControlName="shortDescription"
                 placeholder="Uma frase curta sobre o local..."
@@ -83,7 +83,7 @@
 
         <div class="form-control w-full">
             <label class="label" for="description">
-                <span class="label-text font-semibold text-gray-700">Descrição Completa</span>
+                <span class="label-text font-semibold text-gray-700">Descrição completa</span>
             </label>
             <textarea id="description" formControlName="description" rows="4"
                 placeholder="Detalhes completos sobre o ponto turístico..."
@@ -95,7 +95,7 @@
         <!-- Seção: Redes Sociais -->
         <div class="space-y-4 pt-4 border-t">
             <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 font-poppins">
-                Redes Sociais
+                Redes sociais
             </h3>
 
             <!-- Instagram -->
@@ -146,7 +146,7 @@
 
         <div class="form-control w-full mt-6 pt-4 border-t">
             <label class="label" for="photos">
-                <span class="label-text font-semibold text-gray-700">Fotos do Local</span>
+                <span class="label-text font-semibold text-gray-700">Fotos do local</span>
             </label>
 
             <input id="photos" type="file" multiple accept="image/*" (change)="onFilesSelected($event)"
@@ -154,7 +154,7 @@
 
             @if (photos().length > 0) {
             <div class="mt-4 space-y-3 p-4 bg-gray-50 rounded-lg">
-                <h4 class="font-semibold text-gray-700 text-sm">Textos Alternativos para acessibilidade</h4>
+                <h4 class="font-semibold text-gray-700 text-sm">Textos alternativos para acessibilidade</h4>
 
                 @for (photo of photos(); track photo.photo.name; let i = $index) {
                 <div class="flex flex-col md:flex-row md:items-center gap-3">
@@ -179,7 +179,7 @@
                 @if(isSubmiting()){
                 Cadastrando...
                 }@else{
-                Cadastrar Ponto Turístico
+                Cadastrar ponto turístico
                 }
             </button>
         </div>

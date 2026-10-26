@@ -1,19 +1,19 @@
 <div class="bg-white rounded-2xl shadow-sm p-8 mb-6 border border-gray-100">
-    <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Nova Atividade</h3>
+    <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Nova atividade</h3>
     
     <form [formGroup]="activityForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
         
         <div class="form-control">
             <label class="label">
-                <span class="label-text font-poppins font-medium text-gray-700">Nome da Atividade *</span>
+                <span class="label-text font-poppins font-medium text-gray-700">Nome da atividade *</span>
             </label>
-            <input type="text" formControlName="name" placeholder="Ex: Trilha Guiada, Mergulho..." 
+            <input type="text" formControlName="name" placeholder="Ex: Trilha guiada, mergulho..." 
                 class="input input-bordered w-full focus:outline-none focus:ring-2 focus:ring-[#6EB57D]/50 focus:border-[#2C5C3E]" />
         </div>
 
         <div class="form-control">
             <label class="label">
-                <span class="label-text font-poppins font-medium text-gray-700">Foto da Atividade *</span>
+                <span class="label-text font-poppins font-medium text-gray-700">Foto da atividade *</span>
             </label>
             <input type="file" accept="image/*" (change)="onFileSelected($event)" 
                 class="file-input file-input-bordered w-full focus:outline-none focus:ring-2 focus:ring-[#6EB57D]/50 focus:border-[#2C5C3E]" />
@@ -29,7 +29,7 @@
                 @if (isSubmiting()) {
                     <span class="loading loading-spinner loading-sm"></span>
                 } @else {
-                    <span>Adicionar Atividade</span>
+                    <span>Adicionar atividade</span>
                 }
             </button>
         </div>

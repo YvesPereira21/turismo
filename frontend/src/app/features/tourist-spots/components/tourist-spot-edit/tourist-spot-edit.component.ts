@@ -93,8 +93,8 @@ export class TouristSpotEditComponent implements OnInit {
         // Fill form
         this.touristSpotForm.patchValue({
           name: spot.name,
-          opensAt: spot.opensAt,
-          closesAt: spot.closesAt,
+          opensAt: spot.opensAt ? spot.opensAt.substring(0, 5) : '',
+          closesAt: spot.closesAt ? spot.closesAt.substring(0, 5) : '',
           shortDescription: spot.shortDescription,
           description: spot.description,
           cityName: spot.city?.name || '',

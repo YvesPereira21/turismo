@@ -104,7 +104,7 @@
                 <h2 class="font-roboto-slab font-semibold text-[#2C5C3E] text-xl border-b border-gray-100 pb-2 mb-3">
                     Sobre este ponto
                 </h2>
-                <p class="font-poppins text-gray-700 text-base leading-relaxed text-justify break-all">
+                <p class="font-poppins text-gray-700 text-base leading-relaxed text-justify whitespace-pre-line break-words">
                     {{ touristSpot()?.description }}
                 </p>
             </div>
@@ -192,6 +192,32 @@
         </section>
 
         <section class="w-[300px] shrink-0 my-6 flex flex-col gap-4">
+            <!-- Card de Rota / Como Chegar -->
+            <div class="w-full flex flex-col gap-3 p-6 bg-white rounded-2xl shadow-md border border-gray-100">
+                <h2 class="text-xl font-roboto-slab font-semibold text-[#2C5C3E]">
+                    Como chegar
+                </h2>
+                <hr class="border-[#6EB57D] border">
+
+                <p class="font-poppins text-xs text-gray-500 leading-relaxed">
+                    Trace a rota da sua localização atual até {{ touristSpot()?.name }} no mapa interativo.
+                </p>
+
+                <a [routerLink]="['/mapa']"
+                   [queryParams]="{
+                     destinationId: touristSpot()?.touristSpotId,
+                     destLat: touristSpot()?.location?.coordinates?.[1],
+                     destLng: touristSpot()?.location?.coordinates?.[0],
+                     destName: touristSpot()?.name
+                   }"
+                   class="w-full inline-flex items-center justify-center px-4 py-2.5 bg-[#2C5C3E] hover:bg-[#1f422c] text-white rounded-xl gap-2 font-poppins font-semibold text-xs transition-colors shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                    </svg>
+                    <span>Ver rota até o ponto</span>
+                </a>
+            </div>
+
             <div class="w-full flex flex-col gap-3 p-6 bg-white rounded-2xl shadow-md border border-gray-100">
                 <h2 class="text-xl font-roboto-slab font-semibold text-[#2C5C3E]">
                     Funcionamento
@@ -203,7 +229,7 @@
                         Horário
                     </h3>
                     <span class="font-semibold text-base text-gray-800">
-                        {{ touristSpot()?.opensAt }} até {{ touristSpot()?.closesAt }}
+                        {{ touristSpot()?.opensAt?.slice(0, 5) }} até {{ touristSpot()?.closesAt?.slice(0, 5) }}
                     </span>
                 </div>
 

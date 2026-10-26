@@ -45,7 +45,7 @@ export class SpotManagerCreateComponent {
         alert('Conta de gestor criada com sucesso!');
         this.clearForm();
       },
-      error: (erro) => {
+      error: (error) => {
         alert('Erro ao criar conta de gestor. Por favor, tente novamente');
         this.isSubmiting = false;
       }

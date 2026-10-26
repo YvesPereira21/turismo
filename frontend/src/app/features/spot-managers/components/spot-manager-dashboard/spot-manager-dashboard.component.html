@@ -43,12 +43,12 @@
         <!-- Header -->
         <header class="bg-white px-8 py-5 flex justify-between items-center shadow-sm z-10">
             <div>
-                <h2 class="text-2xl font-bold text-gray-800">Pontos Turísticos</h2>
+                <h2 class="text-2xl font-bold text-gray-800">Pontos turísticos</h2>
                 <p class="text-sm text-gray-500 mt-1">Gerencie os locais sob sua responsabilidade e publique avisos.</p>
             </div>
             <div class="flex items-center gap-4">
                 <a routerLink="/create-tourist-spot" class="btn bg-[#2C5C3E] hover:bg-[#20442E] text-white border-none rounded-full px-6 shadow-md">
-                    + Novo Ponto Turístico
+                    + Novo ponto turístico
                 </a>
             </div>
         </header>
@@ -63,7 +63,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 opacity-50">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
                 </svg>
-                <h3 class="text-lg font-bold">Nenhum Ponto Turístico encontrado</h3>
+                <h3 class="text-lg font-bold">Nenhum ponto turístico encontrado</h3>
                 <p>Você ainda não cadastrou nenhum local.</p>
             </div>
 
@@ -126,7 +126,7 @@
                 <table class="table table-zebra">
                     <thead class="bg-gray-100 text-gray-600">
                         <tr>
-                            <th>Nome do Guia</th>
+                            <th>Nome do guia</th>
                             <th>Telefone</th>
                             <th>Cadastur</th>
                         </tr>
@@ -169,11 +169,11 @@
             <div class="bg-amber-50/60 border border-amber-200 rounded-xl p-5 mb-6">
                 <h4 class="font-semibold text-amber-900 text-sm mb-3 flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-amber-600"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
-                    Publicar Novo Aviso
+                    Publicar novo aviso
                 </h4>
                 <div class="space-y-3">
                     <div>
-                        <input type="text" placeholder="Título do Aviso (Ex: Reforma na escadaria principal)" 
+                        <input type="text" placeholder="Título do aviso (ex: Reforma na escadaria principal)" 
                             [value]="newWarnTitle()" (input)="newWarnTitle.set($any($event.target).value)"
                             class="input input-sm input-bordered w-full bg-white focus:outline-amber-600" />
                     </div>
@@ -185,14 +185,14 @@
                     <div class="flex justify-end">
                         <button (click)="createWarn()" class="btn btn-sm bg-amber-600 hover:bg-amber-700 text-white border-none rounded-lg px-6" [disabled]="isCreatingWarn()">
                             <span *ngIf="isCreatingWarn()">Publicando...</span>
-                            <span *ngIf="!isCreatingWarn()">+ Publicar Aviso</span>
+                            <span *ngIf="!isCreatingWarn()">+ Publicar aviso</span>
                         </button>
                     </div>
                 </div>
             </div>
 
             <!-- Lista de Avisos Ativos -->
-            <h4 class="font-bold text-gray-700 mb-3">Avisos Publicados ({{ warns().length }})</h4>
+            <h4 class="font-bold text-gray-700 mb-3">Avisos publicados ({{ warns().length }})</h4>
             <div *ngIf="warns().length > 0; else noWarns" class="space-y-3 max-h-60 overflow-y-auto pr-1">
                 <div *ngFor="let warn of warns()" class="p-4 bg-gray-50 border border-gray-200 rounded-xl flex items-start justify-between gap-4">
                     <div>

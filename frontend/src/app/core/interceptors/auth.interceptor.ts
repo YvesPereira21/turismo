@@ -9,6 +9,11 @@ let isRefreshing = false;
 const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  // Do not intercept external API requests (prevents CORS issues and token leakage)
+  if (!req.url.startsWith(environment.apiUrl)) {
+    return next(req);
+  }
+
   const authService = inject(AuthService);
   const http = inject(HttpClient);
   const router = inject(Router);
@@ -25,7 +30,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      // Se for erro 401 e não for requisição de auth pública (/login, /refresh)
+      // If 401 error and not a public auth request (/login, /refresh)
       if (error.status === 401 && !req.url.includes('/api/v1/auth/refresh') && !req.url.includes('/api/v1/auth/login')) {
         if (!isRefreshing) {
           isRefreshing = true;
