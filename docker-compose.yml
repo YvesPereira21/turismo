@@ -58,6 +58,18 @@ services:
       redis:
         condition: service_healthy
 
+  test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: builder
+    profiles:
+      - tools
+    volumes:
+      - maven_cache:/root/.m2
+    command: ./mvnw test
+
 volumes:
   postgres_data:
   uploads_data:
+  maven_cache:

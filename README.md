@@ -1,6 +1,6 @@
 # 🗺️ Plataforma de Turismo
 
-O **Plataforma de Turismo** é uma aplicação Fullstack voltada para a gestão e localização de pontos turísticos. O sistema disponibiliza suporte geoespacial através de mapa via Leaflet, autenticação segura via JWT e login social via Google OAuth2, além de controle rigoroso de permissões por perfil (Tourist, Tour Guide, Spot Manager e Admin).
+O **Plataforma de Turismo** é uma aplicação Fullstack voltada para a gestão e localização de pontos turísticos. O sistema disponibiliza suporte geoespacial através de mapas interativos via Leaflet, traçado de rotas dinâmicas a partir da localização do usuário até o ponto turístico de interesse utilizando a API de rotas do **OpenStreetMap (OSRM)**, autenticação segura via JWT e login social via Google OAuth2, além de controle rigoroso de permissões por perfil (Tourist, Tour Guide, Spot Manager e Admin).
 
 ---
 
@@ -31,7 +31,7 @@ O **Plataforma de Turismo** é uma aplicação Fullstack voltada para a gestão 
 - **Framework:** Angular 19
 - **Linguagem:** TypeScript
 - **Estilização e UI:** Tailwind CSS 4 + DaisyUI
-- **Mapas Interativos:** Leaflet + `@bluehalo/ngx-leaflet`
+- **Mapas Interativos e Rotas:** Leaflet + `@bluehalo/ngx-leaflet` e integração com a API de rotas do **OpenStreetMap (OSRM)** para cálculo de itinerários da localização do usuário até os pontos turísticos
 - **Gerenciamento de Estado e Reatividade:** RxJS
 
 ---
@@ -51,6 +51,18 @@ turismo/
 │
 └── README.md           # Documentação geral do projeto
 ```
+
+---
+
+## 📍 Rotas e navegação com OpenStreetMap (OSRM)
+
+O sistema disponibiliza aos turistas um recurso completo de navegação e traçado de rotas:
+
+- **Localização em tempo real:** A aplicação obtém a localização geográfica atual do usuário por meio da Geolocation API do navegador.
+- **Integração com OpenStreetMap (OSRM):** Utiliza a API de roteamento público do **OpenStreetMap / OSRM (Open Source Routing Machine)** para calcular trajetos terrestres com base no perfil de condução (*driving*).
+- **Traçado visual no mapa:** A rota calculada é renderizada no mapa Leaflet como uma linha destacada (*polyline*), conectando o ponto de partida (turista) ao ponto turístico de destino.
+- **Distância e tempo estimado:** Apresenta dinamicamente a distância total do percurso em quilômetros e o tempo estimado de deslocamento (com formatação inteligente em minutos ou horas caso o trajeto supere 60 minutos).
+- **Acesso direto:** Tanto nos cards de ponto turístico da tela inicial quanto na página de detalhes, o usuário conta com a opção **"Ver rota até o ponto"**, que redireciona diretamente para o mapa interativo exibindo o trajeto traçado.
 
 ---
 
@@ -147,8 +159,8 @@ As variáveis do frontend são configuradas na pasta environments onde há um ar
 ```typescript
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080',       // URL base da API Spring Boot
-  mediaUrl: 'http://localhost:8080/'      // URL base para upload de arquivos/imagens
+  apiUrl: 'http://localhost:8091',       // URL base da API Spring Boot
+  mediaUrl: 'http://localhost:8091/'      // URL base para upload de arquivos/imagens
 };
 ```
 
@@ -158,62 +170,116 @@ export const environment = {
 
 A API backend conta com a documentação interativa gerada pelo **Swagger UI (Springdoc OpenAPI)**. Através do Swagger, é possível visualizar todas as rotas disponíveis, esquemas de dados, realizar testes de requisições e autenticação com suporte a tokens Bearer JWT.
 
-- **Interface Swagger UI:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) ou [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
-- **Especificação OpenAPI JSON:** [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
+- **Interface Swagger UI:** [http://localhost:8091/swagger-ui.html](http://localhost:8091/swagger-ui.html) ou [http://localhost:8091/swagger-ui/index.html](http://localhost:8091/swagger-ui/index.html)
+- **Especificação OpenAPI JSON:** [http://localhost:8091/v3/api-docs](http://localhost:8091/v3/api-docs)
 
 > **Nota:** Para testar rotas protegidas no Swagger UI, clique no botão **Authorize** no canto superior direito e insira o seu token JWT no formato `Bearer <seu_token>`.
 
 ---
 
-## Testes unitários
+## Testes unitários via Docker
 
-O backend utiliza **JUnit 5**, **Mockito**, **MockMvc** e **REST Assured** para testes unitários e de integração de controllers e serviços.
+O backend utiliza **JUnit 5**, **Mockito**, **MockMvc** e **REST Assured** para testes unitários e de integração de controllers e serviços, executados de forma isolada através do container:
 
 - **Executar todos os testes:**
   ```bash
-  cd backend
-  ./mvnw test
+  docker compose run --rm test
   ```
 
 - **Executar uma classe de teste específica:**
   ```bash
-  cd backend
-  ./mvnw test -Dtest=ActivityControllerTest
+  docker compose run --rm test ./mvnw test -Dtest=ActivityControllerTest
+  ```
+
+- **Executar um método de teste específico:**
+  ```bash
+  docker compose run --rm test ./mvnw test -Dtest=ActivityControllerTest#shouldReturnOkWhenListingActivities
   ```
 
 - **O que é testado:**
-  - Controllers e Endpoints REST (validação de payloads DTO, tratamento de erros HTTP e permissões de segurança).
-  - Regras de negócio nas Camadas de Serviço (validações de horários, regras de propriedade IDOR e exceções customizadas).
-  - Integrações com Banco de Dados H2 em memória e manipulação de Mappers.
+  - Controllers e endpoints REST (validação de payloads DTO, tratamento de erros HTTP e permissões de segurança).
+  - Regras de negócio nas camadas de serviço (validações de horários, regras de propriedade IDOR e exceções customizadas).
+  - Integrações com banco de dados H2 em memória e manipulação de mappers.
 
+---
 
 ## Como rodar o projeto localmente
 
+A infraestrutura do backend (Spring Boot, PostgreSQL com PostGIS e Redis) é totalmente gerenciada via **Docker Compose**, dispensando instalações manuais de JDK, banco de dados ou Redis na máquina hospedeira.
+
 ### **Pré-requisitos**
-- **Java JDK 21** ou superior
-- **Node.js** (v18 ou superior) e **npm**
-- **PostgreSQL** (com extensão **PostGIS** habilitada)
-- **Redis** rodando na porta `6379`
+- **Docker** e **Docker Compose**
+- **Node.js** (v18 ou superior) e **npm** (para o frontend)
 
 ---
 
-### **1. Executando o backend**
+### **1. Executando o backend e serviços (Docker Compose)**
 
-1. Navegue até a pasta `backend`:
+1. Na raiz do projeto, inicie todos os serviços em segundo plano:
    ```bash
-   cd backend
+   docker compose up -d
    ```
-2. Configure as variáveis de ambiente necessárias ou ajuste o arquivo `application.yaml`.
-3. Certifique-se de que o banco de dados PostgreSQL e o Redis estejam ativos.
-4. Execute o projeto via Maven Wrapper:
+
+2. Verifique o status e a saúde dos containers:
    ```bash
-   ./mvnw spring-boot:run
+   docker compose ps
    ```
-   *O servidor iniciará por padrão em `http://localhost:8080`.*
+
+3. Acompanhe os logs da aplicação Spring Boot:
+   ```bash
+   docker compose logs -f app
+   ```
+
+4. Para parar todos os serviços mantendo os volumes de dados:
+   ```bash
+   docker compose down
+   ```
+
+| Serviço | Porta no host | Porta no container | Descrição |
+| :--- | :--- | :--- | :--- |
+| **Backend (App)** | `8091` | `8080` | API REST Spring Boot (`http://localhost:8091`) |
+| **PostgreSQL (PostGIS)** | `5435` | `5432` | Banco relacional com extensão geoespacial |
+| **Redis** | `6381` | `6379` | Cache em memória |
 
 ---
 
-### **2. Executando o frontend**
+### **2. Comandos úteis de gerenciamento via Docker**
+
+#### **Acessar o banco de dados PostgreSQL (PostGIS) via terminal:**
+Para se conectar ao banco de dados diretamente pelo container usando o `psql`:
+```bash
+docker compose exec postgres psql -U postgres -d turismo
+```
+
+*Comandos úteis dentro do `psql`:*
+- `\dt` — lista todas as tabelas criadas pelas migrações Flyway.
+- `SELECT count(*) FROM tourist_spots;` — consulta a quantidade de pontos turísticos cadastrados.
+- `\d tourist_spots` — exibe a estrutura da tabela e colunas geométricas do PostGIS.
+- `\q` — sai do terminal do PostgreSQL.
+
+#### **Acessar o terminal do Redis:**
+Para interagir com o servidor de cache Redis através do `redis-cli`:
+```bash
+docker compose exec redis redis-cli
+```
+
+*Comandos úteis no `redis-cli`:*
+- `ping` — testa a resposta do servidor (retorna `PONG`).
+- `keys *` — lista todas as chaves em cache.
+- `exit` — sai do terminal do Redis.
+
+#### **Acessar o terminal dos containers:**
+```bash
+# Terminal da aplicação backend
+docker compose exec app sh
+
+# Terminal do container do banco de dados
+docker compose exec postgres bash
+```
+
+---
+
+### **3. Executando o frontend**
 
 1. Navegue até a pasta `frontend`:
    ```bash
