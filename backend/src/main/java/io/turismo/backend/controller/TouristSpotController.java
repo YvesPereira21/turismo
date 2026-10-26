@@ -1,9 +1,6 @@
 package io.turismo.backend.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.turismo.backend.controller.docs.TouristSpotDocs;
 import io.turismo.backend.dto.geojson.GeoFeatureCollectionDTO;
 import io.turismo.backend.dto.tourist_spot.TouristSpotCreateDTO;
 import io.turismo.backend.dto.tourist_spot.TouristSpotDTO;
@@ -18,22 +15,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
 import java.util.Set;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.turismo.backend.config.SecurityConfig;
+import java.util.UUID;
 
 @RestController
-@SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping(path = "/api/v1")
 @Validated
-@Tag(name = "Ponto Turístico", description = "Endpoints para gerenciamento de pontos turísticos e buscas por geolocalização")
-public class TouristSpotController {
+public class TouristSpotController implements TouristSpotDocs {
 
     private final TouristSpotService touristSpotService;
 
@@ -41,47 +34,32 @@ public class TouristSpotController {
         this.touristSpotService = touristSpotService;
     }
 
+    @Override
     @PreAuthorize("hasRole('SPOTMANAGER')")
     @PostMapping("/tourist-spots")
-    @Operation(summary = "Criar ponto turístico", description = "Cria um novo ponto turístico vinculado a um gerente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Ponto turístico criado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Gerente ou cidade não encontrada")
-    })
     public ResponseEntity<TouristSpotDTO> createTouristSpot(
-            @Valid @RequestBody TouristSpotCreateDTO dto,
+            @RequestBody TouristSpotCreateDTO dto,
             @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
         TouristSpotDTO created = touristSpotService.createTouristSpot(dto, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @Override
     @GetMapping("/tourist-spots/{touristSpotId}")
-    @Operation(summary = "Buscar ponto turístico por ID", description = "Retorna os detalhes de um ponto turístico específico")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ponto turístico encontrado"),
-            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado")
-    })
     public ResponseEntity<TouristSpotDTO> getTouristSpot(@PathVariable UUID touristSpotId) {
         TouristSpotDTO spot = touristSpotService.getTouristSpot(touristSpotId);
         return ResponseEntity.ok(spot);
     }
 
+    @Override
     @GetMapping("/spots-to-map/")
-    @Operation(summary = "Buscar todos pontos turísticos para implementar no mapa", description = "Retorna os pontos turísticos para o mapa")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ponto turístico encontrado"),
-            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado")
-    })
     public ResponseEntity<GeoFeatureCollectionDTO<TouristSpotToMapDTO>> getTouristSpotsToMap() {
         return ResponseEntity.ok(touristSpotService.getTouristSpotsToMap());
     }
 
+    @Override
     @GetMapping("/tourist-spots")
-    @Operation(summary = "Listar todos os pontos turísticos", description = "Retorna uma página contendo todos os pontos turísticos cadastrados")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
-    })
     public ResponseEntity<Page<TouristSpotListDTO>> getTouristSpots(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String cityName,
@@ -97,11 +75,8 @@ public class TouristSpotController {
         return ResponseEntity.ok(spots);
     }
 
+    @Override
     @GetMapping("/manager/{spotManagerId}/all-tourist-spots")
-    @Operation(summary = "Listar pontos turísticos do gerente", description = "Retorna os pontos turísticos administrados por um gerente específico")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
-    })
     public ResponseEntity<Page<TouristSpotListDTO>> getSpotManagerTouristSpots(
             @PathVariable UUID spotManagerId,
             @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.DESC) Pageable pageable
@@ -110,29 +85,21 @@ public class TouristSpotController {
         return ResponseEntity.ok(spots);
     }
 
+    @Override
     @PreAuthorize("hasRole('SPOTMANAGER')")
     @PutMapping("/tourist-spots/{touristSpotId}")
-    @Operation(summary = "Atualizar ponto turístico", description = "Atualiza as informações de um ponto turístico específico")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ponto turístico atualizado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Ponto turístico, cidade ou gerente não encontrado")
-    })
     public ResponseEntity<Void> updateTouristSpot(
             @PathVariable UUID touristSpotId,
-            @Valid @RequestBody TouristSpotUpdateDTO dto,
+            @RequestBody TouristSpotUpdateDTO dto,
             @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
         touristSpotService.updateTouristSpot(touristSpotId, dto, userId);
         return ResponseEntity.ok().build();
     }
 
+    @Override
     @PreAuthorize("hasAnyRole('ADMIN', 'SPOTMANAGER')")
     @DeleteMapping("/tourist-spots/{touristSpotId}")
-    @Operation(summary = "Deletar ponto turístico", description = "Remove um ponto turístico do sistema")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Ponto turístico removido com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado")
-    })
     public ResponseEntity<Void> deleteTouristSpot(
             @PathVariable UUID touristSpotId,
             @AuthenticationPrincipal(expression = "id") UUID userId

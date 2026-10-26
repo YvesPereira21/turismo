@@ -1,5 +1,6 @@
 package io.turismo.backend.controller;
 
+import io.turismo.backend.controller.docs.AuthDocs;
 import io.turismo.backend.dto.user.UserDTO;
 import io.turismo.backend.dto.user.UserLoginDTO;
 import io.turismo.backend.model.RefreshToken;
@@ -15,22 +16,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.turismo.backend.config.SecurityConfig;
 
 @Slf4j
 @RestController
-@SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController implements AuthDocs {
 
     private final UserRepository userRepository;
     private final TokenService tokenService;
@@ -39,6 +35,7 @@ public class AuthController {
     private final CookieUtils cookieUtils;
     private final PasswordEncoder passwordEncoder;
 
+    @Override
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginDTO loginDTO) {
         log.info("Authentication attempt for email: {}", loginDTO.email());
@@ -67,6 +64,7 @@ public class AuthController {
                 ));
     }
 
+    @Override
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(
             @CookieValue(name = CookieUtils.REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshTokenStr) {
@@ -104,6 +102,7 @@ public class AuthController {
                 .body(Map.of("accessToken", newAccessToken));
     }
 
+    @Override
     @PostMapping("/logout")
     public ResponseEntity<?> logout(
             @CookieValue(name = CookieUtils.REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshTokenStr) {
@@ -120,6 +119,7 @@ public class AuthController {
                 .body(Map.of("message", "Logout realizado com sucesso."));
     }
 
+    @Override
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal User user) {
         if (user == null) {

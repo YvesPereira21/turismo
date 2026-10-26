@@ -65,8 +65,25 @@ services:
       target: builder
     profiles:
       - tools
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=turismo
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespassword
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/turismo
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgrespassword
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     volumes:
+      - ./backend:/build
       - maven_cache:/root/.m2
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     command: ./mvnw test
 
 volumes:

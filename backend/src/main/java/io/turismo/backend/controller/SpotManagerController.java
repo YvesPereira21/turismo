@@ -1,9 +1,6 @@
 package io.turismo.backend.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.turismo.backend.controller.docs.SpotManagerDocs;
 import io.turismo.backend.dto.spot_manager.SpotManagerCreateDTO;
 import io.turismo.backend.dto.spot_manager.SpotManagerDTO;
 import io.turismo.backend.dto.spot_manager.SpotManagerSimpleDTO;
@@ -12,21 +9,17 @@ import io.turismo.backend.service.SpotManagerService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.turismo.backend.config.SecurityConfig;
 
 @RestController
-@SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping(path = "/api/v1")
 @Validated
-@Tag(name = "Gerente de Ponto Turístico", description = "Endpoints para gerenciamento de administradores/gerentes de pontos turísticos")
-public class SpotManagerController {
+public class SpotManagerController implements SpotManagerDocs {
 
     private final SpotManagerService spotManagerService;
 
@@ -34,49 +27,33 @@ public class SpotManagerController {
         this.spotManagerService = spotManagerService;
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/spot-managers")
-    @Operation(summary = "Criar gerente", description = "Cadastra um novo gerente de ponto turístico")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Gerente cadastrado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos ou e-mail já em uso")
-    })
-    public ResponseEntity<SpotManagerSimpleDTO> createSpotManager(@Valid @RequestBody SpotManagerCreateDTO dto) {
+    public ResponseEntity<SpotManagerSimpleDTO> createSpotManager(@RequestBody SpotManagerCreateDTO dto) {
         SpotManagerSimpleDTO created = spotManagerService.createSpotManager(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @Override
     @GetMapping("/spot-managers/{spotManagerId}")
-    @Operation(summary = "Buscar gerente (Simplificado)", description = "Busca dados simplificados de um gerente pelo ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Gerente encontrado"),
-            @ApiResponse(responseCode = "404", description = "Gerente não encontrado")
-    })
     public ResponseEntity<SpotManagerSimpleDTO> getSpotManager(@PathVariable UUID spotManagerId) {
         SpotManagerSimpleDTO manager = spotManagerService.getSpotManager(spotManagerId);
         return ResponseEntity.ok(manager);
     }
 
+    @Override
     @GetMapping("/spot-managers/{spotManagerId}/current")
-    @Operation(summary = "Buscar perfil completo do gerente", description = "Retorna os detalhes completos do perfil do gerente logado")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Dados do perfil completo retornados"),
-            @ApiResponse(responseCode = "404", description = "Gerente não encontrado")
-    })
     public ResponseEntity<SpotManagerDTO> currentSpotManager(@PathVariable UUID spotManagerId) {
         SpotManagerDTO manager = spotManagerService.currentSpotManager(spotManagerId);
         return ResponseEntity.ok(manager);
     }
 
+    @Override
     @PreAuthorize("hasAnyRole('ADMIN', 'SPOTMANAGER')")
     @PutMapping("/spot-managers/{spotManagerId}")
-    @Operation(summary = "Atualizar gerente", description = "Atualiza informações cadastrais do gerente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Gerente atualizado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Gerente não encontrado")
-    })
     public ResponseEntity<SpotManagerSimpleDTO> updateSpotManager(
-            @Valid @RequestBody SpotManagerUpdateDTO spotManagerUpdateDTO,
+            @RequestBody SpotManagerUpdateDTO spotManagerUpdateDTO,
             @PathVariable UUID spotManagerId,
             @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
@@ -84,13 +61,9 @@ public class SpotManagerController {
         return ResponseEntity.ok(updated);
     }
 
+    @Override
     @PreAuthorize("hasAnyRole('ADMIN', 'SPOTMANAGER')")
     @DeleteMapping("/spot-managers/{spotManagerId}")
-    @Operation(summary = "Deletar gerente", description = "Remove o cadastro de um gerente do sistema")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Gerente removido com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Gerente não encontrado")
-    })
     public ResponseEntity<Void> deleteSpotManager(
             @PathVariable UUID spotManagerId,
             @AuthenticationPrincipal(expression = "id") UUID userId

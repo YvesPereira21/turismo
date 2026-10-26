@@ -1,9 +1,6 @@
 package io.turismo.backend.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.turismo.backend.controller.docs.PhotoDocs;
 import io.turismo.backend.dto.photo.PhotoUploadDTO;
 import io.turismo.backend.service.PhotoService;
 import jakarta.validation.Valid;
@@ -18,16 +15,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.UUID;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.turismo.backend.config.SecurityConfig;
 
 @Slf4j
 @RestController
-@SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping(path = "/api/v1")
 @Validated
-@Tag(name = "Foto", description = "Endpoints para upload e gerenciamento de fotos de pontos turísticos e atividades")
-public class PhotoController {
+public class PhotoController implements PhotoDocs {
 
     private final PhotoService photoService;
 
@@ -35,31 +28,21 @@ public class PhotoController {
         this.photoService = photoService;
     }
 
+    @Override
     @PreAuthorize("hasRole('SPOTMANAGER')")
     @PostMapping(value = "/tourist-spots/{touristSpotId}/photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Fazer upload de fotos do ponto turístico", description = "Faz o upload de uma ou mais fotos para um ponto turístico específico")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Upload realizado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Imagens inválidas fornecidas"),
-            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado")
-    })
     public ResponseEntity<Void> uploadTouristSpotsPhotos(
             @PathVariable UUID touristSpotId,
-            @ModelAttribute @Valid PhotoUploadDTO dto
+            @ModelAttribute PhotoUploadDTO dto
     ) throws IOException {
         log.info("REST request to upload photo for tourist spot ID: {}", touristSpotId);
         photoService.uploadTouristSpotsPhotos(touristSpotId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @Override
     @PreAuthorize("hasRole('SPOTMANAGER')")
     @PostMapping(value = "/activities/{activityId}/photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Fazer upload de foto da atividade", description = "Faz o upload de uma foto para uma atividade")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Upload realizado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Imagem inválida fornecida"),
-            @ApiResponse(responseCode = "404", description = "Atividade não encontrada")
-    })
     public ResponseEntity<Void> uploadActivityPhoto(
             @PathVariable UUID activityId,
             @RequestParam("photo") MultipartFile photo
@@ -69,14 +52,9 @@ public class PhotoController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @Override
     @PreAuthorize("hasRole('SPOTMANAGER')")
     @PutMapping(value = "/activities/{activityId}/photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Atualizar foto da atividade", description = "Atualiza (substitui) a foto de uma atividade")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Foto atualizada com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Imagem inválida fornecida"),
-            @ApiResponse(responseCode = "404", description = "Atividade não encontrada")
-    })
     public ResponseEntity<Void> updateActivityPhoto(
             @PathVariable UUID activityId,
             @RequestParam("photo") MultipartFile photo

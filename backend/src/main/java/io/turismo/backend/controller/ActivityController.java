@@ -1,11 +1,6 @@
 package io.turismo.backend.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.turismo.backend.config.SecurityConfig;
+import io.turismo.backend.controller.docs.ActivityDocs;
 import io.turismo.backend.dto.activity.ActivityCreateDTO;
 import io.turismo.backend.dto.activity.ActivityDTO;
 import io.turismo.backend.service.ActivityService;
@@ -23,11 +18,9 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping(path = "/api/v1")
 @Validated
-@Tag(name = "Atividade", description = "Endpoints para gerenciamento das atividades dos pontos turísticos")
-public class ActivityController {
+public class ActivityController implements ActivityDocs {
 
     private final ActivityService activityService;
 
@@ -35,16 +28,12 @@ public class ActivityController {
         this.activityService = activityService;
     }
 
+    @Override
     @PreAuthorize("hasRole('SPOTMANAGER')")
     @PostMapping("/tourist-spots/{touristSpotId}/activities")
-    @Operation(summary = "Criar atividade", description = "Cria uma nova atividade para um ponto turístico (Apenas gerentes)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Atividade criada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado")
-    })
     public ResponseEntity<ActivityDTO> createActivity(
             @PathVariable UUID touristSpotId,
-            @Valid @RequestBody ActivityCreateDTO dto,
+            @RequestBody ActivityCreateDTO dto,
             @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
         log.info("REST request to create activity for tourist spot ID: {}", touristSpotId);
@@ -52,13 +41,9 @@ public class ActivityController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @Override
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/tourist-spots/{touristSpotId}/activities")
-    @Operation(summary = "Listar atividades", description = "Retorna a lista de atividades de um ponto turístico (Requer autenticação)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado")
-    })
     public ResponseEntity<Set<ActivityDTO>> getActivitiesByTouristSpotId(
             @PathVariable UUID touristSpotId
     ) {
@@ -67,16 +52,12 @@ public class ActivityController {
         return ResponseEntity.ok(activities);
     }
 
+    @Override
     @PreAuthorize("hasRole('SPOTMANAGER')")
     @PutMapping("/activities/{activityId}")
-    @Operation(summary = "Atualizar atividade", description = "Atualiza os dados de uma atividade (Apenas o gerente dono do ponto turístico)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Atividade atualizada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Atividade não encontrada")
-    })
     public ResponseEntity<Void> updateActivity(
             @PathVariable UUID activityId,
-            @Valid @RequestBody ActivityCreateDTO dto,
+            @RequestBody ActivityCreateDTO dto,
             @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
         log.info("REST request to update activity ID: {}", activityId);
@@ -84,13 +65,9 @@ public class ActivityController {
         return ResponseEntity.ok().build();
     }
 
+    @Override
     @PreAuthorize("hasAnyRole('SPOTMANAGER', 'ADMIN')")
     @DeleteMapping("/activities/{activityId}")
-    @Operation(summary = "Deletar atividade", description = "Remove uma atividade (Requer ser o dono do ponto turístico ou Admin)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Atividade removida com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Atividade não encontrada")
-    })
     public ResponseEntity<Void> deleteActivity(
             @PathVariable UUID activityId,
             @AuthenticationPrincipal(expression = "id") UUID userId

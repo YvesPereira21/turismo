@@ -1,9 +1,6 @@
 package io.turismo.backend.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.turismo.backend.controller.docs.WarnDocs;
 import io.turismo.backend.dto.warn.WarnCreateDTO;
 import io.turismo.backend.dto.warn.WarnDTO;
 import io.turismo.backend.service.WarnService;
@@ -14,21 +11,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.turismo.backend.config.SecurityConfig;
 
 @RestController
-@SecurityRequirement(name = SecurityConfig.SECURITY)
 @RequestMapping(path = "/api/v1")
 @Validated
-@Tag(name = "Aviso", description = "Endpoints para gerenciamento de avisos de pontos turísticos")
-public class WarnController {
+public class WarnController implements WarnDocs {
 
     private final WarnService warnService;
 
@@ -36,15 +29,11 @@ public class WarnController {
         this.warnService = warnService;
     }
 
+    @Override
     @PreAuthorize("hasRole('SPOTMANAGER')")
     @PostMapping("/warns/spot/{touristSpotId}")
-    @Operation(summary = "Criar aviso", description = "Cria um novo aviso para um ponto turístico")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Aviso criado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado")
-    })
     public ResponseEntity<WarnDTO> createWarn(
-            @Valid @RequestBody WarnCreateDTO dto,
+            @RequestBody WarnCreateDTO dto,
             @PathVariable UUID touristSpotId,
             @AuthenticationPrincipal(expression = "id") UUID userId
     ) {
@@ -52,22 +41,15 @@ public class WarnController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @Override
     @GetMapping("/warns/{warnId}")
-    @Operation(summary = "Buscar aviso", description = "Busca detalhes de um aviso pelo ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Aviso encontrado"),
-            @ApiResponse(responseCode = "404", description = "Aviso não encontrado")
-    })
     public ResponseEntity<WarnDTO> getWarn(@PathVariable UUID warnId) {
         WarnDTO warn = warnService.getWarn(warnId);
         return ResponseEntity.ok(warn);
     }
 
+    @Override
     @GetMapping("/warns/spot/{touristSpotId}")
-    @Operation(summary = "Listar avisos do ponto turístico", description = "Retorna uma página com todos os avisos de um ponto turístico específico")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
-    })
     public ResponseEntity<Page<WarnDTO>> getAllTouristSpotWarn(
             @PathVariable UUID touristSpotId,
             @PageableDefault(page = 0, size = 10, sort = "eventDate", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -75,13 +57,9 @@ public class WarnController {
         return ResponseEntity.ok(warns);
     }
 
+    @Override
     @PreAuthorize("hasRole('SPOTMANAGER')")
     @DeleteMapping("/warns/{warnId}")
-    @Operation(summary = "Deletar aviso", description = "Exclui um aviso")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Aviso excluído com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Aviso não encontrado")
-    })
     public ResponseEntity<Void> deleteWarn(
             @PathVariable UUID warnId,
             @AuthenticationPrincipal(expression = "id") UUID userId
