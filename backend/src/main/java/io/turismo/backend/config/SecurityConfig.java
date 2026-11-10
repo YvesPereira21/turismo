@@ -4,9 +4,10 @@ import io.turismo.backend.security.CustomOAuth2UserService;
 import io.turismo.backend.security.JwtAuthenticationFilter;
 import io.turismo.backend.security.OAuth2AuthenticationSuccessHandler;
 import io.turismo.backend.security.PublicRateLimitFilter;
-import io.turismo.backend.security.PublicRateLimitService;
+import io.turismo.backend.ratelimit.TokenBucketRateLimiter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -46,8 +47,10 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, ObjectProvider<PublicRateLimitService> rateLimit,
-                                                   JsonMapper jsonMapper) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, ObjectProvider<TokenBucketRateLimiter> rateLimit,
+                                                   JsonMapper jsonMapper,
+                                                   @Value("${ratelimit.refresh.capacity:5}") long refreshCapacity,
+                                                   @Value("${ratelimit.registration.capacity:5}") long registrationCapacity) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -65,7 +68,7 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         rateLimit.ifAvailable(service -> http.addFilterBefore(
-                new PublicRateLimitFilter(service, jsonMapper), JwtAuthenticationFilter.class));
+                new PublicRateLimitFilter(service, jsonMapper, refreshCapacity, registrationCapacity), JwtAuthenticationFilter.class));
         return http.build();
     }
 

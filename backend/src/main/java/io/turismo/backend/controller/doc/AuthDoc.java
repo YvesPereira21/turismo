@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.turismo.backend.config.SecurityConfig;
 import io.turismo.backend.dto.user.UserLoginDTO;
 import io.turismo.backend.model.User;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 
 @Tag(name = "Autenticação", description = "Endpoints para login, renovação de token, logout e consulta do usuário autenticado")
@@ -21,7 +22,7 @@ public interface AuthDoc {
             @ApiResponse(responseCode = "429", description = "Limite de requisições excedido"),
             @ApiResponse(responseCode = "503", description = "Serviço temporariamente indisponível")
     })
-    ResponseEntity<?> login(UserLoginDTO loginDTO);
+    ResponseEntity<?> login(UserLoginDTO loginDTO, HttpServletRequest request);
 
     @Operation(summary = "Renovar token de acesso", description = "Gera um novo access token e rotaciona o refresh token a partir do cookie HttpOnly")
     @ApiResponses(value = {

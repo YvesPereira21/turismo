@@ -1,17 +1,24 @@
 package io.turismo.backend.controller;
 
 import io.turismo.backend.controller.doc.AuthDoc;
+import io.turismo.backend.dto.ApiError;
 import io.turismo.backend.dto.user.UserDTO;
 import io.turismo.backend.dto.user.UserLoginDTO;
 import io.turismo.backend.model.RefreshToken;
 import io.turismo.backend.model.User;
+import io.turismo.backend.ratelimit.LoginAttemptLimiter;
 import io.turismo.backend.repository.RefreshTokenRepository;
 import io.turismo.backend.repository.UserRepository;
 import io.turismo.backend.security.CookieUtils;
-import io.turismo.backend.service.RefreshTokenService;
+import io.turismo.backend.security.PublicRateLimitFilter;
 import io.turismo.backend.security.TokenService;
+import io.turismo.backend.service.RefreshTokenService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -20,6 +27,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -34,10 +43,31 @@ public class AuthController implements AuthDoc {
     private final RefreshTokenRepository refreshTokenRepository;
     private final CookieUtils cookieUtils;
     private final PasswordEncoder passwordEncoder;
+    private final ObjectProvider<LoginAttemptLimiter> loginAttemptLimiter;
 
     @Override
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserLoginDTO loginDTO) {
+    public ResponseEntity<?> login(@RequestBody UserLoginDTO loginDTO, HttpServletRequest request) {
+        var limiter = loginAttemptLimiter.getIfAvailable();
+        LoginAttemptLimiter.Reservation reservation = null;
+        if (limiter != null) {
+            try {
+                reservation = limiter.reserve(loginDTO.email(), request.getRemoteAddr());
+            } catch (DataAccessException | IllegalStateException exception) {
+                return loginLimitUnavailable(exception);
+            }
+
+            if (reservation.waitMillis() > 0) {
+                String seconds = Long.toString(Math.ceilDiv(reservation.waitMillis(), 1000));
+                var status = HttpStatus.TOO_MANY_REQUESTS;
+                return ResponseEntity.status(status)
+                        .cacheControl(CacheControl.noStore())
+                        .header(HttpHeaders.RETRY_AFTER, seconds)
+                        .header(PublicRateLimitFilter.RETRY_HEADER, seconds)
+                        .body(loginError(status, "Limite de requisições excedido. Tente novamente em " + seconds + " segundos."));
+            }
+        }
+
         log.info("Authentication attempt for email: {}", loginDTO.email());
         User user = userRepository.findByEmail(loginDTO.email())
                 .orElse(null);
@@ -46,6 +76,14 @@ public class AuthController implements AuthDoc {
             log.warn("Authentication failed for email: {}", loginDTO.email());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("message", "E-mail ou senha incorretos."));
+        }
+
+        if (reservation != null) {
+            try {
+                limiter.completeSuccessfulLogin(reservation);
+            } catch (DataAccessException exception) {
+                return loginLimitUnavailable(exception);
+            }
         }
 
         log.info("User authenticated successfully: {}", user.getEmail());
@@ -62,6 +100,18 @@ public class AuthController implements AuthDoc {
                         "accessToken", accessToken,
                         "user", userDTO
                 ));
+    }
+
+    private ResponseEntity<ApiError> loginLimitUnavailable(RuntimeException exception) {
+        log.warn("Não foi possível atualizar a cota de login", exception);
+        var status = HttpStatus.SERVICE_UNAVAILABLE;
+        return ResponseEntity.status(status)
+                .cacheControl(CacheControl.noStore())
+                .body(loginError(status, "Serviço temporariamente indisponível."));
+    }
+
+    private ApiError loginError(HttpStatus status, String message) {
+        return new ApiError(LocalDateTime.now(), status.value(), status.name(), List.of(message));
     }
 
     @Override

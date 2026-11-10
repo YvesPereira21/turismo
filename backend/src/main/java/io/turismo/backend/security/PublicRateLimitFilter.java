@@ -1,10 +1,11 @@
 package io.turismo.backend.security;
 
 import io.github.bucket4j.BucketExceptions.BucketExecutionException;
+import io.github.bucket4j.BucketConfiguration;
 import io.github.bucket4j.ConsumptionProbe;
 import io.lettuce.core.RedisException;
 import io.turismo.backend.dto.ApiError;
-import io.turismo.backend.security.PublicRateLimitService.Policy;
+import io.turismo.backend.ratelimit.TokenBucketRateLimiter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,17 +32,30 @@ public class PublicRateLimitFilter extends OncePerRequestFilter {
     public static final String RETRY_HEADER = "X-Rate-Limit-Retry-After-Seconds";
 
     private static final PathPatternRequestMatcher.Builder PATHS = PathPatternRequestMatcher.withDefaults();
-    private static final PathPatternRequestMatcher LOGIN = PATHS.matcher(HttpMethod.POST, "/api/v1/auth/login");
     private static final PathPatternRequestMatcher REFRESH = PATHS.matcher(HttpMethod.POST, "/api/v1/auth/refresh");
     private static final PathPatternRequestMatcher TOURIST = PATHS.matcher(HttpMethod.POST, "/api/v1/tourists");
     private static final PathPatternRequestMatcher GUIDE = PATHS.matcher(HttpMethod.POST, "/api/v1/tour-guides");
 
-    private final PublicRateLimitService service;
-    private final JsonMapper jsonMapper;
+    private record Policy(String name, BucketConfiguration configuration) {}
 
-    public PublicRateLimitFilter(PublicRateLimitService service, JsonMapper jsonMapper) {
-        this.service = service;
+    private final TokenBucketRateLimiter rateLimiter;
+    private final JsonMapper jsonMapper;
+    private final Policy refreshPolicy;
+    private final Policy registrationPolicy;
+
+    public PublicRateLimitFilter(TokenBucketRateLimiter rateLimiter, JsonMapper jsonMapper,
+                                 long refreshCapacity, long registrationCapacity) {
+        this.rateLimiter = rateLimiter;
         this.jsonMapper = jsonMapper;
+        this.refreshPolicy = policy("REFRESH", refreshCapacity, Duration.ofMinutes(1));
+        this.registrationPolicy = policy("REGISTRATION", registrationCapacity, Duration.ofMinutes(15));
+    }
+
+    private static Policy policy(String name, long capacity, Duration refillPeriod) {
+        var configuration = BucketConfiguration.builder()
+                .addLimit(limit -> limit.capacity(capacity).refillIntervally(capacity, refillPeriod))
+                .build();
+        return new Policy(name, configuration);
     }
 
     @Override
@@ -52,11 +67,12 @@ public class PublicRateLimitFilter extends OncePerRequestFilter {
             return;
         }
 
+        String key = "turismo:ratelimit:v1:" + policy.name() + ":" + request.getRemoteAddr();
         ConsumptionProbe probe;
         try {
-            probe = service.tryConsume(policy, request.getRemoteAddr());
+            probe = rateLimiter.consume(key, policy.configuration());
         } catch (DataAccessException | RedisException | BucketExecutionException e) {
-            log.warn("Rate limit check unavailable for {}: {}", policy, e.toString());
+            log.warn("Rate limit check unavailable for {}: {}", policy.name(), e.toString());
             writeError(response, HttpStatus.SERVICE_UNAVAILABLE, "Serviço temporariamente indisponível.");
             return;
         }
@@ -74,15 +90,12 @@ public class PublicRateLimitFilter extends OncePerRequestFilter {
                 "Limite de requisições excedido. Tente novamente em " + seconds + " segundos.");
     }
 
-    private static Policy policyFor(HttpServletRequest request) {
-        if (LOGIN.matches(request)) {
-            return Policy.LOGIN;
-        }
+    private Policy policyFor(HttpServletRequest request) {
         if (REFRESH.matches(request)) {
-            return Policy.REFRESH;
+            return refreshPolicy;
         }
         if (TOURIST.matches(request) || GUIDE.matches(request)) {
-            return Policy.REGISTRATION;
+            return registrationPolicy;
         }
         return null;
     }
