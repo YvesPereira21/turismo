@@ -1,7 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { tap, catchError, of, switchMap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 export interface UserResponse {
@@ -72,8 +72,10 @@ export class AuthService {
         this.tokenSignal.set(response.accessToken);
         return this.loadCurrentUser();
       }),
-      catchError(() => {
-        this.clearSession();
+      catchError((error: HttpErrorResponse) => {
+        if (error.status !== 429 && error.status !== 503) {
+          this.clearSession();
+        }
         return of(null);
       })
     );

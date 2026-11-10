@@ -53,8 +53,9 @@ export class TouristCreateComponent {
           }
         });
       },
-      error: () => {
-        alert('Erro ao criar conta. Por favor, tente novamente');
+      error: (error) => {
+        const rateLimitMessage = error.status === 429 || error.status === 503 ? error.error?.errors?.[0] : undefined;
+        alert(rateLimitMessage || 'Erro ao criar conta. Por favor, tente novamente');
         this.isSubmiting = false;
       }
     })

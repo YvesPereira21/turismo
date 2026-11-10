@@ -55,8 +55,9 @@ export class TourGuideCreateComponent {
           }
         });
       },
-      error: () => {
-        alert('Erro ao criar conta de Guia. Por favor, verifique se o e-mail ou CADASTUR já estão em uso.');
+      error: (error) => {
+        const rateLimitMessage = error.status === 429 || error.status === 503 ? error.error?.errors?.[0] : undefined;
+        alert(rateLimitMessage || 'Erro ao criar conta de Guia. Por favor, verifique se o e-mail ou CADASTUR já estão em uso.');
         this.isSubmiting = false;
       }
     })

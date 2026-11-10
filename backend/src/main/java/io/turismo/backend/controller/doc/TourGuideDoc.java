@@ -23,7 +23,9 @@ public interface TourGuideDoc {
     @Operation(summary = "Criar guia de turismo", description = "Cadastra um novo guia de turismo no sistema")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Guia criado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Email ou Cadastur já cadastrado ou dados inválidos")
+            @ApiResponse(responseCode = "400", description = "Email ou Cadastur já cadastrado ou dados inválidos"),
+            @ApiResponse(responseCode = "429", description = "Limite de requisições excedido"),
+            @ApiResponse(responseCode = "503", description = "Serviço temporariamente indisponível")
     })
     ResponseEntity<TourGuideDTO> createTourGuide(@Valid TourGuideCreateDTO dto);
 

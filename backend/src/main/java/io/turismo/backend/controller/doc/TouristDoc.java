@@ -21,7 +21,9 @@ public interface TouristDoc {
     @Operation(summary = "Criar turista", description = "Cadastra um novo turista no sistema")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Turista criado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Email já cadastrado ou dados inválidos")
+            @ApiResponse(responseCode = "400", description = "Email já cadastrado ou dados inválidos"),
+            @ApiResponse(responseCode = "429", description = "Limite de requisições excedido"),
+            @ApiResponse(responseCode = "503", description = "Serviço temporariamente indisponível")
     })
     ResponseEntity<TouristDTO> createTourist(@Valid TouristCreateDTO dto);
 

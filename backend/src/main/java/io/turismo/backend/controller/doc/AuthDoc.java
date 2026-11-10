@@ -17,14 +17,18 @@ public interface AuthDoc {
     @Operation(summary = "Realizar login", description = "Autentica o usuário com e-mail e senha, retornando o token de acesso e cookie HttpOnly com refresh token")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Login realizado com sucesso"),
-            @ApiResponse(responseCode = "401", description = "Credenciais inválidas")
+            @ApiResponse(responseCode = "401", description = "Credenciais inválidas"),
+            @ApiResponse(responseCode = "429", description = "Limite de requisições excedido"),
+            @ApiResponse(responseCode = "503", description = "Serviço temporariamente indisponível")
     })
     ResponseEntity<?> login(UserLoginDTO loginDTO);
 
     @Operation(summary = "Renovar token de acesso", description = "Gera um novo access token e rotaciona o refresh token a partir do cookie HttpOnly")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Token renovado com sucesso"),
-            @ApiResponse(responseCode = "401", description = "Refresh token ausente, expirado ou inválido")
+            @ApiResponse(responseCode = "401", description = "Refresh token ausente, expirado ou inválido"),
+            @ApiResponse(responseCode = "429", description = "Limite de requisições excedido"),
+            @ApiResponse(responseCode = "503", description = "Serviço temporariamente indisponível")
     })
     ResponseEntity<?> refreshToken(String refreshTokenStr);
 

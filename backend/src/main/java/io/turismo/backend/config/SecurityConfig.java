@@ -3,9 +3,13 @@ package io.turismo.backend.config;
 import io.turismo.backend.security.CustomOAuth2UserService;
 import io.turismo.backend.security.JwtAuthenticationFilter;
 import io.turismo.backend.security.OAuth2AuthenticationSuccessHandler;
+import io.turismo.backend.security.PublicRateLimitFilter;
+import io.turismo.backend.security.PublicRateLimitService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -24,6 +28,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import tools.jackson.databind.json.JsonMapper;
+
 import java.util.List;
 
 @Configuration
@@ -40,8 +46,9 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, ObjectProvider<PublicRateLimitService> rateLimit,
+                                                   JsonMapper jsonMapper) throws Exception {
+        http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -56,8 +63,10 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler(oAuth2SuccessHandler)
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        rateLimit.ifAvailable(service -> http.addFilterBefore(
+                new PublicRateLimitFilter(service, jsonMapper), JwtAuthenticationFilter.class));
+        return http.build();
     }
 
     @Bean
@@ -67,6 +76,8 @@ public class SecurityConfig {
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
+        config.setExposedHeaders(List.of(HttpHeaders.RETRY_AFTER, PublicRateLimitFilter.REMAINING_HEADER,
+                PublicRateLimitFilter.RETRY_HEADER));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

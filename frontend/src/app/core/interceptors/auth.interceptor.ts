@@ -2,11 +2,10 @@ import { HttpInterceptorFn, HttpErrorResponse, HttpClient } from '@angular/commo
 import { inject } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
-import { catchError, throwError, switchMap, BehaviorSubject, filter, take } from 'rxjs';
+import { catchError, finalize, Observable, shareReplay, switchMap, tap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-let isRefreshing = false;
-const refreshTokenSubject = new BehaviorSubject<string | null>(null);
+let refreshInFlight: Observable<{ accessToken: string }> | null = null;
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   // Do not intercept external API requests (prevents CORS issues and token leakage)
@@ -32,46 +31,30 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       // If 401 error and not a public auth request (/login, /refresh)
       if (error.status === 401 && !req.url.includes('/api/v1/auth/refresh') && !req.url.includes('/api/v1/auth/login')) {
-        if (!isRefreshing) {
-          isRefreshing = true;
-          refreshTokenSubject.next(null);
-
-          return http.post<{ accessToken: string }>(
+        if (!refreshInFlight) {
+          refreshInFlight = http.post<{ accessToken: string }>(
             `${environment.apiUrl}/api/v1/auth/refresh`,
             {},
             { withCredentials: true }
           ).pipe(
-            switchMap((response) => {
-              isRefreshing = false;
-              authService.saveToken(response.accessToken).subscribe();
-              refreshTokenSubject.next(response.accessToken);
-
-              return next(req.clone({
-                setHeaders: {
-                  Authorization: `Bearer ${response.accessToken}`
-                }
-              }));
-            }),
-            catchError((refreshError) => {
-              isRefreshing = false;
-              authService.logout();
-              router.navigate(['/login']);
+            tap(response => authService.saveToken(response.accessToken).subscribe()),
+            catchError((refreshError: HttpErrorResponse) => {
+              if (refreshError.status !== 429 && refreshError.status !== 503) {
+                authService.logout();
+                router.navigate(['/login']);
+              }
               return throwError(() => refreshError);
-            })
-          );
-        } else {
-          return refreshTokenSubject.pipe(
-            filter(newToken => newToken !== null),
-            take(1),
-            switchMap(newToken => {
-              return next(req.clone({
-                setHeaders: {
-                  Authorization: `Bearer ${newToken}`
-                }
-              }));
-            })
+            }),
+            finalize(() => refreshInFlight = null),
+            shareReplay({ bufferSize: 1, refCount: false })
           );
         }
+
+        return refreshInFlight.pipe(
+          switchMap(response => next(req.clone({
+            setHeaders: { Authorization: `Bearer ${response.accessToken}` }
+          })))
+        );
       }
 
       return throwError(() => error);

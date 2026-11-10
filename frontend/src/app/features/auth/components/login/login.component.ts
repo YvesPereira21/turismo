@@ -48,7 +48,8 @@ export class LoginComponent {
       },
       error: (error) => {
         this.isSubmitting.set(false);
-        this.errorMessage.set(error.error?.message || 'E-mail ou senha incorretos.');
+        const rateLimitMessage = error.status === 429 || error.status === 503 ? error.error?.errors?.[0] : undefined;
+        this.errorMessage.set(error.error?.message || rateLimitMessage || 'E-mail ou senha incorretos.');
       }
     });
   }
