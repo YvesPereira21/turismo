@@ -46,6 +46,14 @@ jwt:
   secret: ${JWT_SECRET:superChaveSecretaJWTDoSistemaTurismo!}
   expiration: 86400000 # 24 horas em milissegundos
 
+ratelimit:
+  refresh:
+    capacity: 5
+  registration:
+    capacity: 5
+  upload:
+    capacity: 15
+
 file:
   upload-dir:
     tourist-spot-dir: uploads/tourist-spots/

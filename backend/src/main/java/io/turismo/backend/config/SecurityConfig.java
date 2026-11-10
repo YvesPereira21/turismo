@@ -1,5 +1,7 @@
 package io.turismo.backend.config;
 
+import io.turismo.backend.ratelimit.RateLimitResponses;
+import io.turismo.backend.security.CreationRateLimitInterceptor;
 import io.turismo.backend.security.CustomOAuth2UserService;
 import io.turismo.backend.security.JwtAuthenticationFilter;
 import io.turismo.backend.security.OAuth2AuthenticationSuccessHandler;
@@ -20,7 +22,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -47,10 +48,14 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, ObjectProvider<TokenBucketRateLimiter> rateLimit,
-                                                   JsonMapper jsonMapper,
-                                                   @Value("${ratelimit.refresh.capacity:5}") long refreshCapacity,
-                                                   @Value("${ratelimit.registration.capacity:5}") long registrationCapacity) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            ObjectProvider<TokenBucketRateLimiter> rateLimit,
+            JsonMapper jsonMapper,
+            @Value("${ratelimit.refresh.capacity}") long refreshCapacity,
+            @Value("${ratelimit.registration.capacity}") long registrationCapacity,
+            @Value("${ratelimit.upload.capacity}") long uploadCapacity
+    ) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -67,8 +72,12 @@ public class SecurityConfig {
                         .successHandler(oAuth2SuccessHandler)
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        rateLimit.ifAvailable(service -> http.addFilterBefore(
-                new PublicRateLimitFilter(service, jsonMapper, refreshCapacity, registrationCapacity), JwtAuthenticationFilter.class));
+        rateLimit.ifAvailable(service -> {
+            http.addFilterBefore(new PublicRateLimitFilter(service, jsonMapper, refreshCapacity, registrationCapacity),
+                    JwtAuthenticationFilter.class);
+            http.addFilterAfter(new CreationRateLimitInterceptor(service, jsonMapper, uploadCapacity),
+                    JwtAuthenticationFilter.class);
+        });
         return http.build();
     }
 
@@ -79,8 +88,9 @@ public class SecurityConfig {
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
-        config.setExposedHeaders(List.of(HttpHeaders.RETRY_AFTER, PublicRateLimitFilter.REMAINING_HEADER,
-                PublicRateLimitFilter.RETRY_HEADER));
+        config.setExposedHeaders(
+                List.of(HttpHeaders.RETRY_AFTER, RateLimitResponses.REMAINING_HEADER, RateLimitResponses.RETRY_HEADER)
+        );
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

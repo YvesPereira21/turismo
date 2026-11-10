@@ -22,7 +22,9 @@ public interface PhotoDoc {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Upload realizado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Imagens inválidas fornecidas"),
-            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado")
+            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado"),
+            @ApiResponse(responseCode = "429", description = "Limite de uploads excedido"),
+            @ApiResponse(responseCode = "503", description = "Serviço temporariamente indisponível")
     })
     ResponseEntity<Void> uploadTouristSpotsPhotos(UUID touristSpotId, @Valid PhotoUploadDTO dto) throws IOException;
 
@@ -30,7 +32,9 @@ public interface PhotoDoc {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Upload realizado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Imagem inválida fornecida"),
-            @ApiResponse(responseCode = "404", description = "Atividade não encontrada")
+            @ApiResponse(responseCode = "404", description = "Atividade não encontrada"),
+            @ApiResponse(responseCode = "429", description = "Limite de uploads excedido"),
+            @ApiResponse(responseCode = "503", description = "Serviço temporariamente indisponível")
     })
     ResponseEntity<Void> uploadActivityPhoto(UUID activityId, MultipartFile photo) throws IOException;
 
@@ -38,7 +42,9 @@ public interface PhotoDoc {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Foto atualizada com sucesso"),
             @ApiResponse(responseCode = "400", description = "Imagem inválida fornecida"),
-            @ApiResponse(responseCode = "404", description = "Atividade não encontrada")
+            @ApiResponse(responseCode = "404", description = "Atividade não encontrada"),
+            @ApiResponse(responseCode = "429", description = "Limite de uploads excedido"),
+            @ApiResponse(responseCode = "503", description = "Serviço temporariamente indisponível")
     })
     ResponseEntity<Void> updateActivityPhoto(UUID activityId, MultipartFile photo) throws IOException;
 }

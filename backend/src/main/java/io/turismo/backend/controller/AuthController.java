@@ -10,7 +10,7 @@ import io.turismo.backend.ratelimit.LoginAttemptLimiter;
 import io.turismo.backend.repository.RefreshTokenRepository;
 import io.turismo.backend.repository.UserRepository;
 import io.turismo.backend.security.CookieUtils;
-import io.turismo.backend.security.PublicRateLimitFilter;
+import io.turismo.backend.ratelimit.RateLimitResponses;
 import io.turismo.backend.security.TokenService;
 import io.turismo.backend.service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -63,7 +63,7 @@ public class AuthController implements AuthDoc {
                 return ResponseEntity.status(status)
                         .cacheControl(CacheControl.noStore())
                         .header(HttpHeaders.RETRY_AFTER, seconds)
-                        .header(PublicRateLimitFilter.RETRY_HEADER, seconds)
+                        .header(RateLimitResponses.RETRY_HEADER, seconds)
                         .body(loginError(status, "Limite de requisições excedido. Tente novamente em " + seconds + " segundos."));
             }
         }

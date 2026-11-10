@@ -3,6 +3,7 @@ package io.turismo.backend.security;
 import io.github.bucket4j.Bucket;
 import io.lettuce.core.RedisConnectionException;
 import io.github.bucket4j.BucketConfiguration;
+import io.turismo.backend.ratelimit.RateLimitResponses;
 import io.turismo.backend.ratelimit.TokenBucketRateLimiter;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,9 +52,9 @@ class PublicRateLimitFilterTest {
         assertThat(request("POST", REFRESH, IP).getStatus()).isEqualTo(204);
         var blocked = request("POST", REFRESH, IP);
         assertThat(blocked.getStatus()).isEqualTo(429);
-        assertThat(blocked.getHeader("Retry-After")).isEqualTo(blocked.getHeader(PublicRateLimitFilter.RETRY_HEADER));
+        assertThat(blocked.getHeader("Retry-After")).isEqualTo(blocked.getHeader(RateLimitResponses.RETRY_HEADER));
         assertThat(Long.parseLong(blocked.getHeader("Retry-After"))).isBetween(1L, 60L);
-        assertThat(blocked.getHeader(PublicRateLimitFilter.REMAINING_HEADER)).isEqualTo("0");
+        assertThat(blocked.getHeader(RateLimitResponses.REMAINING_HEADER)).isEqualTo("0");
         assertThat(json.readTree(blocked.getContentAsByteArray()).get("code").asInt()).isEqualTo(429);
         assertThat(request("POST", REFRESH, "192.0.2.2").getStatus()).isEqualTo(204);
     }
