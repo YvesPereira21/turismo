@@ -53,6 +53,10 @@ ratelimit:
     capacity: 5
   upload:
     capacity: 15
+  creation:
+    capacity: 30
+  map:
+    capacity: 60
 
 file:
   upload-dir:

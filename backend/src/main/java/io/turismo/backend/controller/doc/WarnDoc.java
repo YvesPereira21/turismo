@@ -22,7 +22,9 @@ public interface WarnDoc {
     @Operation(summary = "Criar aviso", description = "Cria um novo aviso para um ponto turístico")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Aviso criado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado")
+            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado"),
+            @ApiResponse(responseCode = "429", description = "Limite de criações excedido"),
+            @ApiResponse(responseCode = "503", description = "Serviço temporariamente indisponível")
     })
     ResponseEntity<WarnDTO> createWarn(@Valid WarnCreateDTO dto, UUID touristSpotId, UUID userId);
 

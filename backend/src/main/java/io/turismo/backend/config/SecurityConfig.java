@@ -54,7 +54,9 @@ public class SecurityConfig {
             JsonMapper jsonMapper,
             @Value("${ratelimit.refresh.capacity}") long refreshCapacity,
             @Value("${ratelimit.registration.capacity}") long registrationCapacity,
-            @Value("${ratelimit.upload.capacity}") long uploadCapacity
+            @Value("${ratelimit.upload.capacity}") long uploadCapacity,
+            @Value("${ratelimit.creation.capacity}") long creationCapacity,
+            @Value("${ratelimit.map.capacity}") long mapCapacity
     ) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -75,7 +77,7 @@ public class SecurityConfig {
         rateLimit.ifAvailable(service -> {
             http.addFilterBefore(new PublicRateLimitFilter(service, jsonMapper, refreshCapacity, registrationCapacity),
                     JwtAuthenticationFilter.class);
-            http.addFilterAfter(new CreationRateLimitInterceptor(service, jsonMapper, uploadCapacity),
+            http.addFilterAfter(new CreationRateLimitInterceptor(service, jsonMapper, uploadCapacity, creationCapacity, mapCapacity),
                     JwtAuthenticationFilter.class);
         });
         return http.build();

@@ -21,7 +21,9 @@ public interface ActivityDoc {
     @Operation(summary = "Criar atividade", description = "Cria uma nova atividade para um ponto turístico (Apenas gerentes)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Atividade criada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado")
+            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado"),
+            @ApiResponse(responseCode = "429", description = "Limite de criações excedido"),
+            @ApiResponse(responseCode = "503", description = "Serviço temporariamente indisponível")
     })
     ResponseEntity<ActivityDTO> createActivity(UUID touristSpotId, @Valid ActivityCreateDTO dto, UUID userId);
 

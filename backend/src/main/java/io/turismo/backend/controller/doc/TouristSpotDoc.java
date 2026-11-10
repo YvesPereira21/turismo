@@ -27,7 +27,9 @@ public interface TouristSpotDoc {
     @Operation(summary = "Criar ponto turístico", description = "Cria um novo ponto turístico vinculado a um gerente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Ponto turístico criado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Gerente ou cidade não encontrada")
+            @ApiResponse(responseCode = "404", description = "Gerente ou cidade não encontrada"),
+            @ApiResponse(responseCode = "429", description = "Limite de criações excedido"),
+            @ApiResponse(responseCode = "503", description = "Serviço temporariamente indisponível")
     })
     ResponseEntity<TouristSpotDTO> createTouristSpot(@Valid TouristSpotCreateDTO dto, UUID userId);
 
@@ -41,7 +43,9 @@ public interface TouristSpotDoc {
     @Operation(summary = "Buscar todos pontos turísticos para implementar no mapa", description = "Retorna os pontos turísticos para o mapa")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ponto turístico encontrado"),
-            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado")
+            @ApiResponse(responseCode = "404", description = "Ponto turístico não encontrado"),
+            @ApiResponse(responseCode = "429", description = "Limite de consultas ao mapa excedido"),
+            @ApiResponse(responseCode = "503", description = "Serviço temporariamente indisponível")
     })
     ResponseEntity<GeoFeatureCollectionDTO<TouristSpotToMapDTO>> getTouristSpotsToMap();
 

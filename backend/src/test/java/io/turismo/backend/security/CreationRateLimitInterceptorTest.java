@@ -7,6 +7,7 @@ import io.turismo.backend.model.User;
 import io.turismo.backend.model.enums.UserRole;
 import io.turismo.backend.ratelimit.TokenBucketRateLimiter;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -28,17 +30,19 @@ class CreationRateLimitInterceptorTest {
     private static final String SPOT = "/api/v1/tourist-spots/" + UUID.randomUUID() + "/photos";
     private static final String ACTIVITY = "/api/v1/activities/" + UUID.randomUUID() + "/photos";
 
+    private static final String MAP = "/api/v1/spots-to-map/";
+
     private final JsonMapper jsonMapper = JsonMapper.builder().build();
     private final TokenBucketRateLimiter rateLimiter = mock(TokenBucketRateLimiter.class);
-    private final CreationRateLimitInterceptor filter = new CreationRateLimitInterceptor(rateLimiter, jsonMapper, 2);
+    private final CreationRateLimitInterceptor filter = new CreationRateLimitInterceptor(rateLimiter, jsonMapper, 2, 2, 1);
 
     @AfterEach
     void clearContext() {
         SecurityContextHolder.clearContext();
     }
 
-    @Test
-    void uploadRoutesShareAQuotaPerUser() throws Exception {
+    @BeforeEach
+    void useLocalBuckets() {
         var buckets = new HashMap<String, Bucket>();
         when(rateLimiter.consume(any(), any())).thenAnswer(call -> {
             String key = call.getArgument(0);
@@ -47,7 +51,10 @@ class CreationRateLimitInterceptorTest {
                     .addLimit(configuration.getBandwidths()[0])
                     .build()).tryConsumeAndReturnRemaining(1);
         });
+    }
 
+    @Test
+    void uploadRoutesShareAQuotaPerUser() throws Exception {
         authenticate(UserRole.SPOTMANAGER);
         assertThat(request("POST", SPOT).getStatus()).isEqualTo(204);
         assertThat(request("POST", ACTIVITY).getStatus()).isEqualTo(204);
@@ -62,8 +69,43 @@ class CreationRateLimitInterceptorTest {
     }
 
     @Test
+    void creationRoutesShareAQuotaPerUserSeparateFromUploads() throws Exception {
+        String warn = "/api/v1/warns/spot/" + UUID.randomUUID();
+        String activity = "/api/v1/tourist-spots/" + UUID.randomUUID() + "/activities";
+        String touristSpots = "/api/v1/tourist-spots";
+
+        authenticate(UserRole.SPOTMANAGER);
+        assertThat(request("POST", warn).getStatus()).isEqualTo(204);
+        assertThat(request("POST", touristSpots).getStatus()).isEqualTo(204);
+        assertThat(request("POST", activity).getStatus()).isEqualTo(429);
+        assertThat(request("GET", activity).getStatus()).isEqualTo(204);
+        assertThat(request("POST", SPOT).getStatus()).isEqualTo(204);
+
+        authenticate(UserRole.SPOTMANAGER);
+        assertThat(request("POST", activity).getStatus()).isEqualTo(204);
+    }
+
+    @Test
+    void mapHasItsOwnQuotaForEachAuthenticatedUser() throws Exception {
+        authenticate(UserRole.TOURIST);
+        assertThat(request("GET", MAP).getStatus()).isEqualTo(204);
+        assertThat(request("GET", MAP).getStatus()).isEqualTo(429);
+        assertThat(request("GET", "/api/v1/tourist-spots").getStatus()).isEqualTo(204);
+
+        authenticate(UserRole.TOURIST);
+        assertThat(request("GET", MAP).getStatus()).isEqualTo(204);
+
+        authenticate(UserRole.SPOTMANAGER);
+        assertThat(request("GET", MAP).getStatus()).isEqualTo(204);
+        assertThat(request("GET", MAP).getStatus()).isEqualTo(429);
+        assertThat(request("POST", "/api/v1/tourist-spots").getStatus()).isEqualTo(204);
+        assertThat(request("POST", SPOT).getStatus()).isEqualTo(204);
+    }
+
+    @Test
     void unrelatedRequestsAndUsersWithoutUploadAccessDoNotConsumeQuota() throws Exception {
         assertThat(request("POST", SPOT).getStatus()).isEqualTo(204);
+        assertThat(request("GET", MAP).getStatus()).isEqualTo(204);
         authenticate(UserRole.TOURIST);
         assertThat(request("POST", SPOT).getStatus()).isEqualTo(204);
         authenticate(UserRole.SPOTMANAGER);
@@ -75,7 +117,7 @@ class CreationRateLimitInterceptorTest {
     @Test
     void redisFailureReturnsServiceUnavailable() throws Exception {
         authenticate(UserRole.SPOTMANAGER);
-        when(rateLimiter.consume(any(), any())).thenThrow(new RedisConnectionException("unavailable"));
+        doThrow(new RedisConnectionException("unavailable")).when(rateLimiter).consume(any(), any());
         var response = request("POST", ACTIVITY);
         assertThat(response.getStatus()).isEqualTo(503);
         assertThat(jsonMapper.readTree(response.getContentAsByteArray()).get("code").asInt()).isEqualTo(503);
